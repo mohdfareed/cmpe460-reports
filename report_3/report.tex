@@ -66,7 +66,11 @@ The waveform generator was initially set to 100Hz with a duty cycle of 50\%. The
 
 \section*{Results and Analysis}
 
-Part 1 of this exercise consisted of increasing the distance between the OPB745 and the reflective surface. 10k$\Omega$ and 20k$\Omega$ resistors were tested as the load resistor and voltage at V$_{\text{out}}$ was measured. Table \ref{table:data} shows the distances tested and the output voltage. The current across the load resistor was calculated using Ohm's law.
+Part 1 of this exercise consisted of increasing the distance between the OPB745 and the reflective surface. 10k$\Omega$ and 20k$\Omega$ load resistors were tested and the voltage at V$_{\text{out}}$ was measured. Table \ref{table:data} shows the distances tested and the output voltage, for each load resistance. The current across the load resistor was calculated using Ohm's law as follows:
+
+\[ I_{RL} = \frac{5\text{V} - V_{\text{out}}}{R_L} \]
+
+The table shows that $V_{\text{out}}$ starts at 5V and then decreases sharply to a minimum as the sensor is no longer in contact with the reflective surface. The voltage then increases gradually as the distance increases and more light is reflected back to the sensor. The calculated current across the load resistor shows the inverse relationship between the voltage and current. The current starts at around 0A, sharply increases to a maximum, and then decreases gradually as the distance increases. At 45mm, the voltage starts to decrease again (and the current increases) likely due to the test environment not being completely isolated towards the end of the pipe.
 
 \begin{table}[H]
     \centering
@@ -75,7 +79,7 @@ Part 1 of this exercise consisted of increasing the distance between the OPB745 
         \hline
         & \multicolumn{2}{|c|}{$R_{L1} = 10k\Omega$} & \multicolumn{2}{|c|}{$R_{L1} = 20k\Omega$} \\
         \hline
-        Distance (mm) & $V_{out}$ (V) & $I_{RL}$ (mA) & $V_{out}$ (V) & $I_{RL}$ (mA) \\
+        Distance (mm) & $V_{\text{out}}$ (V) & $I_{RL}$ (mA) & $V_{\text{out}}$ (V) & $I_{RL}$ (mA) \\
         \hline
         0 & 4.98 & 0.002 & 4.96 & 0.002 \\
         \hline
@@ -127,12 +131,16 @@ Part 1 of this exercise consisted of increasing the distance between the OPB745 
     \label{table:data}
 \end{table}
 
+The voltage and current were plotted for both load resistors, as shown in figure \ref{fig:plots}.
+
 \begin{figure}[H]
     \centering
     \includegraphics[width=1\textwidth]{results_plot.pdf}
     \caption{The plots of the results of part 1.}
     \label{fig:plots}
 \end{figure}
+
+The plots show that the change in the load resistance affects both the voltage and current characteristics of the circuit. The increase in the load resistance decreases both the maximum voltage across the phototransistor and the current passing through the load.
 
 \begin{figure}[H]
     \centering
