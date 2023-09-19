@@ -1,4 +1,5 @@
 \documentclass[CMPE]{KGCOEReport}
+\usepackage{float}
 \graphicspath{ {./images/} }
 
 \newcommand{\name}{Mohammed Fareed \\ Trent Wesley}
@@ -26,7 +27,7 @@ In this laboratory exercise, the OPB745 photo-transducer was characterized by it
 
 To set up this exercise, a test environment was built to isolate the OPB745 sensor from outside light. This environment also provided the ability to change the distance between the OPB745 sensor and a reflective surface of aluminum foil inside, with measurement of the distance between them. A diagram of the test environment from the CMPE-460 manual is shown in figure \ref{fig:env}.
 
-\begin{figure}[h]
+\begin{figure}[H]
     \centering
     \includegraphics[width=0.75\textwidth]{test_env.png}
     \caption{Test Environment Diagram}
@@ -41,7 +42,7 @@ The first part of this exercise tested the ability of the OPB745 to accurately m
 
 This circuit was tested with the load resistor equal to 10k$\Omega$ and 20k$\Omega$. The voltage at the V$_{\text{out}}$ node was measured for select distances from 0mm to 50mm and the current across the load resistor was calculated.
 
-\begin{figure}[h]
+\begin{figure}[H]
     \centering
     \includegraphics[width=0.5\textwidth]{circuit_1.png}
     \caption{Part 1 Circuit}
@@ -50,7 +51,7 @@ This circuit was tested with the load resistor equal to 10k$\Omega$ and 20k$\Ome
 
 The second part of this exercise tested how well the output would retain its square wave characteristics as the frequency of a waveform generator was increased. The circuit for this part is shown in figure \ref{fig:circuit2}.
 
-\begin{figure}[h]
+\begin{figure}[H]
     \centering
     \includegraphics[width=0.75\textwidth]{circuit_2.png}
     \caption{Part 2 Circuit}
@@ -67,7 +68,7 @@ The waveform generator was initially set to 100Hz with a duty cycle of 50\%. The
 
 Part 1 of this exercise consisted of increasing the distance between the OPB745 and the reflective surface. 10k$\Omega$ and 20k$\Omega$ resistors were tested as the load resistor and voltage at V$_{\text{out}}$ was measured. Table \ref{table:data} shows the distances tested and the output voltage. The current across the load resistor was calculated using Ohm's law.
 
-\begin{table}[ht]
+\begin{table}[H]
     \centering
     \caption{Results of Part 1.}
     \begin{tabular}{|c|c|c|c|c|}
@@ -126,50 +127,56 @@ Part 1 of this exercise consisted of increasing the distance between the OPB745 
     \label{table:data}
 \end{table}
 
-\begin{figure}[h]
+\begin{figure}[H]
     \centering
     \includegraphics[width=1\textwidth]{results_plot.pdf}
     \caption{The plots of the results of part 1.}
     \label{fig:plots}
 \end{figure}
 
-\begin{figure}[h]
+\begin{figure}[H]
     \centering
     \includegraphics[width=0.75\textwidth]{output_min_10.png}
     \caption{Oscilloscope screen capture using a 10k$\Omega$ load resistor at 100Hz.}
     \label{fig:osc_10_min}
 \end{figure}
 
-\begin{figure}[h]
+\begin{figure}[H]
     \centering
     \includegraphics[width=0.75\textwidth]{output_max_10.png}
     \caption{Oscilloscope screen capture using a 10k$\Omega$ load resistor at 1.2kHz.}
     \label{fig:osc_10_max}
 \end{figure}
 
-\begin{figure}[h]
+\begin{figure}[H]
     \centering
-    \includegraphics[width=1\textwidth]{output_min_20.png}
+    \includegraphics[width=0.75\textwidth]{output_min_20.png}
     \caption{Oscilloscope screen capture using a 20k$\Omega$ load resistor at 100Hz.}
     \label{fig:osc_20_min}
 \end{figure}
 
-\begin{figure}[h]
+\begin{figure}[H]
     \centering
-    \includegraphics[width=1\textwidth]{output_max_20.png}
+    \includegraphics[width=0.75\textwidth]{output_max_20.png}
     \caption{Oscilloscope screen capture using a 20k$\Omega$ load resistor at 850Hz.}
     \label{fig:osc_20_max}
 \end{figure}
 
 \section*{Questions}
 
-\emph{1. In the lab we do not use a 7406 inverter on the output; instead we use the 74LS14 with Schmitt trigger. Why do we need to do this, and what is the difference between the two?}
+1. \emph{In the lab we do not use a 7406 inverter on the output; instead we use the 74LS14 with Schmitt trigger. Why do we need to do this, and what is the difference between the two?}
 
-\emph{2. Why does the voltage start at 5V at 0mm and then drop quickly? Why does it eventually go back to 5V?}
+The 7406 inverter is not used on the output because the output of the OPB745 is not a square wave. The 74LS14 used to convert the output of the OPB745 to a square wave. The difference between the two is that the 7406 will invert the input signal, while the 74LS14 Schmitt trigger will convert the input signal to a square wave by introducing hysteresis to the output. The hysteresis is introduced by having two different threshold voltage levels for rising and falling edges of the input signal.
+\bigskip
+
+2. \emph{Why does the voltage start at 5V at 0mm and then drop quickly? Why does it eventually go back to 5V?}
 
 At 0mm, the sensor is in contact with the reflective surface, and thus senses no light. At the point it is no longer in contact with the reflective surface, it gets the maximum amount of light, resulting in the drop of voltage. As the sensor is moved away from the reflective surface, the amount of light absorbed by the sensor starts decreasing, increasing the voltage gradually.
+\bigskip
 
-\emph{3. Why does the frequency change when going from a 10K load resistor to a 20K load resistor? Did you anticipate it increasing or decreasing and why?}
+3. \emph{Why does the frequency change when going from a 10K load resistor to a 20K load resistor? Did you anticipate it increasing or decreasing and why?}
+
+When the resistance is increased, the time constant $\tau=RC$ increases, causing a greater delay in the charging and discharging of the capacitor forming between the resistor and phototransistor. This causes the input frequency required to cause the output to approach 100\% duty cycle to decrease. We anticipated the frequency to decrease because as the resistance increases and the time constant increases, it requires less frequency to cause the phototransistor to not have enough time to shut off before the next cycle begins, thus staying in the HIGH state (100\% duty cycle).
 
 \section*{Conclusion}
 
