@@ -1,5 +1,6 @@
 \documentclass[CMPE]{KGCOEReport}
 \usepackage{float}
+\usepackage{adjustbox}
 \graphicspath{ {./images/} }
 
 \newcommand{\name}{Mohammed Fareed \\ Trent Wesley}
@@ -187,5 +188,14 @@ At 0mm, the sensor is in contact with the reflective surface, and thus senses no
 When the resistance is increased, the time constant $\tau=RC$ increases, causing a greater delay in the charging and discharging of the capacitor forming between the resistor and phototransistor. This causes the input frequency required to cause the output to approach 100\% duty cycle to decrease. We anticipated the frequency to decrease because as the resistance increases and the time constant increases, it requires less frequency to cause the phototransistor to not have enough time to shut off before the next cycle begins, thus staying in the HIGH state (100\% duty cycle).
 
 \section*{Conclusion}
+
+
+\newpage
+\begin{figure}[H]
+    \centering
+    \begin{adjustbox}{center}
+        \includegraphics[width=1.35\textwidth]{signoff.pdf}
+    \end{adjustbox}
+\end{figure}
 
 \end{document}
