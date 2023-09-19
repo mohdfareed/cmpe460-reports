@@ -65,7 +65,7 @@ The waveform generator was initially set to 100Hz with a duty cycle of 50\%. The
 
 \section*{Results and Analysis}
 
-Part 1 of this exercise consisted of increasing the distance between the OPB745 and the reflective surface. 10k$\Omega$ and 20k$\Omega$ resistors were tested as the load resistor and voltage at V$_{\text{out}}$ was measured. Table \ref{table:1} shows the distances tested and the output voltage. The current across the load resistor was calculated using Ohm's law.
+Part 1 of this exercise consisted of increasing the distance between the OPB745 and the reflective surface. 10k$\Omega$ and 20k$\Omega$ resistors were tested as the load resistor and voltage at V$_{\text{out}}$ was measured. Table \ref{table:data} shows the distances tested and the output voltage. The current across the load resistor was calculated using Ohm's law.
 
 \begin{table}[ht]
     \centering
@@ -123,8 +123,43 @@ Part 1 of this exercise consisted of increasing the distance between the OPB745 
         50 & 3.65 & 0.135 & 2.60 & 0.12 \\
         \hline
     \end{tabular}
-    \label{table:1}
+    \label{table:data}
 \end{table}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=1\textwidth]{results_plot.pdf}
+    \caption{The plots of the results of part 1.}
+    \label{fig:plots}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.75\textwidth]{output_min_10.png}
+    \caption{Oscilloscope screen capture using a 10k$\Omega$ load resistor at 100Hz.}
+    \label{fig:osc_10_min}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.75\textwidth]{output_max_10.png}
+    \caption{Oscilloscope screen capture using a 10k$\Omega$ load resistor at 1.2kHz.}
+    \label{fig:osc_10_max}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=1\textwidth]{output_min_20.png}
+    \caption{Oscilloscope screen capture using a 20k$\Omega$ load resistor at 100Hz.}
+    \label{fig:osc_20_min}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=1\textwidth]{output_max_20.png}
+    \caption{Oscilloscope screen capture using a 20k$\Omega$ load resistor at 850Hz.}
+    \label{fig:osc_20_max}
+\end{figure}
 
 \section*{Questions}
 
