@@ -3,9 +3,6 @@ import os
 import matplotlib.pyplot as plt
 import numpy as np
 
-images_path = os.path.dirname(os.path.abspath(__file__)) + "/images/"
-plt.rcParams["text.usetex"] = True
-
 # data
 distance = np.array(
     [
@@ -143,24 +140,31 @@ current2 = np.array(
     ]
 )
 
+# config
+images_path = os.path.dirname(os.path.abspath(__file__)) + "/images/"
+plt.rcParams["text.usetex"] = True
+plt.figure(figsize=(10, 4))
+
 # plot voltage
-plt.figure(1)
+plt.subplot(1, 2, 1)
 plt.plot(distance, voltage1, "bo-", label="$10k\\Omega$")
 plt.plot(distance, voltage2, "ro-", label="$20k\\Omega$")
 plt.xlabel("\\textrm{Distance (mm)}", fontsize=12)
 plt.ylabel("\\textrm{Voltage (V)}", fontsize=12)
-plt.title("\\textrm{Voltage Plot}", fontsize=15)
+plt.title("\\textrm{Measured Voltage}", fontsize=15)
 plt.grid(True)
 plt.legend()
-plt.savefig(images_path + "voltage_plot.pdf")
 
 # plot current
-plt.figure(2)
+plt.subplot(1, 2, 2)
 plt.plot(distance, current1, "bo-", label="$10k\\Omega$")
 plt.plot(distance, current2, "ro-", label="$20k\\Omega$")
 plt.xlabel("\\textrm{Distance (mm)}", fontsize=12)
 plt.ylabel("\\textrm{Current (mA)}", fontsize=12)
-plt.title("\\textrm{Current Plot}", fontsize=15)
+plt.title("\\textrm{Calculated Current}", fontsize=15)
 plt.grid(True)
 plt.legend()
-plt.savefig(images_path + "current_plot.pdf")
+
+# save the full figure
+# plt.tight_layout()
+plt.savefig(images_path + "results_plot.pdf")
