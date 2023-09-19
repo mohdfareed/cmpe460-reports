@@ -143,6 +143,8 @@ The voltage and current were plotted for both load resistors, as shown in figure
 
 The plots show that the change in the load resistance affects both the voltage and current characteristics of the circuit. The increase in the load resistance decreases both the maximum voltage across the phototransistor and the current passing through the load.
 
+Part 2 consisted of increasing the frequency of the waveform generator until the output no longer resembled a square wave. Figure \ref{fig:osc_10_min} shows the input (green) of the waveform generator and the output V$_\text{out}$ (yellow). Figure \ref{fig:osc_10_max} shows the results at 1.2kHz.
+
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.75\textwidth]{output_min_10.png}
@@ -156,6 +158,10 @@ The plots show that the change in the load resistance affects both the voltage a
     \caption{Oscilloscope screen capture using a 10k$\Omega$ load resistor at 1.2kHz.}
     \label{fig:osc_10_max}
 \end{figure}
+
+Around 1.2kHz, the output no longer resembled a square wave as the duty cycle was almost 100\%, resembling a DC signal. The output in both figures \ref{fig:osc_10_min} and \ref{fig:osc_10_max} shows a spike in the output, which was attributed to noise.
+
+Figures \ref{fig:osc_20_min} and \ref{fig:osc_20_max} show the results of the same test with a 20k$\Omega$ load resistor. The output no longer resembled a square wave at around 850Hz and the spike in the output was still present.
 
 \begin{figure}[H]
     \centering
@@ -188,7 +194,6 @@ At 0mm, the sensor is in contact with the reflective surface, and thus senses no
 When the resistance is increased, the time constant $\tau=RC$ increases, causing a greater delay in the charging and discharging of the capacitor forming between the resistor and phototransistor. This causes the input frequency required to cause the output to approach 100\% duty cycle to decrease. We anticipated the frequency to decrease because as the resistance increases and the time constant increases, it requires less frequency to cause the phototransistor to not have enough time to shut off before the next cycle begins, thus staying in the HIGH state (100\% duty cycle).
 
 \section*{Conclusion}
-
 
 \newpage
 \begin{figure}[H]
