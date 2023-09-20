@@ -26,7 +26,7 @@ In this laboratory exercise, the OPB745 photo-transducer was characterized by it
 
 \section*{Design Methodology}
 
-To set up this exercise, a test environment was built to isolate the OPB745 sensor from outside light. This environment also provided the ability to change the distance between the OPB745 sensor and a reflective surface of aluminum foil inside, with measurement of the distance between them. A diagram of the test environment from the CMPE-460 manual is shown in figure \ref{fig:env}.
+To set up this exercise, a test environment was built to isolate the OPB745 sensor from outside light. This environment also provided the ability to change the distance between the OPB745 sensor and a reflective surface of aluminum foil inside, with measurement of the distance between them. A diagram of the test environment from the CMPE-460 manual is shown in Figure \ref{fig:env}.
 
 \begin{figure}[H]
     \centering
@@ -35,9 +35,9 @@ To set up this exercise, a test environment was built to isolate the OPB745 sens
     \label{fig:env}
 \end{figure}
 
-The test environment was built out of two PVC pipes. One pipe had a reflective aluminum surface on one end and could be slid into the other pipe with a larger diameter. A metric ruler was added to the inside of the inner pipe for measurement. A slot made of cardboard and tape was added to the end of the larger pipe through which the OPB745 sensor was placed.
+The test environment was built out of two PVC pipes. One pipe had a reflective aluminum surface on one end and could be slid into the other pipe with a larger diameter. A metric ruler was added to the inside of the inner pipe for measurement. A slot made of cardboard and tape was added to the end of the larger pipe through which the OPB745 sensor was placed.\\
 
-The first part of this exercise tested the ability of the OPB745 to accurately measure the distance between it and a reflective surface with a 10k$\Omega$ and a 20k$\Omega$ load resistor. The circuit for this part is shown in figure \ref{fig:circuit1}.This circuit contains an OPB745 which emits and measures light. The value of R$_\text{f}$ was calculated to ensure that the diode receives a proper current. The value of R$_\text{f}$ was calculated using the forward voltage and the continuous forward current of the diode in the OPB745, which were retrieved from the data sheet of the sensor. The following is the calculation of the resistance of R$_\text{f}$:
+The first part of this exercise tested the ability of the OPB745 to accurately measure the distance between it and a reflective surface with a 10k$\Omega$ and a 20k$\Omega$ load resistor. The circuit for this part is shown in Figure \ref{fig:circuit1}. This circuit contains an OPB745 which emits and measures light. The value of R$_\text{f}$ was calculated to ensure that the diode receives a proper current. The value of R$_\text{f}$ was calculated using the forward voltage and the continuous forward current of the diode in the OPB745, which were retrieved from the data sheet of the sensor. The following is the calculation of the resistance of R$_\text{f}$:
 
 \[ \frac{5\text{V} - \text{V}_\text{F}}{\text{I}_\text{F}} = \frac{5\text{V} - 1.70\text{V}}{40 \text{mA}} = 82.5 \Omega \]
 
@@ -59,7 +59,7 @@ The second part of this exercise tested how well the output would retain its squ
     \label{fig:circuit2}
 \end{figure}
 
-As shown in figure \ref{fig:circuit2}, a waveform generator is attached to the input of an inverter. This inverter controls the current that will flow through the LED. Light from the LED hits the phototransistor and causes current to flow through the phototransistor. If enough current flows through the phototransistor, voltage at the input of the Schmitt trigger (74LS14) will be low causing V$_{\text{out}}$ to be high. If not much light hits the phototransistor, minimal current will pass through it. This means that the voltage at the input of the Schmitt trigger will be high and V$_{\text{out}}$ will be low. The resistance of R$_\text{f}$ was calculated using the same method as in part 1, taking into account the voltage drop across the inverting buffer (7406). The value of the voltage drop of the inverting buffer used is its low-output voltage retrieved from the data sheet. The following is the calculation of the resistance of R$_\text{f}$:
+As shown in Figure \ref{fig:circuit2}, a waveform generator is attached to the input of an inverter. This inverter controls the current that will flow through the LED. Light from the LED hits the phototransistor and causes current to flow through the phototransistor. If enough current flows through the phototransistor, voltage at the input of the Schmitt trigger (74LS14) will be low causing V$_{\text{out}}$ to be high. If not much light hits the phototransistor, minimal current will pass through it. This means that the voltage at the input of the Schmitt trigger will be high and V$_{\text{out}}$ will be low. The resistance of R$_\text{f}$ was calculated using the same method as in part 1, taking into account the voltage drop across the inverting buffer (7406). The value of the voltage drop of the inverting buffer used is its low-output voltage retrieved from the data sheet. The following is the calculation of the resistance of R$_\text{f}$:
 
 \[ \frac{5\text{V} - \text{V}_\text{F} - \text{V}_\text{OL}}{\text{I}_\text{F}} = \frac{5\text{V} - 1.70\text{V} - 0.70\text{V}}{40 \text{mA}} = 65 \Omega \]
 
@@ -71,11 +71,11 @@ Part 1 of this exercise consisted of increasing the distance between the OPB745 
 
 \[ I_{RL} = \frac{5\text{V} - V_{\text{out}}}{R_L} \]
 
-The table shows that $V_{\text{out}}$ starts at 5V and then decreases sharply to a minimum as the sensor is no longer in contact with the reflective surface. The voltage then increases gradually as the distance increases and more light is reflected back to the sensor. The calculated current across the load resistor shows the inverse relationship between the voltage and current. The current starts at around 0A, sharply increases to a maximum, and then decreases gradually as the distance increases. At 45mm, the voltage starts to decrease again (and the current increases) likely due to the test environment not being completely isolated towards the end of the pipe.
+The table shows that $V_{\text{out}}$ starts at 5V and then decreases sharply to a minimum as the sensor is no longer in contact with the reflective surface. The voltage then increases gradually as the distance increases and less light is reflected back to the sensor. The calculated current across the load resistor shows the inverse relationship between the voltage and current. The current starts at around 0A, sharply increases to a maximum, and then decreases gradually as the distance increases. At 45mm, the voltage starts to decrease again (and the current increases) likely due to the test environment not being completely isolated towards the end of the pipe.
 
 \begin{table}[H]
     \centering
-    \caption{Results of Part 1.}
+    \caption{Results of Part 1}
     \begin{tabular}{|c|c|c|c|c|}
         \hline
         & \multicolumn{2}{|c|}{$R_{L1} = 10k\Omega$} & \multicolumn{2}{|c|}{$R_{L1} = 20k\Omega$} \\
@@ -132,48 +132,48 @@ The table shows that $V_{\text{out}}$ starts at 5V and then decreases sharply to
     \label{table:data}
 \end{table}
 
-The voltage and current were plotted for both load resistors, as shown in figure \ref{fig:plots}.
+The voltage and current were plotted for both load resistors, as shown in Figure \ref{fig:plots}.
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=1\textwidth]{results_plot.pdf}
-    \caption{The plots of the results of part 1.}
+    \caption{Plotted Part 1 Results}
     \label{fig:plots}
 \end{figure}
 
-The plots show that the change in the load resistance affects both the voltage and current characteristics of the circuit. The increase in the load resistance decreases both the maximum voltage across the phototransistor and the current passing through the load.
+The plots show that the change in the load resistance affects both the voltage and current characteristics of the circuit. The increase in the load resistance decreases both the maximum voltage across the phototransistor and the current passing through the load. \\
 
 Part 2 consisted of increasing the frequency of the waveform generator until the output no longer resembled a square wave. Figure \ref{fig:osc_10_min} shows the input (green) of the waveform generator and the output V$_\text{out}$ (yellow). Figure \ref{fig:osc_10_max} shows the results at 1.2kHz.
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.75\textwidth]{output_min_10.png}
-    \caption{Oscilloscope screen capture using a 10k$\Omega$ load resistor at 100Hz.}
+    \caption{Oscilloscope Capture with 10k$\Omega$ Load Resistor at 100Hz.}
     \label{fig:osc_10_min}
 \end{figure}
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.75\textwidth]{output_max_10.png}
-    \caption{Oscilloscope screen capture using a 10k$\Omega$ load resistor at 1.2kHz.}
+    \caption{Oscilloscope Capture with 10k$\Omega$ Load Resistor at 1.2kHz.}
     \label{fig:osc_10_max}
 \end{figure}
 
-Around 1.2kHz, the output no longer resembled a square wave as the duty cycle was almost 100\%, resembling a DC signal. The output in both figures \ref{fig:osc_10_min} and \ref{fig:osc_10_max} shows a spike in the output, which was attributed to noise.
+Around 1.2kHz, the output no longer resembled a square wave as the duty cycle was almost 100\%, resembling a DC signal. The output in both Figure \ref{fig:osc_10_min} and Figure \ref{fig:osc_10_max} shows a spike in the output, which was attributed to noise. \\
 
 Figures \ref{fig:osc_20_min} and \ref{fig:osc_20_max} show the results of the same test with a 20k$\Omega$ load resistor. The output no longer resembled a square wave at around 850Hz and the spike in the output was still present.
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.75\textwidth]{output_min_20.png}
-    \caption{Oscilloscope screen capture using a 20k$\Omega$ load resistor at 100Hz.}
+    \caption{Oscilloscope Capture with 20k$\Omega$ Load Resistor at 100Hz.}
     \label{fig:osc_20_min}
 \end{figure}
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.75\textwidth]{output_max_20.png}
-    \caption{Oscilloscope screen capture using a 20k$\Omega$ load resistor at 850Hz.}
+    \caption{Oscilloscope Capture with 20k$\Omega$ Load Resistor at 850Hz.}
     \label{fig:osc_20_max}
 \end{figure}
 
