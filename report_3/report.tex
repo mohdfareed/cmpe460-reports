@@ -181,7 +181,7 @@ Figures \ref{fig:osc_20_min} and \ref{fig:osc_20_max} show the results of the sa
 
 1. \emph{In the lab we do not use a 7406 inverter on the output; instead we use the 74LS14 with Schmitt trigger. Why do we need to do this, and what is the difference between the two?}
 
-The 7406 inverter is not used on the output because the output of the OPB745 is not a square wave. The 74LS14 used to convert the output of the OPB745 to a square wave. The difference between the two is that the 7406 will invert the input signal, while the 74LS14 Schmitt trigger will convert the input signal to a square wave by introducing hysteresis to the output. The hysteresis is introduced by having two different threshold voltage levels for rising and falling edges of the input signal.
+The 74LS14 is used to convert the output of the OPB745 to a conditioned square wave. The difference between the two is that the 74LS14 Schmitt trigger will introduce hysteresis in the process of converting the signal to a square wave, while the 7406 inverter will not. The hysteresis reduces the noise in the output signal and makes the output more stable. It is introduced by having two different threshold voltage levels for logic high and logic low voltages of the input signal.
 \bigskip
 
 2. \emph{Why does the voltage start at 5V at 0mm and then drop quickly? Why does it eventually go back to 5V?}
