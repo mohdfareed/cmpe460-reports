@@ -4,3 +4,8 @@
 *.log
 *.synctex.gz
 template/*.pdf
+*.uvoptx
+*.uvprojx
+**/Listings/
+**/Objects
+**/RTE
