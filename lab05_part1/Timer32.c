@@ -89,14 +89,14 @@ void T32_INT1_IRQHandler(void)
 {
 	// acknowledge Timer32 Timer 1 interrupt
 	// TIMER32_INTCLR1
-	;
+	TIMER32_INTCLR1 = 1;
 
 	// execute user task
 	(*Timer32_1_PeriodicTask)();
 
 	// timer reload value to start the timer again
 	// TIMER32_LOAD1
-	;
+	TIMER32_LOAD1 = timer1Period;
 }
 
 // ***************** Timer32_2_Init ****************
@@ -156,12 +156,12 @@ void T32_INT2_IRQHandler(void)
 {
 	// acknowledge Timer32 Timer 1 interrupt
 	// TIMER32_INTCLR2
-	;
+	TIMER32_INTCLR2 = 1;
 
 	// execute user task
 	(*Timer32_2_PeriodicTask)();
 
 	// timer reload value
 	// TIMER32_LOAD2
-	;
+	TIMER32_LOAD2 = timer2Period;
 }
