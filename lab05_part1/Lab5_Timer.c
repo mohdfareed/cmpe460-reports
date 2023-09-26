@@ -54,20 +54,20 @@ void Switch1_Interrupt_Init(void)
 	//0b = No interrupt is pending.
 	//1b = Interrupt is pending.
 	// clear flag1 (reduce possibility of extra interrupt)	
-  ; 
+  P1->IFG &= ~2;  // P1.1
 
 	//7-0 PxIE RW 0h Port X interrupt enable
 	//0b = Corresponding port interrupt disabled
 	//1b = Corresponding port interrupt enabled	
 	// arm interrupt on  P1.1	
-  ;  
+  P1->IE |= 2;  
 
 	//7-0 PxIES RW Undefined Port X interrupt edge select
   //0b = PxIFG flag is set with a low-to-high transition.
   //1b = PxIFG flag is set with a high-to-low transition
 	// now set the pin to cause falling edge interrupt event
 	// P1.1 is falling edge event
-  ; 
+  P1->IES |= 2; 
 	
 	// now set the pin to cause falling edge interrupt event
   NVIC_IPR8 = (NVIC_IPR8 & 0x00FFFFFF)|0x40000000; // priority 2
@@ -86,16 +86,16 @@ void Switch2_Interrupt_Init(void)
 	
 	// initialize the Switch as per previous lab
 	Switch2_Init();
-	
-	// now set the pin to cause falling edge interrupt event
-	// P1.4 is falling edge event
-  ;
   
 	// clear flag4 (reduce possibility of extra interrupt)
-  ; 
+  P1->IFG &= ~16;  // P1.4
   
 	// arm interrupt on P1.4 
-  ;     
+  P1->IE |= 16;     
+	
+		// now set the pin to cause falling edge interrupt event
+	// P1.4 is falling edge event
+  P1->IES |= 16;
 	
 	// now set the pin to cause falling edge interrupt event
   NVIC_IPR8 = (NVIC_IPR8&0x00FFFFFF)|0x40000000; // priority 2
