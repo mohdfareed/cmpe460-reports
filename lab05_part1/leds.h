@@ -12,7 +12,6 @@
 
 void LED1_Init(void);
 void LED2_Init(void);
-BOOLEAN LED1_Is_On(void);
 void LED2_Set(unsigned int color);
 void LED1_Off(void);
 void LED1_On(void);

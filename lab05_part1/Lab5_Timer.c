@@ -31,6 +31,8 @@ BOOLEAN Timer2RunningFlag = FALSE;
 
 unsigned long MillisecondCounter = 0;
 
+BOOLEAN LED1_State = 0;
+
 //  I/O interrupt pin setup
 //
 // DIR     SEL0/SEL1    IE    IES     Port Mode
@@ -119,6 +121,13 @@ void PORT1_IRQHandler(void)
 		// clear flag, acknowledge
 		P1->IFG &= ~BIT1;
 
+		if (Timer1RunningFlag){
+			TIMER32_CONTROL1 &= ~BIT7;
+		}
+		else{
+			TIMER32_CONTROL1 |= BIT7;
+		}
+		
 		// update state of timer
 		Timer1RunningFlag = ~Timer1RunningFlag;
 	}
@@ -154,12 +163,13 @@ void PORT1_IRQHandler(void)
 //
 void Timer32_1_ISR(void)
 {
-	if (LED1_Is_On() == FALSE)
+	if (LED1_State == FALSE)
 	{
 		LED1_On();
 	}
 	else
 		LED1_Off();
+	LED1_State = ~LED1_State;
 }
 
 //

@@ -34,11 +34,6 @@ void LED2_Init(void)
 	P2->OUT &= ~(RED | GREEN | BLUE); 
 }
 
-BOOLEAN LED1_Is_On()
-{
-	return P1->OUT && LED1 != 0;
-}
-
 void LED1_On(void)
 {
 	P1->OUT |= LED1;
