@@ -71,7 +71,7 @@ void Timer32_1_Init(void (*task)(void), unsigned long period, enum timer32divide
 	// bit0,             1=one shot mode, 0=wrapping mode
 
 	// TIMER32_CONTROL1, enable, periodic, 32 bit counter
-	TIMER32_CONTROL1 = (TIMER32_CONTROL1 & 0xFFFFFF10) | 0xE2 | div;
+	TIMER32_CONTROL1 = (TIMER32_CONTROL1 & 0xFFFFFF00) | 0x62 | div;
 	;
 
 	// interrupts enabled in the main program after all devices initialized
