@@ -1,5 +1,4 @@
-void LED1_Init(void);
-void LED2_Init(void);
+#include "Common.h"
 
 #define RED 1      // P2.0 RED LED
 #define GREEN 2    // P2.1 GREEN LED
@@ -8,3 +7,12 @@ void LED2_Init(void);
 #define MAGENTA 5
 #define YELLOW 3
 #define WHITE 7
+
+#define LED1 1
+
+void LED1_Init(void);
+void LED2_Init(void);
+BOOLEAN LED1_Is_On(void);
+void LED2_Set(unsigned int color);
+void LED1_Off(void);
+void LED1_On(void);

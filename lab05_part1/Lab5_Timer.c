@@ -110,7 +110,6 @@ void Switch2_Interrupt_Init(void)
 // Derived From: Jonathan Valvano
 void PORT1_IRQHandler(void)
 {
-	float numSeconds = 0.0;
 	char temp[32];
 
 	// First we check if it came from Switch1 ?
@@ -135,14 +134,15 @@ void PORT1_IRQHandler(void)
 		{
 			MillisecondCounter = 0;
 			Timer2RunningFlag = TRUE;
-			// TODO: turn on led to colors[colorIndex];
+			LED2_Set(colors[colorIndex]);
 			colorIndex = (colorIndex + 1) % 7;
 		}
 		else
 		{
 			Timer2RunningFlag = FALSE;
-			// TODO: turn off LED2
-			// TODO: print time in seconds
+			LED2_Set(0);
+			sprintf(temp, "Seconds %f\r\n", ((float)MillisecondCounter) / 1000.0);
+			uart0_put(temp);
 		}
 	}
 }
@@ -154,12 +154,12 @@ void PORT1_IRQHandler(void)
 //
 void Timer32_1_ISR(void)
 {
-	if (LED1_State() == FALSE)
+	if (LED1_Is_On() == FALSE)
 	{
-		// TODO: LED1_On();
+		LED1_On();
 	}
 	else
-	// TODO: LED1_Off();
+		LED1_Off();
 }
 
 //

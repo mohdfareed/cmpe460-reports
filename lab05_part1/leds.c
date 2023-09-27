@@ -1,10 +1,6 @@
 #include "msp.h" 
 #include "Common.h"
-
-#define LED1 1     // P1.0
-#define RED 1      // P2.0 RED LED
-#define GREEN 2    // P2.1 GREEN LED
-#define BLUE 4     // P2.2 BLUE LED
+#include "leds.h"
 
 void LED1_Init(void)
 {
@@ -36,4 +32,25 @@ void LED2_Init(void)
 
 	// turn off LED
 	P2->OUT &= ~(RED | GREEN | BLUE); 
+}
+
+BOOLEAN LED1_Is_On()
+{
+	return P1->OUT && LED1 != 0;
+}
+
+void LED1_On(void)
+{
+	P1->OUT |= LED1;
+}
+
+void LED1_Off(void)
+{
+	P1->OUT &= ~LED1;
+}
+
+void LED2_Set(unsigned int color)
+{
+	P2->OUT &= ~WHITE;
+	P2->OUT |= color;
 }
