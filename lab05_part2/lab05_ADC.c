@@ -33,14 +33,19 @@ void Timer32_1_ISR(void)
 {
     char str[30];
     unsigned int num = ADC_In();
-    sprintf(str, "\r\nADC input: 0x%08x", num);
+    sprintf(str, "\r\nADC input: 0x%08x\r\n", num);
     uart0_put(str);
-    sprintf(str, "\r\nADC input: %d", num);
+    sprintf(str, "ADC input:  %d\r\n", num);
     uart0_put(str);
     double voltage = num * 2.5 / 16384.0;
-    sprintf(str, "\r\nVoltage:   %fV\r\n", voltage);
+    sprintf(str, "Voltage:    %fV\r\n", voltage);
     uart0_put(str);
-    
+    double celsius = (voltage*1000 - 500)/10;
+    sprintf(str, "Celsius:    %f\r\n", celsius);
+    uart0_put(str);
+    double fahrenheit = celsius * 1.8 + 32;
+    sprintf(str, "Fahrenheit: %f\r\n", fahrenheit);
+    uart0_put(str);
 }
 
 void Switch1_Interrupt_Init(void)
