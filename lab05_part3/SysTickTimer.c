@@ -1,5 +1,6 @@
 #include "msp.h"
 #include "SysTickTimer.h"
+#include "uart.h"
 #define CLOCK_SPEED 12000000
 extern uint32_t SystemCoreClock;
 

@@ -5,13 +5,15 @@
 #include "SysTickTimer.h"
 #include "ControlPins.h"
 #include "ADC14.h"
+#include "uart.h"
 
 #include "Leds.h"
 extern uint32_t SystemCoreClock;
 
 // default SI integration time is 7.5ms = 133Hz
 //
-#define INTEGRATION_TIME .0075f
+// #define INTEGRATION_TIME .0075f
+#define INTEGRATION_TIME .02f // use 50Hz (20ms) for now
 
 // default CLK frequency of the camera 180KHz (assume 48MHz clock)
 // NOTE: we have to double 50000, because we need a clock for the rising edge and one for the falling edge.
@@ -42,9 +44,16 @@ void SI_Handler(void)
 		P5->OUT &= ~CLK; // set the clock low in case it was high.
 
 	// Read the TSL1401 instructions for SI, CLCK to start the data transfer process
+
+	// reset clk and si
+	P5->OUT &= ~SI;	 // set the SI pin low
+	P5->OUT &= ~CLK; // set the clock low
+
 	P5->OUT |= SI;	// set the SI pin high
-	myDelay();		// wait for 10us
-	P5->OUT &= ~SI; // set the SI pin low
+	P5->OUT |= CLK; // set the clock high
+
+	P5->OUT &= ~SI;	 // set the SI pin low
+	P5->OUT &= ~CLK; // set the clock low
 
 	// OK, Data should be ready to clock out, so start the clock
 	// Start the clock after we issues a SI pulse.
@@ -89,6 +98,7 @@ void ControlPin_CLK_Init()
 {
 	// use 200000 to make a 100K clock, 1 interrupt for each edge
 	unsigned long period = CalcPeriodFromFrequency(200000);
+
 	// initialize P5.4 and make it output (P5.4 CLK Pin)
 	P5->SEL0 &= ~CLK;
 	P5->SEL1 &= ~CLK; // set as GPIO

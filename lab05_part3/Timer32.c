@@ -2,6 +2,7 @@
 #include "Timer32.h"
 #include "Common.h"
 #include "CortexM.h"
+#include "uart.h"
 // Sections borrowed from Jonathan Valvano UTexas
 extern uint32_t SystemCoreClock;
 
@@ -71,8 +72,7 @@ void Timer32_1_Init(void (*task)(void), unsigned long period, enum timer32divide
 	// bit0,             1=one shot mode, 0=wrapping mode
 
 	// TIMER32_CONTROL1, enable, periodic, 32 bit counter
-	TIMER32_CONTROL1 = (TIMER32_CONTROL1 & 0xFFFFFF00) | 0x62 | div;
-	;
+	TIMER32_CONTROL1 = (TIMER32_CONTROL1 & 0xFFFFFF00) | 0xE2 | div;
 
 	// interrupts enabled in the main program after all devices initialized
 	// NVIC_IPR6
@@ -84,6 +84,7 @@ void Timer32_1_Init(void (*task)(void), unsigned long period, enum timer32divide
 
 	EndCritical(sr);
 }
+
 
 void T32_INT1_IRQHandler(void)
 {
