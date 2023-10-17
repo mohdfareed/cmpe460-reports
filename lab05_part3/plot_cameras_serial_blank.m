@@ -10,13 +10,13 @@
 % On MacOS:     serialPort = '/dev/tty.KeySerial1';
 % On Windows:   serialPort = 'COM1';
 %
-%To run: 
+%To run:
 %plot_cams()
 %To reset ports: (if MATLAB still thinks they're busy)
 %delete(instrfindall)
 %
 
-function plot_cams 
+function plot_cams
 
 %Send over bluetooth or serial
 serialPort = 'COM4';
@@ -42,30 +42,26 @@ while (1)
     % Check for data in the stream
     if serialObject.BytesAvailable
         val = fscanf(serialObject,'%i');
-        %val
         if ((val == -1) || (val == -3)) % -1 and -3 are start keywords
             count = 1;
-            val
         elseif (val == -2) % End camera1 tx
             if (count >= 128)
                 plotdata(trace, 1);
             end %otherwise there was an error and don't plot
             count = 1;
-            %plotdata(trace);
+            plotdata(trace, 1);
         elseif (val == -4) % End camera2 tx
             count = 1;
             plotdata(trace, 2);
         else
             trace(count) = val;
             count = count + 1;
-        end % if 
-    end %bytes available    
+        end % if
+    end %bytes available
 end % while(1)
 
 % Clean up the serial object
-fclose(serialObject);
-delete(serialObject);
-clear serialObject;
+myCleanupFun(serialObject);
 
 end %plot_cams
 
@@ -78,29 +74,41 @@ subplot(4,2,cam);
 %figure(figureHandle);
 plot(trace);
 %set(figureHandle,'Visible','on');
+title('Camera %d - Raw Data', cam);
+xlabel('Pixel');
+ylabel('Intensity');
 
 %SMOOTH AND PLOT
-smoothtrace = trace;
-for i = 2:127
-    %5-point Averager
-    %INSERT CODE
-end;
+smoothtrace = smoothdata(trace);
+% for i = 2:127
+%     %5-point Averager
+%     %INSERT CODE
+% end;
+%
 subplot(4,2,cam+2);
 %figure(smoothhand);
 plot(smoothtrace);
+title('Camera %d - Smoothed Data', cam);
+xlabel('Pixel');
+ylabel('Intensity');
 
 %THRESHOLD
 %calculate 1's and 0's via thresholding
-maxval = max(smoothtrace);
-for i = 1:128
-    %Edge detection (binary 0 or 1)
-    %INSERT CODE
-end
-drawnow;
+bintrace = double(smoothtrace > 5000);
+% maxval = max(smoothtrace);
+% for i = 1:128
+%     %Edge detection (binary 0 or 1)
+%     %INSERT CODE
+% end
+
+% drawnow;
 subplot(4,2,cam+4);
 %figure(binfighand);
 %.000000000000
-% plot(bintrace);
+plot(bintrace);
+title('Camera %d - Binary Data', cam);
+xlabel('Pixel');
+ylabel('Intensity');
 
 end %function
 

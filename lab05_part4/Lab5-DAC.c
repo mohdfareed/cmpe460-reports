@@ -21,7 +21,7 @@ void DAC_Write(unsigned int data)
 
 	byte1 = (unsigned char)(0x30) | (data >> 4);
 	while (!(EUSCI_B0->IFG & 2))
-		; // wait for transmit buffer empty
+		; /* wait for transmit buffer empty */
 
 	EUSCI_B0->TXBUF = byte1; /* write to SPI transmit buffer */
 	while (EUSCI_B0->STATW & 1)
@@ -29,7 +29,7 @@ void DAC_Write(unsigned int data)
 
 	byte2 = (unsigned char)(data << 4);
 	while (!(EUSCI_B0->IFG & 2))
-		; // wait for transmit buffer empty
+		; /* wait for transmit buffer empty */
 
 	EUSCI_B0->TXBUF = byte2; /* write to SPI transmit buffer */
 	while (EUSCI_B0->STATW & 1)
