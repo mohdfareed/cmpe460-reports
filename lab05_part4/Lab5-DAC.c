@@ -6,16 +6,17 @@
 #include "uart.h"
 #include "CortexM.h"
 #include "Common.h"
-#include "ADC14.h"
+
+#define NUM_SAMPLES 100	 // number of samples
+#define DELAY_CYCLES 625 // delay cycles for 1 Hz sine wave
+
+// sin wave constants
+double Vmax = 120.0;								// maximum voltage
+double Omega = 2.0 * 3.14159 / (double)NUM_SAMPLES; // angular frequency
+double Shift = 128.0;								// vertical shift
 
 char str[100];					// UART string
 unsigned int data[NUM_SAMPLES]; // precomputed sine wave values
-double delayCycles = 1000;		// delay cycles for 1 Hz sine wave
-
-// sin wave constants
-#define NUM_SAMPLES 1000				  // number of samples
-double Vmax = 3.3;						  // max voltage
-double Omega = 2 * 3.14159 / NUM_SAMPLES; // angular frequency
 
 // write DAC value
 void DAC_Write(unsigned int value)
@@ -62,7 +63,7 @@ void computeSineValues(void)
 	double f_val;
 	for (int i = 0; i < NUM_SAMPLES; i++)
 	{
-		f_val = Vmax * sin(Omega * i);
+		f_val = Vmax * sin(Omega * (double)i) + Shift;
 		data[i] = (unsigned int)(f_val + 0.5); // rounding
 	}
 }
@@ -71,7 +72,7 @@ void computeSineValues(void)
 void myDelay(void)
 {
 	volatile int j = 0;
-	for (j = 0; j < delayCycles; j++)
+	for (j = 0; j < DELAY_CYCLES; j++)
 		;
 }
 
@@ -89,12 +90,13 @@ int main(void)
 	{
 		DAC_Write(data[index]);
 
+		// print data to UART for debugging
 		sprintf(str, "data = %d\n\r", data[index]);
 		uart0_put(str);
 
 		if (++index >= NUM_SAMPLES)
 			index = 0;
 
-		myDelay(); // adjusted to generate 1 Hz sine wave
+		myDelay(); // delay for 1 Hz sine wave
 	}
 }
