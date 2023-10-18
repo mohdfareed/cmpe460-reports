@@ -23,6 +23,8 @@ Converter}
 
 \section*{Abstract}
 
+This laboratory exercise explored the implementation and utilization of interrupts, timers, ADC, a line scan module, and a DAC with an MSP432 microcontroller board and C code. Switches were configured to generate interrupts on the click of the button. These interrupts control the operation of two Timer32 modules. The Timer32 modules were used to periodically generate interrupts. Timer32-1 toggles an LED every 0.5 seconds. Timer32-2 both records time between button presses and controls the state of an LED. The time between presses gets displayed to a terminal with the UART. The analog to digital converter was used to read the voltage controlled by a photocell and a temperature sensor. The line scan module was interfaced with the MSP432 and verified with an oscilloscope and a MATLAB script. Additionally, the MSP432 was interfaced with an MCP 4901 DAC to generate a 1Hz sine wave. This exercise was successful since all parts operated as expected. The timers functioned reliably for controlling LEDs and timing operations, the ADC was able to successfully measure light intensity and temperature, the linescan camera produced an accurate output, and the DAC produced a clean 1Hz sine wave.
+
 \section*{Design Methodology}
 
 Interrupts are a useful tool for efficiently handling events by pausing the CPU's current task to handle another. Interrupts provide the benefit of assigning priority to certain events so that they can be executed in a proper order. In addition, interrupts avoid the need to constantly poll, which can interfere with the flow of a program. Interrupts are used extensively in this exercise by timers, switches, UARTs, and GPIO.\\
