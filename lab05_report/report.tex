@@ -61,16 +61,60 @@ The photocell was replaced with a TMP36 temperature sensor. Using the datasheet,
 \label{eq:temperatureEq}
 \end{equation}
 
-After finding the temperature in degrees Celsius with Equation \ref{eq:temperatureEq}, the temperature in Fahrenheit can easily be found with a simple Celsius to Fahrenheit conversion. The code was modified to output the temperature calculated in both Celsius and Fahrenheit with the UART.
+After finding the temperature in degrees Celsius with Equation \ref{eq:temperatureEq}, the temperature in Fahrenheit can easily be found with a simple Celsius to Fahrenheit conversion. The code was modified to output the temperature calculated in both Celsius and Fahrenheit with the UART.\\
+
+The MSP432's ADC was also used to interface a line scan camera. The camera was connected to the MSP432 microcontroller board using the circuit shown in Figure \ref{fig:cameraDiagram}.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.6\textwidth]{cameraDiagram.png}
+    \caption{Camera Circuit Diagram}
+    \label{fig:cameraDiagram}
+\end{figure}
+
+The diagram shows that the board was used to provide power to the camera and to receive data from it. The clock was generated using the SysTick timer with interrupts at 180 kHz. The SI signal was generated using Timer32-1 with interrupts and an integration time of 20 ms. The clock was generated at port 5 pin 4 and the SI signal at port 5 pin 5. The camera's data output was connected to port 5 pin 6, where the ADC was configured to read the data and send it over UART.
+
+Code was written for the camera that initialized the UART, an LED that turns on while the camera is integrating, the clock and SI signals, and the ADC. The UART was initialized to send data at 9600 baud rate. The LED was initialized to be off and the ADC was initialized to read from channel 6. The ADC was also configured to use 14-bit resolution, 2.5 V reference, and no interrupts. The SysTick timer was configured to generate interrupts at double the provided period to handle both rising and falling edges. The Timer32 was configured to run in periodic mode, wrapping mode, 32-bit mode, and with interrupts. The Timer32's value was adjusted to trigger camera usage at a frequency appropriate for MATLAB to process and plot.
+
+A MATLAB script was also used to receive the camera data over UART and plot it. The script was configured to receive 128 bytes of data at a time, which is the amount of data the camera sends. The script was also configured to plot the data in three ways: raw, after being processed by a 5-point moving average filter, and after being converted to a binary image. The threshold used to convert the data to a binary image was adjusted through trial and error to 5000.\\
+
+A sine wave was generated using the MCP4901 DAC by interfacing it with the MSP432 microcontroller board using SPI. The DAC was connected to the MSP432 microcontroller board using the circuit shown in Figure \ref{fig:dacDiagram}.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.6\textwidth]{dacDiagram.png}
+    \caption{DAC Circuit Diagram}
+    \label{fig:dacDiagram}
+\end{figure}
+
+The diagram shows that the DAC was connected to the MSP432 microcontroller board using SPI, for which power is provided by the board. The DAC's output was connected to the oscilloscope to measure the generated sine wave. The DAC's CS signal was connected to port 2 pin 3, which is the slave select signal of the SPI, enabling the DAC only when the SPI is writing to it. The DAC's SCLK signal was connected to port 1 pin 5, which is the clock signal of the SPI. The DAC's SDI signal was connected to port 1 pin 6, which is the data signal of the SPI. The DAC's reference voltage used is the same as its power supply, which is 3.3 V, and its LDAC signal was connected to ground to enable the DAC's output to update immediately.
+
+The SPI was initialized with the board as the master with a control word of the value \verb|0xE9C1|, with ports 1.5 and 1.6 as \verb|UCB0CLK| and \verb|UCB0SIMO| respectively. he DAC was then configured to output a sine wave with a frequency of 1 Hz and a peak-to-peak voltage of 3.3 V. This was done by pre-conputing 100 values of the sine wave and storing them in an array. The DAC was then configured to output the values in the array in order, with a delay in between each value to achieve the desired frequency. Equation \ref{eq:dacEq} shows the equation used for the sine wave.
+
+\begin{equation}
+\text{V}_\text{out} = 120 * \text{sin}(2\pi i / 100) + 128
+\label{eq:dacEq}
+\end{equation}
+
+The values were chosen as follows:
+
+\begin{enumerate}
+    \item The DAC outputs values from 0 to 255, so the amplitude was chosen to cover the range minus 16 to avoid clipping.
+    \item The sine wave has a DC offset of 128 to center the wave in the range of the DAC output range.
+    \item The pre-computed values cover only one period, therefore the angular frequency was chosen to be $2\pi / 100$ to span the entire array.
+\end{enumerate}
+
+The delay between each write to the DAC was added to control the frequency of the signal and achieve the desired 1 Hz. The delay is loop-based with a constant number of cycles per delay. The number of cycles was modified until the desired frequency was achieved.
+
 
 \section*{Results and Analysis}
 
-Part 1 of this exercise was to toggle LED1 every 0.5 seconds using Timer32-1. The code for this part was tested by pressing Switch1 on the MSP432 microcontroller board, and verifying that LED1 toggled every 0.5 seconds. The switch was then pressed again and the LED was verified to stop toggling. The second switch was tested in the same manner, verifying that the LED cycled through the colors red, blue, green, cyan, magenta, yellow, and white. Figure \ref{fig:part1} shows the UART output of the time elapsed between button presses.
+Part 1 of this exercise was to toggle LED1 every 0.5 seconds using Timer32-1. The code for this part was tested by pressing Switch1 on the MSP432 microcontroller board, and verifying that LED1 toggled every 0.5 seconds. The switch was then pressed again and the LED was verified to stop toggling. The second switch was tested in the same manner, verifying that the LED cycled through the colors red, blue, green, cyan, magenta, yellow, and white. Figure \ref{fig:part1} shows the UART output of the time elapsed between button presses, calculated using Timer32-2.
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.75\textwidth]{part1.png}
-    \caption{Part 1 UART Output}
+    \caption{Part 1 Timer32-2 UART Output}
     \label{fig:part1}
 \end{figure}
 
@@ -81,7 +125,7 @@ Part 2 of this exercise was to measure the voltage of a photocell using the ADC.
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.75\textwidth]{part2a.png}
-    \caption{Part 2 UART Output}
+    \caption{Part 2 ADC Voltage UART Output}
     \label{fig:part2a}
 \end{figure}
 
@@ -100,12 +144,12 @@ The figure shows the measured temperature of the sensor at room temperature, whi
 
 Part 3 of the exercise was to interface a line scan camera using timers and an ADC to send the received data serially over UART. The code for this part was tested by connecting the line scan camera to the MSP432 microcontroller board and verifying that the received data was sent correctly over UART using PuTTY.\\
 
-The camera was then tested by pointing it at a bright light then a dark area repeatedly. The received data was then plotted using MATLAB to verify that the received data behaved correctly. The data was plotted raw, after being processed by a 5-points moving average filter, and after being converted to a binary image. The threshold used to convert the data to a binary image was then adjusted through trial and error to 5000. Figure \ref{fig:part3} shows the received data plotted in MATLAB.
+The camera was then tested by pointing it at a bright light then a dark area repeatedly. The received data was then plotted using MATLAB to verify that the received data behaved correctly. Figure \ref{fig:part3} shows the received data plotted in MATLAB.
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=1.00\textwidth]{part3.png}
-    \caption{Part 3 MATLAB Plot}
+    \caption{Part 3 MATLAB Camera Data Plots}
     \label{fig:part3}
 \end{figure}
 
@@ -116,11 +160,11 @@ A sine wave was generated for part 4 of the exercise using MCP4901 DAC by interf
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.75\textwidth]{part4.png}
-    \caption{Part 4 Oscilloscope Output}
+    \caption{Part 4 DAC Oscilloscope Output}
     \label{fig:part4}
 \end{figure}
 
-The figure shows the generated 1 Hz sine wave spanning the possible outputs of the DAC. The oscilloscope screen capture shows that the sine wave has a frequency of 0.996 Hz and a peak-to-peak voltage of 3.34 V.\\
+The figure shows the generated 1 Hz sine wave spanning the possible outputs of the DAC. The oscilloscope screen capture shows that the sine wave has a frequency of 0.996 Hz and a peak-to-peak voltage of 3.34 V. The desired frequency was achieved by using a loop based delay of 625 cycles.\\
 
 The smallest amount of time that could be measured on the MSP432 depends on the frequency the board is running at. Since an interrupt can be generated on every clock cycle, the smallest amount of time that can be measured is the period of the clock. The MSP432 microcontroller board used in this exercise has a clock frequency of 48 MHz, so the smallest amount of time that can be measured is 20.83 ns. The longest amount of time that can be measured is arbitrary since an accumulator can be used to measure arbitrarily large amounts of time.\\
 
@@ -151,7 +195,6 @@ Data transfer is initialized by pulsing the SI pin while the clock is low. The s
     \item CLK is set to 0
     \item SI is set to 0
     \item SI is set to 1
-    \item CLK is set to 1
     \item SI is set to 0
     \item CLK starts toggling
 \end{enumerate}
