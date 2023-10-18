@@ -109,7 +109,8 @@ The delay between each write to the DAC was added to control the frequency of th
 
 \section*{Results and Analysis}
 
-Part 1 of this exercise was to toggle LED1 every 0.5 seconds using Timer32-1. The code for this part was tested by pressing Switch1 on the MSP432 microcontroller board, and verifying that LED1 toggled every 0.5 seconds. The switch was then pressed again and the LED was verified to stop toggling. The second switch was tested in the same manner, verifying that the LED cycled through the colors red, blue, green, cyan, magenta, yellow, and white. Figure \ref{fig:part1} shows the UART output of the time elapsed between button presses, calculated using Timer32-2.
+
+The timers were tested by pressing Switch1 on the MSP432 microcontroller board and verifying that LED1 toggles every 0.5 seconds. The timers were also tested by pressing Switch2 on the MSP432 microcontroller board and verifying that LED2 cycles through the colors red, green, and blue, cyan, magenta, yellow, white. Figure \ref{fig:part1} shows the UART output of the time elapsed between button presses, calculated using Timer32-2.
 
 \begin{figure}[H]
     \centering
@@ -120,7 +121,7 @@ Part 1 of this exercise was to toggle LED1 every 0.5 seconds using Timer32-1. Th
 
 The figure shows the time elapsed between button presses as the color of the LED changes back to red. The time between button presses was then verified by using the UART to print the time elapsed since the last button press, comparing the printed result with an external timer.\\
 
-Part 2 of this exercise was to measure the voltage of a photocell using the ADC. The code for this part was tested by shining a flashlight on the photocell and verifying that the measured voltage increased. The measured voltage was then verified to decrease when the photocell was covered. Figure \ref{fig:part2a} shows the UART output of the measured voltage.
+The ADC was tested by measuring the voltage of the photocell. The code for this part was tested by shining a bright light on the photocell and verifying that the measured voltage increased. The measured voltage was then verified to decrease when the photocell was covered. Figure \ref{fig:part2a} shows the UART output of the measured voltage.
 
 \begin{figure}[H]
     \centering
@@ -129,7 +130,7 @@ Part 2 of this exercise was to measure the voltage of a photocell using the ADC.
     \label{fig:part2a}
 \end{figure}
 
-The figure shows the measured voltage of the photocell as the light intensity changes. The measured voltage was then verified by using the UART to print the voltage, comparing the printed result with a multimeter. The result shows that the measured voltage when light was shined on the photocell was around 0.3V, and the measured voltage when the photocell was covered was 0V.\\
+The figure shows the measured voltage of the photocell as the light intensity changes. The measured voltage was verified by using the UART to print the voltage, comparing the printed result with a multimeter. The result shows that the measured voltage when light was shined on the photocell was around 0.3V, and the measured voltage when the photocell was covered was 0V.\\
 
 The code was then modified to use a temperature sensor, calculating the temperature from the voltage in both Celsius and Fahrenheit. Figure \ref{fig:part2b} shows the UART output after replacing the photocell with the temperature sensor TMP36.
 
@@ -140,9 +141,9 @@ The code was then modified to use a temperature sensor, calculating the temperat
     \label{fig:part2b}
 \end{figure}
 
-The figure shows the measured temperature of the sensor at room temperature, which was correctly around 24 degrees Celsius and 75 degrees Fahrenheit.\\
+The figure shows the measured temperature of the sensor at room temperature, which was correctly around 24 degrees Celsius, or 75 degrees Fahrenheit.\\
 
-Part 3 of the exercise was to interface a line scan camera using timers and an ADC to send the received data serially over UART. The code for this part was tested by connecting the line scan camera to the MSP432 microcontroller board and verifying that the received data was sent correctly over UART using PuTTY.\\
+The line scan camera was then interfaced using timers and an ADC to send the received data serially over UART. The code for this part was tested by connecting the line scan camera to the MSP432 microcontroller board and verifying that the received data was sent correctly over UART using PuTTY.\\
 
 The camera was then tested by pointing it at a bright light then a dark area repeatedly. The received data was then plotted using MATLAB to verify that the received data behaved correctly. Figure \ref{fig:part3} shows the received data plotted in MATLAB.
 
@@ -155,7 +156,7 @@ The camera was then tested by pointing it at a bright light then a dark area rep
 
 The figure shows that the raw data correctly reflects the camera's output, with the dark area having a lower value than the bright area, creating a clock-like pattern. The figure also shows that the moving average filter correctly smooths the data, creating a triangular wave, gradually increasing and decreasing as the camera is moved from the bright area to the dark area. The figure also shows that the binary image correctly converts the data to a binary image, outputting a 1 for the bright area and a 0 for the dark area, which acts as an edge detector.\\
 
-A sine wave was generated for part 4 of the exercise using MCP4901 DAC by interfacing it with the MSP432 microcontroller board using SPI using a reference voltage of 3.3 V. The code written for this part generated a 1 Hz sine wave spanning the possible outputs of the DAC. Figure \ref{fig:part4} shows the generated sine wave measured by an oscilloscope.
+A sine wave was generated for part 4 of the exercise using MCP4901 DAC by interfacing it with the MSP432 microcontroller board using SPI using a reference voltage of 3.3 V. The code written for this part generated a 1 Hz sine wave spanning 240 out of the possible 256 of the DAC. Figure \ref{fig:part4} shows the generated sine wave measured by an oscilloscope.
 
 \begin{figure}[H]
     \centering
@@ -164,30 +165,24 @@ A sine wave was generated for part 4 of the exercise using MCP4901 DAC by interf
     \label{fig:part4}
 \end{figure}
 
-The figure shows the generated 1 Hz sine wave spanning the possible outputs of the DAC. The oscilloscope screen capture shows that the sine wave has a frequency of 0.996 Hz and a peak-to-peak voltage of 3.34 V. The desired frequency was achieved by using a loop based delay of 625 cycles.\\
+The figure shows the generated 1 Hz sine wave spanning the outputs of the DAC, minus 8 values from both peaks. The oscilloscope screen capture shows that the sine wave has a frequency of 0.996 Hz and a peak-to-peak voltage of 3.34 V. The desired frequency was achieved by using a loop-based delay of 625 cycles.\\
 
-The smallest amount of time that could be measured on the MSP432 depends on the frequency the board is running at. Since an interrupt can be generated on every clock cycle, the smallest amount of time that can be measured is the period of the clock. The MSP432 microcontroller board used in this exercise has a clock frequency of 48 MHz, so the smallest amount of time that can be measured is 20.83 ns. The longest amount of time that can be measured is arbitrary since an accumulator can be used to measure arbitrarily large amounts of time.\\
+The smallest amount of time that could be measured on the MSP432 depends on the frequency the board is running at. Since an interrupt can be generated on every clock cycle, the smallest amount of time that can be measured is the period of the clock. The MSP432 microcontroller board used has a clock frequency of 48 MHz, so the smallest amount of time that can be measured is 20.83 ns. The longest amount of time that can be measured is arbitrary since an accumulator can be used to measure arbitrarily large amounts of time, triggering interrupts at any desired interval.\\
 
 
 \section*{Questions}
 
-a) \emph{Why do the IRQ flags need to be cleared in the interrupt service routine functions?}
-
-When the microcontroller detects that an IRQ flag is set, it will jump to the corresponding Interrupt Service Routine (ISR) to handle that event. Therefore, the IRQ flag needs to be cleared in the ISR so that the microcontroller does not jump to the ISR again when it detects that the IRQ flag is set.\\
-\bigskip
-
-(a) \emph{Why do the IRQ flags need to be cleared in the interrupt service routine functions?}
+(a) \emph{Why do the IRQ flags need to be cleared in the interrupt service routine functions?}\\
 
 When the microcontroller detects that an IRQ flag is set, it will jump to the corresponding Interrupt Service Routine (ISR) to handle that event. Therefore, the IRQ flag needs to be cleared in the ISR so that the microcontroller does not jump to the ISR again when it detects that the IRQ flag is set.
 \bigskip
 
-(b) \emph{When an interrupt occurs, how do you know which pin caused it?}
+(b) \emph{When an interrupt occurs, how do you know which pin caused it?}\\
 
 When an interrupt occurs, the microcontroller will jump to the corresponding Interrupt Service Routine (ISR) to handle that event. The ISR can then check the interrupt flag register \verb|PxIFG| to see which pin caused the interrupt. For example, if bit 1 or \verb|P1IFG| was set, then the interrupt was triggered by port 1 pin 1.
 \bigskip
 
-(c) \emph{What is the startup sequence of SI and CLK to initiate data transfer from the Camera?}
-
+(c) \emph{What is the startup sequence of SI and CLK to initiate data transfer from the Camera?}\\
 
 Data transfer is initialized by pulsing the SI pin while the clock is low. The startup sequence of SI and CLK to initiate data transfer from the camera is as follows:
 
