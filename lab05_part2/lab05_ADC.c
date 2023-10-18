@@ -40,7 +40,7 @@ void Timer32_1_ISR(void)
     double voltage = num * 2.5 / 16384.0;
     sprintf(str, "Voltage:    %fV\r\n", voltage);
     uart0_put(str);
-    double celsius = (voltage*1000 - 500)/10;
+    double celsius = voltage*100 - 50;
     sprintf(str, "Celsius:    %f\r\n", celsius);
     uart0_put(str);
     double fahrenheit = celsius * 1.8 + 32;
