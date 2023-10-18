@@ -125,6 +125,35 @@ The smallest amount of time that could be measured on the MSP432 depends on the 
 
 \section*{Questions}
 
+a) \emph{Why do the IRQ flags need to be cleared in the interrupt service routine functions?}
+
+When the microcontroller detects that an IRQ flag is set, it will jump to the corresponding Interrupt Service Routine (ISR) to handle that event. Therefore, the IRQ flag needs to be cleared in the ISR so that the microcontroller does not jump to the ISR again when it detects that the IRQ flag is set.\\
+\bigskip
+
+(a) \emph{Why do the IRQ flags need to be cleared in the interrupt service routine functions?}
+
+When the microcontroller detects that an IRQ flag is set, it will jump to the corresponding Interrupt Service Routine (ISR) to handle that event. Therefore, the IRQ flag needs to be cleared in the ISR so that the microcontroller does not jump to the ISR again when it detects that the IRQ flag is set.
+\bigskip
+
+(b) \emph{When an interrupt occurs, how do you know which pin caused it?}
+
+When an interrupt occurs, the microcontroller will jump to the corresponding Interrupt Service Routine (ISR) to handle that event. The ISR can then check the interrupt flag register \verb|PxIFG| to see which pin caused the interrupt. For example, if bit 1 or \verb|P1IFG| was set, then the interrupt was triggered by port 1 pin 1.
+\bigskip
+
+(c) \emph{What is the startup sequence of SI and CLK to initiate data transfer from the Camera?}
+
+
+Data transfer is initialized by pulsing the SI pin while the clock is low. The startup sequence of SI and CLK to initiate data transfer from the camera is as follows:
+
+\begin{enumerate}
+    \item CLK is set to 0
+    \item SI is set to 0
+    \item SI is set to 1
+    \item CLK is set to 1
+    \item SI is set to 0
+    \item CLK starts toggling
+\end{enumerate}
+
 \section*{Conclusion}
 
 \newpage
