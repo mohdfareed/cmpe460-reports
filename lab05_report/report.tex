@@ -98,7 +98,7 @@ The figure shows the measured temperature of the sensor at room temperature, whi
 
 Part 3 of the exercise was to interface a line scan camera using timers and an ADC to send the received data serially over UART. The code for this part was tested by connecting the line scan camera to the MSP432 microcontroller board and verifying that the received data was sent correctly over UART using PuTTY.\\
 
-The camera was then tested by pointing it at a bright light then a dark area repeatedly. The received data was then plotted using MATLAB to verify that the received data behaved correctly. The data was plotted raw, after being processed by a 5-points moving average filter, and after being converted to a binary image. Figure \ref{fig:part3} shows the received data plotted in MATLAB.
+The camera was then tested by pointing it at a bright light then a dark area repeatedly. The received data was then plotted using MATLAB to verify that the received data behaved correctly. The data was plotted raw, after being processed by a 5-points moving average filter, and after being converted to a binary image. The threshold used to convert the data to a binary image was then adjusted through trial and error to 5000. Figure \ref{fig:part3} shows the received data plotted in MATLAB.
 
 \begin{figure}[H]
     \centering
@@ -107,9 +107,20 @@ The camera was then tested by pointing it at a bright light then a dark area rep
     \label{fig:part3}
 \end{figure}
 
-The figure shows that the raw data correctly reflects the camera's output, with the dark area having a lower value than the bright area, creating a clock-like pattern. The figure also shows that the moving average filter correctly smooths the data, creating a triangular wave, gradually increasing and decreasing as the camera is moved from the bright area to the dark area.\\
+The figure shows that the raw data correctly reflects the camera's output, with the dark area having a lower value than the bright area, creating a clock-like pattern. The figure also shows that the moving average filter correctly smooths the data, creating a triangular wave, gradually increasing and decreasing as the camera is moved from the bright area to the dark area. The figure also shows that the binary image correctly converts the data to a binary image, outputting a 1 for the bright area and a 0 for the dark area, which acts as an edge detector.\\
 
-The figure also shows that the binary image correctly converts the data to a binary image, outputting a 1 for the bright area and a 0 for the dark area, which acts as an edge detector. The thershold used to convert the data to a binary image was then adjusted through trial and error to 5000.\\
+A sine wave was generated for part 4 of the exercise using MCP4901 DAC by interfacing it with the MSP432 microcontroller board using SPI using a reference voltage of 3.3 V. The code written for this part generated a 1 Hz sine wave spanning the possible outputs of the DAC. Figure \ref{fig:part4} shows the generated sine wave measured by an oscilloscope.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.75\textwidth]{part4.png}
+    \caption{Part 4 Oscilloscope Output}
+    \label{fig:part4}
+\end{figure}
+
+The figure shows the generated 1 Hz sine wave spanning the possible outputs of the DAC. The oscilloscope screen capture shows that the sine wave has a frequency of 0.996 Hz and a peak-to-peak voltage of 3.34 V.\\
+
+The smallest amount of time that could be measured on the MSP432 depends on the frequency the board is running at. Since an interrupt can be generated on every clock cycle, the smallest amount of time that can be measured is the period of the clock. The MSP432 microcontroller board used in this exercise has a clock frequency of 48 MHz, so the smallest amount of time that can be measured is 20.83 ns. The longest amount of time that can be measured is arbitrary since an accumulator can be used to measure arbitrarily large amounts of time.\\
 
 
 \section*{Questions}
