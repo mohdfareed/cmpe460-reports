@@ -27,7 +27,7 @@ int TIMER_A0_PWM_Init(uint16_t period, double percentDutyCycle, uint16_t pin)
 	// Timer A0.1
 	if (pin == 1)
 	{
-		P2->SEL0 &= ~BIT4;
+		P2->SEL0 |= BIT4;
 		P2->SEL1 &= ~BIT4;
 		P2->DIR |= BIT4;
 		P2->OUT &= ~BIT4;
@@ -35,7 +35,7 @@ int TIMER_A0_PWM_Init(uint16_t period, double percentDutyCycle, uint16_t pin)
 	// Timer A0.2
 	else if (pin == 2)
 	{
-		P2->SEL0 &= ~BIT5;
+		P2->SEL0 |= BIT5;
 		P2->SEL1 &= ~BIT5;
 		P2->DIR |= BIT5;
 		P2->OUT &= ~BIT5;
@@ -43,7 +43,7 @@ int TIMER_A0_PWM_Init(uint16_t period, double percentDutyCycle, uint16_t pin)
 	// Timer A0.3
 	else if (pin == 3)
 	{
-		P2->SEL0 &= ~BIT6;
+		P2->SEL0 |= BIT6;
 		P2->SEL1 &= ~BIT6;
 		P2->DIR |= BIT6;
 		P2->OUT &= ~BIT6;
@@ -51,7 +51,7 @@ int TIMER_A0_PWM_Init(uint16_t period, double percentDutyCycle, uint16_t pin)
 	// Timer A0.4
 	else if (pin == 4)
 	{
-		P2->SEL0 &= ~BIT7;
+		P2->SEL0 |= BIT7;
 		P2->SEL1 &= ~BIT7;
 		P2->DIR |= BIT7;
 		P2->OUT &= ~BIT7;
@@ -67,7 +67,7 @@ int TIMER_A0_PWM_Init(uint16_t period, double percentDutyCycle, uint16_t pin)
 	TIMER_A0->CCR[0] = period;
 
 	// TIMER_A0->CCTL[pin]
-	TIMER_A0->CCTL[pin] = 0x00E0; // FIXME: 0x00E0 = 0b11100000?
+	TIMER_A0->CCTL[pin] = 0x00E0; // 0b11100000 set/reset mode
 
 	// set the duty cycle
 	uint16_t dutyCycle = (uint16_t)(percentDutyCycle * (double)DEFAULT_PERIOD_A0[pin]);
@@ -78,7 +78,7 @@ int TIMER_A0_PWM_Init(uint16_t period, double percentDutyCycle, uint16_t pin)
 
 	// Timer CONTROL register
 	// TIMER_A0->CTL
-	TIMER_A0->CTL = 0x0214; // FIXME: 0x0214 = 0b0000001000010100?
+	TIMER_A0->CTL = 0x0214; // SMCLK, MC up mode, TimerA clear 0x0214 = 0b0000001000010100?
 
 	return 0;
 }
@@ -110,7 +110,7 @@ int TIMER_A2_PWM_Init(uint16_t period, double percentDutyCycle, uint16_t pin)
 	// TimerA2.1
 	if (pin == 1)
 	{
-		P5->SEL0 &= ~BIT6;
+		P5->SEL0 |= BIT6;
 		P5->SEL1 &= ~BIT6;
 		P5->DIR |= BIT6;
 		P5->OUT &= ~BIT6;
