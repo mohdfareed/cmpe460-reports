@@ -44,7 +44,7 @@ int main(void)
 	for (;;){
         //delay(10);
         uart0_getchar();
-        TIMER_A0_PWM_DutyCycle(0.2, 1);
+        TIMER_A0_PWM_DutyCycle(1, 1);
         uart0_put("clockwise\r\n");
         //delay(10);
         uart0_getchar();
@@ -52,7 +52,7 @@ int main(void)
         uart0_put("nothing\r\n");
         //delay(10);
         uart0_getchar();
-        TIMER_A0_PWM_DutyCycle(0.2, 4);
+        TIMER_A0_PWM_DutyCycle(1, 4);
         uart0_put("counter-clockwise\r\n");
         //delay(10);
         uart0_getchar();
