@@ -20,7 +20,7 @@
 void delay(int del)
 {
 	volatile int i;
-	for (i = 0; i < del * 50000; i++)
+	for (i = 0; i < del * 278; i++)
 	{
 		; // Do nothing
 	}
@@ -30,18 +30,34 @@ int main(void)
 {
 	// Initialize UART and PWM
 	uart0_init();
-	TIMER_A0_PWM_Init(1000, 0.2, 1);
-	TIMER_A0_PWM_Init(1000, 0.2, 4);
+	TIMER_A0_PWM_Init(300, 0.0, 1);
+	TIMER_A0_PWM_Init(300, 0.0, 4);
 
 	// Print welcome over serial
 	uart0_put("Running... \n\r");
 
 	// Part 1 - UNCOMMENT THIS
 	// Generate 20% duty cycle at 10kHz
-	// INSERT CODE HERE
-
-	for (int i=0;1;i++){
-        ;
+    TIMER_A0_PWM_DutyCycle(0.0, 1);
+    TIMER_A0_PWM_DutyCycle(0.0, 4);
+    
+	for (;;){
+        //delay(10);
+        uart0_getchar();
+        TIMER_A0_PWM_DutyCycle(0.2, 1);
+        uart0_put("clockwise\r\n");
+        //delay(10);
+        uart0_getchar();
+        TIMER_A0_PWM_DutyCycle(0.0, 1);
+        uart0_put("nothing\r\n");
+        //delay(10);
+        uart0_getchar();
+        TIMER_A0_PWM_DutyCycle(0.2, 4);
+        uart0_put("counter-clockwise\r\n");
+        //delay(10);
+        uart0_getchar();
+        TIMER_A0_PWM_DutyCycle(0.0, 4);
+        uart0_put("nothing\r\n");
     }
 
 	/* Part 2 - UNCOMMENT THIS
