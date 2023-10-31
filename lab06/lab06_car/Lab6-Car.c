@@ -62,71 +62,51 @@ void Init_Car_Motors(void)
 
 int main(void)
 {
-	// Initialize PWM
-	//Init_Car_Motors();
-    //TIMER_A2_PWM_Init(60000, 0.075, SERVO);
-    TIMER_A0_PWM_Init(300, 0.0, 1);
-    TIMER_A0_PWM_Init(300, 0.0, 3);
-    //TIMER_A0_PWM_Init(300, 0.0, 2);
     
     // Motor1 Enable P3.6
     P3->SEL0 &= ~BIT6;
     P3->SEL1 &= ~BIT6;
     P3->DIR |= BIT6;
-    P3->OUT |= BIT6;
+    P3->OUT &= ~BIT6;
     
     P3->SEL0 &= ~BIT7;
     P3->SEL1 &= ~BIT7;
-    P3->DIR |=   BIT7;
-    P3->OUT |=   BIT7;
+    P3->DIR |= BIT7;
+    P3->OUT &=  ~BIT7;
+
+    delay(5000);
+
+    P3->OUT |= BIT6;
+    P3->OUT |= BIT7;
     
-    TIMER_A0_PWM_DutyCycle(.01, 1);
-    TIMER_A0_PWM_DutyCycle(.01, 3);
+    TIMER_A0_PWM_Init(300, 0.0, 1);
+    TIMER_A0_PWM_Init(300, 0.0, 2);
+    TIMER_A0_PWM_Init(300, 0.0, 3);
+    TIMER_A0_PWM_Init(300, 0.0, 4);
+    TIMER_A2_PWM_Init(60000, 0.075, 1);
     
 	for (;;)
-	{
-        
-        //delay(2000);
-        //TIMER_A2_PWM_DutyCycle(0.05, SERVO);
-        //delay(2000);
-        //TIMER_A2_PWM_DutyCycle(0.1, SERVO);
-        
-        
-//		// accelerate forward
-//		TIMER_A2_PWM_DutyCycle(0.05, SERVO);
-//		for (i = 0; i < 100; i++)
-//		{
-//			TIMER_A0_PWM_DutyCycle((double)i / 100.0, DC1_FORWARD);
-//			TIMER_A0_PWM_DutyCycle((double)i / 100.0, DC2_FORWARD);
-//			delay(10);
-//		}
-
-//		// decelerate forward
-//		TIMER_A2_PWM_DutyCycle(0.075, SERVO);
-//		for (i = 100; i >= 0; i--)
-//		{
-//			TIMER_A0_PWM_DutyCycle((double)i / 100.0, DC1_FORWARD);
-//			TIMER_A0_PWM_DutyCycle((double)i / 100.0, DC2_FORWARD);
-//			delay(10);
-//		}
-
-//		// accelerate in reverse
-//		TIMER_A2_PWM_DutyCycle(0.1, SERVO);
-//		for (i = 0; i < 100; i++)
-//		{
-//			TIMER_A0_PWM_DutyCycle((double)i / 100.0, DC1_REVERSE);
-//			TIMER_A0_PWM_DutyCycle((double)i / 100.0, DC2_REVERSE);
-//			delay(10);
-//		}
-
-//		// decelerate in reverse
-//		TIMER_A2_PWM_DutyCycle(0.075, SERVO);
-//		for (i = 100; i >= 0; i--)
-//		{
-//			TIMER_A0_PWM_DutyCycle((double)i / 100.0, DC1_REVERSE);
-//			TIMER_A0_PWM_DutyCycle((double)i / 100.0, DC2_REVERSE);
-//			delay(10);
-//		}
+	{   
+        delay(2000);
+        TIMER_A0_PWM_DutyCycle(0.0, 4);
+        TIMER_A0_PWM_DutyCycle(0.3, 1);
+        delay(2000);
+        TIMER_A0_PWM_DutyCycle(0.0, 1);
+        TIMER_A0_PWM_DutyCycle(0.3, 2);
+        delay(2000);
+        TIMER_A0_PWM_DutyCycle(0.0, 2);
+        TIMER_A0_PWM_DutyCycle(0.3, 3);
+        delay(2000);
+        TIMER_A0_PWM_DutyCycle(0.0, 3);
+        TIMER_A0_PWM_DutyCycle(0.3, 4);
+        delay(2000);
+        TIMER_A0_PWM_DutyCycle(0.0, 4);
+        delay(2000);
+        TIMER_A2_PWM_DutyCycle(0.05, 1);
+        delay(2000);
+        TIMER_A2_PWM_DutyCycle(0.1, 1);
+        delay(2000);
+        TIMER_A2_PWM_DutyCycle(0.075, 1);
 	}
 	return 0;
 }
