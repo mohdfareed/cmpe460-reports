@@ -64,23 +64,32 @@ int main(void)
 {
 	// Initialize PWM
 	//Init_Car_Motors();
-    TIMER_A2_PWM_Init(60000, 0.075, SERVO);
-    //TIMER_A0_PWM_Init(300, 0.0, 1);
+    //TIMER_A2_PWM_Init(60000, 0.075, SERVO);
+    TIMER_A0_PWM_Init(300, 0.0, 1);
+    TIMER_A0_PWM_Init(300, 0.0, 3);
     //TIMER_A0_PWM_Init(300, 0.0, 2);
     
     // Motor1 Enable P3.6
-//    P3->SEL0 &= ~BIT6;
-//    P3->SEL1 &= ~BIT6;
-//    P3->DIR |= BIT6;
-//    P3->OUT |= BIT6;
+    P3->SEL0 &= ~BIT6;
+    P3->SEL1 &= ~BIT6;
+    P3->DIR |= BIT6;
+    P3->OUT |= BIT6;
+    
+    P3->SEL0 &= ~BIT7;
+    P3->SEL1 &= ~BIT7;
+    P3->DIR |=   BIT7;
+    P3->OUT |=   BIT7;
+    
+    TIMER_A0_PWM_DutyCycle(.01, 1);
+    TIMER_A0_PWM_DutyCycle(.01, 3);
     
 	for (;;)
 	{
         
-        delay(2000);
-        TIMER_A2_PWM_DutyCycle(0.05, SERVO);
-        delay(2000);
-        TIMER_A2_PWM_DutyCycle(0.1, SERVO);
+        //delay(2000);
+        //TIMER_A2_PWM_DutyCycle(0.05, SERVO);
+        //delay(2000);
+        //TIMER_A2_PWM_DutyCycle(0.1, SERVO);
         
         
 //		// accelerate forward
