@@ -26,6 +26,8 @@ This laboratory exercise involved interfacing the MSP432 with a DC motor, a step
 
 \section*{Wiring Diagrams}
 
+A wiring diagram for the DC motor was created and is shown in Figure \ref{fig:DCMotorWiring}.
+
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.75\textwidth]{DCMotorWiring.png}
@@ -33,19 +35,25 @@ This laboratory exercise involved interfacing the MSP432 with a DC motor, a step
     \label{fig:DCMotorWiring}
 \end{figure}
 
+Figure \ref{fig:DCMotorWiring} displays the connections between the MSP432, the H-bridge, and the motor terminals. The H-bridge exists between the MSP432 and the motor to allow the MSP432 to control high voltage motor inputs with lower voltage control signals. Figure \ref{fig:ServoWiring} shows the wiring for the stepper motor. 
+
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.75\textwidth]{StepperWiring.png}
     \caption{Stepper Motor Wiring}
-    \label{fig:ServoWiring}
+    \label{fig:StepperWiring}
 \end{figure}
+
+This diagram consists of the MSP432, darlington array, and stepper motor. The MSP432 provides control signals to the darlington array to control the position of the stepper motor. Figure \ref{fig:ServoWiring} shows the wiring diagram for the servo motor.
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.75\textwidth]{ServoWiring.png}
     \caption{Servo Wiring}
-    \label{fig:SevoWiring}
+    \label{fig:ServoWiring}
 \end{figure}
+
+As shown in the diagram in Figure \ref{fig:ServoWiring}, there are 5V, ground, and control signal wires connecting the MSP432 and servo. the control signal is a PWM signal at 50Hz with a pulse width between 1ms and 2ms.
 
 \section*{Prelab Questions}
 
