@@ -64,6 +64,21 @@ This laboratory exercise involved interfacing the MSP432 with a DC motor, a step
     \label{fig:ServoWave}
 \end{figure}
 
+*code explanation*\\
+Code was written to control a DC motor, a stepper motor, and a servo motor. For the DC motor, the MSP432 would send out a PWM signal from one pin and set the other pin to 0V. To change speed, the PWM duty cycle... \\
+
+\emph{Explain how to change speed and direction of turn of the DC motor.}
+
+To change the speed of the DC motor, the duty cycle of the PWM signal from the MSP432 to the H-bridge can be changed. To reverse the direction of the DC motor, the PWM and 0V signals to the H-bridge can be switched.\\
+
+\emph{Describe an alternate method that uses only one PWM line and one GPIO line.}
+
+I do not know.\\
+
+\emph{Which stepping mode does the code use?}
+
+Full step mode was used.\\
+
 
 \end{document}
 
