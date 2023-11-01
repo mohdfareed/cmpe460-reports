@@ -7,7 +7,7 @@
 \newcommand{\exerciseNumber}{6}
 \newcommand{\exerciseDescription}{Motor Control}
 \newcommand{\dateDone}{October 18, 2023}
-\newcommand{\dateSubmitted}{October 31, 2023}
+\newcommand{\dateSubmitted}{November 1, 2023}
 
 \newcommand{\classCode}{CMPE 460}
 \newcommand{\LabSectionNum}{1}
@@ -22,7 +22,7 @@
 
 \section*{Lab Description}
 
-This laboratory exercise involved interfacing the MSP432 with a DC motor, a stepper motor, and a servo. First, the Timer A module was used to generate a PWM signal. Specifically, a 20\% duty cycle signal with a frequency of 10kHz was generated and viewed with an oscilloscope. Next, a DC motor was controlled. A SN754410 H-bridge IC was utilized to control the 10V power supply voltage with the 3.3V control voltage from the MSP432. The stepper motor was operated in full step, low torque mode by the MSP432 with a ULN2068B Darlington array IC. It was controlled by periodically switching which coils turned on based on the phase. The last type of motor tested was the servo motor. This was controlled by providing a 50Hz PWM signal with a pulse width between 1ms and 2ms. Finally, knowledge gained from testing these motors was used to control the servo and two DC motors on an MSP432-controlled miniature electric car.
+This laboratory exercise involved interfacing the MSP432 with a DC motor, a stepper motor, and a servo. First, the Timer A module was used to generate a PWM signal. Specifically, a 20\% duty cycle signal with a frequency of 10kHz was generated and viewed with an oscilloscope. Next, a DC motor was controlled. A SN754410 H-bridge IC was utilized to control the 10V power supply voltage with the 3.3V control voltage from the MSP432. The stepper motor was operated in full step, low torque mode by the MSP432 with a ULN2068B Darlington array IC. It was controlled by periodically switching which coils turned on based on the phase. The last type of motor tested was the servo motor. This was controlled by providing a 50Hz PWM signal with a pulse width between 1ms and 2ms. Finally, knowledge gained from testing these motors was used to simultaneously control two DC motors and a servo.
 
 \section*{Wiring Diagrams}
 
@@ -96,12 +96,16 @@ The 2N3904/2N3906 are general purpose and can only handle low current. The TIP31
 
 \section*{Oscilloscope Captures}
 
+Figure \ref{fig:pwm} shows the PWM output waveform measured with an oscilloscope.
+
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.75\textwidth]{PWM.png}
     \caption{PWM Waveform}
     \label{fig:pwm}
 \end{figure}
+
+As shown in this diagram, the MSP432 PWM port outputted a 10kHz signal with a 20\% duty cycle as intended. PWM was used to control the input to a DC motor. The input and output to and from the H-bridge is shown in Figure \ref{fig:motor}. 
 
 \begin{figure}[H]
     \centering
@@ -110,12 +114,16 @@ The 2N3904/2N3906 are general purpose and can only handle low current. The TIP31
     \label{fig:motor}
 \end{figure}
 
+Figure \ref{fig:motor} shows the 10V output from the H-bridge to the motor corresponds with the 3.3V input to the H-bridge, suggesting that the circuit is functioning as expected. Figure \ref{fig:ServoWave} shows the PWM input for the control signal to the servo. 
+
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.75\textwidth]{ServoWave.png}
     \caption{Servo Input Waveform}
     \label{fig:ServoWave}
 \end{figure}
+
+The servo input shown has a period of 20ms and a a pulse width of 1.5ms. This input moves the servo to the center position.
 
 \section*{Code Explanation}
 
