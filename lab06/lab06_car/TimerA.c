@@ -16,6 +16,32 @@
 static uint32_t DEFAULT_PERIOD_A0[5] = {0, 0, 0, 0, 0};
 static uint32_t DEFAULT_PERIOD_A2[5] = {0, 0, 0, 0, 0};
 
+void (*TimerA2Task)(void); // pwm interrupt task
+
+//******DisableInterrupts************
+// sets the I bit in the PRIMASK to disable interrupts
+// Inputs: none
+// Outputs: none
+__asm void
+	__weak
+	DisableInterrupts(void)
+{
+	CPSID I
+		bx lr
+}
+
+//******EnableInterrupts************
+// clears the I bit in the PRIMASK to enable interrupts
+// Inputs: none
+// Outputs: none
+__asm void
+	__weak
+	EnableInterrupts(void)
+{
+	CPSIE I
+		bx lr
+}
+
 //***************************PWM_Init*******************************
 // PWM output on P2.4, P2.5, P2.6, P2.7
 // Inputs:  period of P2.4...P2.7 is number of counts before output changes state
@@ -24,6 +50,8 @@ static uint32_t DEFAULT_PERIOD_A2[5] = {0, 0, 0, 0, 0};
 // Outputs: none
 int TIMER_A0_PWM_Init(uint16_t period, double percentDutyCycle, uint16_t pin)
 {
+	uint16_t dutyCycle;
+
 	// Timer A0.1
 	if (pin == 1)
 	{
@@ -70,7 +98,7 @@ int TIMER_A0_PWM_Init(uint16_t period, double percentDutyCycle, uint16_t pin)
 	TIMER_A0->CCTL[pin] = 0x00E0; // 0b11100000 set/reset mode
 
 	// set the duty cycle
-	uint16_t dutyCycle = (uint16_t)(percentDutyCycle * (double)DEFAULT_PERIOD_A0[pin]);
+	dutyCycle = (uint16_t)(percentDutyCycle * (double)DEFAULT_PERIOD_A0[pin]);
 
 	// CCR[n] contains the dutyCycle just calculated, where n is the pin number
 	// TIMER_A0->CCR[pin]
@@ -106,6 +134,7 @@ void TIMER_A0_PWM_DutyCycle(double percentDutyCycle, uint16_t pin)
 // Outputs: none
 int TIMER_A2_PWM_Init(uint16_t period, double percentDutyCycle, uint16_t pin)
 {
+	uint16_t dutyCycle;
 
 	// NOTE: Timer A2 only exposes 1 PWM pin
 	// TimerA2.1
@@ -133,7 +162,7 @@ int TIMER_A2_PWM_Init(uint16_t period, double percentDutyCycle, uint16_t pin)
 	TIMER_A2->CCTL[pin] = 0x00E0; // 0b11100000 set/reset mode
 
 	// set the duty cycle
-	uint16_t dutyCycle = (uint16_t)(percentDutyCycle * (double)DEFAULT_PERIOD_A2[pin]);
+	dutyCycle = (uint16_t)(percentDutyCycle * (double)DEFAULT_PERIOD_A2[pin]);
 
 	// CCR[n] contains the dutyCycle just calculated, where n is the pin number
 	// TIMER_A2->CCR[pin]
@@ -145,6 +174,7 @@ int TIMER_A2_PWM_Init(uint16_t period, double percentDutyCycle, uint16_t pin)
 
 	return 0;
 }
+
 //***************************PWM_Duty1*******************************
 // change duty cycle of PWM output on P5.6
 // Inputs:  percentDutyCycle, pin  (should always be 1 for TimerA2.1)
@@ -159,4 +189,53 @@ void TIMER_A2_PWM_DutyCycle(double percentDutyCycle, uint16_t pin)
 	// CCR[n] contains the dutyCycle just calculated, where n is the pin number
 	// TIMER_A2->CCR[pin]
 	TIMER_A2->CCR[pin] = dutyCycle;
+}
+
+//***************************PWM_Init*******************************
+// PWM output through interrupts
+// Inputs:  period is number of counts before interrupt is triggered
+//          percentDutyCycle (0 -> 1.0)//          duty cycle
+//          handler is the function to call on interrupt triggers
+// Outputs: none
+void TIMER_A2_PWM_Interrupts(uint16_t period, double percentDutyCycle, void (*handler)(void))
+{
+	uint16_t dutyCycle;
+	TimerA2Task = handler;
+
+	// save the period for this timer instance
+	// DEFAULT_PERIOD_A2[pin] where pin is the pin number
+	DEFAULT_PERIOD_A2[1] = period;
+
+	// TIMER_A2->CCR[0]
+	TIMER_A2->CCR[0] = period;
+
+	// TIMER_A2->CCTL[1] (with interrupts)
+	TIMER_A2->CCTL[1] = 0x00E0; // 0b11100000 set/reset mode
+
+	// set the duty cycle
+	dutyCycle = (uint16_t)(percentDutyCycle * (double)DEFAULT_PERIOD_A2[1]);
+
+	// CCR[n] contains the dutyCycle just calculated, where n is the pin number
+	// TIMER_A2->CCR[1]
+	TIMER_A2->CCR[1] = dutyCycle;
+
+	// Timer CONTROL register (with interrupts)
+	// TIMER_A2->CTL
+	TIMER_A2->CTL = 0x0216; // SMCLK, MC up mode, TimerA clear, interrupt enabled 0x0216 = 0b0000001000010110?
+
+	// priorty 2
+	// NVIC->IP[3] = (NVIC->IP[3] & 0xFFFFFF00) | 0x00000040;
+	// NVIC register
+	// NVIC->ISER[0]
+	NVIC->ISER[0] = 0x00002000; // 0x00008000 = 0b00000000000000001000000000000000
+	TIMER_A2->CCTL[1] &= ~0x0001;
+}
+
+void TA2_N_IRQHandler(void)
+{
+	if (TIMER_A2->CCTL[1] & TIMER_A_CCTLN_CCIFG)
+	{
+		TIMER_A2->CCTL[1] &= ~TIMER_A_CCTLN_CCIFG;
+		(*TimerA2Task)();
+	}
 }

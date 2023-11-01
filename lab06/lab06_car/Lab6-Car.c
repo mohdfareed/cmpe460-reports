@@ -1,5 +1,5 @@
 /*
- * 
+ *
  *
  * Author:
  * Created:
@@ -22,6 +22,10 @@
 
 #define SERVO 1
 
+static int i = 0;
+
+void Servo_Interrupt(void);
+
 /**
  * Waits for a delay (in milliseconds)
  *
@@ -29,64 +33,73 @@
  */
 void delay(int del)
 {
-	volatile int i;
-	for (i = 0; i < del * 278; i++)
-	{
-		; // Do nothing
-	}
+    volatile int i;
+    for (i = 0; i < del * 278; i++)
+    {
+        ; // Do nothing
+    }
 }
 
-/**
- * Initialize the car motors
- */
-void Init_Car_Motors(void)
+void Init_PWM_INTERRUPTS(void)
 {
-	// P3.6/7 must be in GPIO mode and set low
-	P3->SEL0 &= ~(DC1_ENABLE | DC2_ENABLE);
-	P3->SEL1 &= ~(DC1_ENABLE | DC2_ENABLE);
-	P3->DIR |= (DC1_ENABLE | DC2_ENABLE);
-	P3->OUT &= ~(DC1_ENABLE | DC2_ENABLE);
+    // generate pwm using timer A2 on P5.2 instead of P5.6
+    P5->SEL0 |= BIT2;
+    P5->SEL1 &= ~BIT2;
+    P5->DIR |= BIT2;
+    P5->OUT &= ~BIT2;
 
-	// DC Motor 1 PWM
-	TIMER_A0_PWM_Init(300, 0.0, DC1_FORWARD); // period = 300 cycles -> 10kHz
-	TIMER_A0_PWM_Init(300, 0.0, DC1_REVERSE);
-	// DC Motor 2 PWM
-	TIMER_A0_PWM_Init(300, 0.0, DC2_FORWARD); // period = 300 cycles -> 10kHz
-	TIMER_A0_PWM_Init(300, 0.0, DC2_REVERSE);
-	// Servo PWM
-	TIMER_A2_PWM_Init(60000, 0.075, SERVO); // 60000 cycle period -> 50Hz
+    TIMER_A2_PWM_Interrupts(60000, 0.075, &Servo_Interrupt);
+}
 
-	// set P3.6/7 high
-	P3->OUT |= (DC1_ENABLE | DC2_ENABLE);
+void Servo_Interrupt(void)
+{
+    // toggle P5.2 to generate pwm
+	
+    P5->OUT ^= BIT2;
+//	  i = P5->OUT & BIT2;
+//		if (i)
+//		{
+//			uart0_putchar('|');
+//		}
+//		else
+//		{
+//			uart0_putchar('_');
+//		}
 }
 
 int main(void)
 {
-    
+	  uart0_init();
+	  uart0_put("Starting\r\n");
+	
     // Motor1 Enable P3.6
     P3->SEL0 &= ~BIT6;
     P3->SEL1 &= ~BIT6;
     P3->DIR |= BIT6;
     P3->OUT &= ~BIT6;
-    
+
     P3->SEL0 &= ~BIT7;
     P3->SEL1 &= ~BIT7;
     P3->DIR |= BIT7;
-    P3->OUT &=  ~BIT7;
-
-    delay(5000);
-
-    P3->OUT |= BIT6;
-    P3->OUT |= BIT7;
+    P3->OUT &= ~BIT7;
     
-    TIMER_A0_PWM_Init(300, 0.0, 1);
+    //Init_PWM_INTERRUPTS();
+		TIMER_A0_PWM_Init(300, 0.0, 1);
     TIMER_A0_PWM_Init(300, 0.0, 2);
     TIMER_A0_PWM_Init(300, 0.0, 3);
     TIMER_A0_PWM_Init(300, 0.0, 4);
-    TIMER_A2_PWM_Init(60000, 0.075, 1);
-    
-	for (;;)
-	{   
+	  TIMER_A2_PWM_Init(60000, 0.0, 1);
+	
+		delay(2000);
+
+    P3->OUT |= BIT6;
+    P3->OUT |= BIT7;
+		
+    //EnableInterrupts();
+		//uart0_put("Interrupt enabled\r\n");
+
+    for (;;)
+    {
         delay(2000);
         TIMER_A0_PWM_DutyCycle(0.0, 4);
         TIMER_A0_PWM_DutyCycle(0.3, 1);
@@ -101,12 +114,13 @@ int main(void)
         TIMER_A0_PWM_DutyCycle(0.3, 4);
         delay(2000);
         TIMER_A0_PWM_DutyCycle(0.0, 4);
+			
+			uart0_put("Controlling Servo\r\n");
         delay(2000);
         TIMER_A2_PWM_DutyCycle(0.05, 1);
         delay(2000);
         TIMER_A2_PWM_DutyCycle(0.1, 1);
         delay(2000);
         TIMER_A2_PWM_DutyCycle(0.075, 1);
-	}
-	return 0;
+    }
 }
