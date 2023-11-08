@@ -28,16 +28,105 @@ The op amp was also used to create a low pass filter, a high pass filter, and a 
 
 \section*{Schematics}
 
-A wiring diagram for the DC motor was created and is shown in Figure \ref{fig:DCMotorWiring}.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.75\textwidth]{1.png}
+    \caption{DC Inverting Amplifier}
+    \label{fig:part1}
+\end{figure}
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.75\textwidth]{signoff.pdf}
-    \caption{DC Motor Wiring}
-    \label{fig:DCMotorWiring}
+    \includegraphics[width=0.75\textwidth]{2.png}
+    \caption{DC Non-Inverting Amplifier}
+    \label{fig:part2}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.75\textwidth]{3.png}
+    \caption{AC Inverting Amplifier}
+    \label{fig:part3}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.75\textwidth]{4.png}
+    \caption{AC Non-Inverting Amplifier}
+    \label{fig:part4}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.75\textwidth]{5.png}
+    \caption{Summing Amplifier}
+    \label{fig:part5}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.75\textwidth]{6.png}
+    \caption{Low Pass Filter}
+    \label{fig:part6}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.75\textwidth]{7.png}
+    \caption{High Pass Filter}
+    \label{fig:part7}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.75\textwidth]{8.png}
+    \caption{Band Pass Filter}
+    \label{fig:part8}
 \end{figure}
 
 \section*{Filters Calculations}
+
+\textbf{Low Pass Filter}
+
+\[
+    R_1 = R_2 = 10k\Omega
+\]
+
+\[
+    f_c = \frac{1}{2\pi \sqrt{R_1R_2C_1C_2}} = \frac{1}{2\pi (10k\Omega)C} = 100 KHz
+\]
+
+\[
+    C = C_1 = C_2 = \frac{1}{2\pi (10k\Omega)(100KHz)} = 159.15 pF
+\]
+
+\textbf{High Pass Filter}
+
+\[
+    R_1 = R_2 = 10k\Omega
+\]
+
+\[
+    f_c = \frac{1}{2\pi \sqrt{R_1R_2C_1C_2}} = \frac{1}{2\pi (10k\Omega)C} = 10 KHz
+\]
+
+\[
+    C = C_1 = C_2 = \frac{1}{2\pi (10k\Omega)(10KHz)} = 1.5915 nF
+\]
+
+\textbf{Band Pass Filter}
+
+\[
+    R_1 = R_2 = R_3 = 10k\Omega
+\]
+
+\[
+    f_r = \frac{1}{2\pi \sqrt{R_1R_2R_3C_1C_2}} = \frac{1}{2\pi (10k\Omega)C} = 10 KHz
+\]
+
+\[
+    C = C_1 = C_2 = \frac{1}{2\pi (10k\Omega)(10KHz)} = 1.5915 nF
+\]
 
 \section*{Filters Plots} % with fc identified
 
