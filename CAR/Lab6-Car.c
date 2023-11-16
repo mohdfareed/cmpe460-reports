@@ -4,11 +4,11 @@
 
 #include "msp.h"
 #include "uart.h"
-#include "Timer32.h"
-#include "CortexM.h"
+//#include "Timer32.h"
+//#include "CortexM.h"
 #include "Common.h"
-#include "ADC14.h"
-#include "ControlPins.h"
+//#include "ADC14.h"
+//#include "ControlPins.h"
 #include "TimerA.h"
 
 #define DC1_FORWARD (1)
@@ -31,7 +31,7 @@ static int i = 0;
 void delay_ms(int del)
 {
     volatile int i;
-    for (i = 0; i < del * 4448; i++)
+    for (i = 0; i < del * 2224; i++)
     {
         ; // Do nothing
     }
@@ -40,31 +40,31 @@ void delay_ms(int del)
 // default SI integration time is 7.5ms = 133Hz
 //
 // #define INTEGRATION_TIME .0075f
-#define INTEGRATION_TIME .02f // use 50Hz (20ms) for now
+//#define INTEGRATION_TIME .02f // use 50Hz (20ms) for now
 
 // default CLK frequency of the camera 180KHz (assume 48MHz clock)
 // NOTE: we have to double 50000, because we need a clock for the rising edge and one for the falling edge.
 // #define HIGH_CLOCK_SPEED 48000000
 
-#define CLK_PERIOD ((double)SystemCoreClock / 180000.0)
+//#define CLK_PERIOD ((double)SystemCoreClock / 180000.0)
 
 // ADC_In() gets the latest value from the ADC
 // ADC will be P4.7 A6
 // SI Pin will be P5.5 A0
 // CLK Pin will be P5.4 A1
 
-static long pixelCounter = 0;
+//static long pixelCounter = 0;
 
-extern uint16_t line[128];
-extern BOOLEAN g_sendData;
+//uint16_t line[128];
+//BOOLEAN g_sendData;
 
-void INIT_Camera(void)
-{
-	g_sendData = FALSE;
-	ControlPin_SI_Init();
-	ControlPin_CLK_Init();
-	ADC0_InitSWTriggerCh6();
-}
+//void INIT_Camera(void)
+//{
+//	g_sendData = FALSE;
+//	ControlPin_SI_Init();
+//	ControlPin_CLK_Init();
+//	ADC0_InitSWTriggerCh6();
+//}
 
 int main(void)
 {
@@ -84,11 +84,11 @@ int main(void)
     P3->OUT &= ~BIT7;
     
     //Init_PWM_INTERRUPTS();
-	TIMER_A0_PWM_Init(4800, 0.0, 1);
-    TIMER_A0_PWM_Init(4800, 0.0, 2);
-    TIMER_A0_PWM_Init(4800, 0.0, 3);
-    TIMER_A0_PWM_Init(4800, 0.0, 4);
-	//TIMER_A2_PWM_Init(60000, 0.0, 1);
+	TIMER_A0_PWM_Init(2400, 0.0, 1);
+    TIMER_A0_PWM_Init(2400, 0.0, 2);
+    TIMER_A0_PWM_Init(2400, 0.0, 3);
+    TIMER_A0_PWM_Init(2400, 0.0, 4);
+	TIMER_A2_PWM_Init(60000, 0.0, 1);
 	
 	delay_ms(2000);
 
@@ -103,24 +103,24 @@ int main(void)
         delay_ms(2000);
         TIMER_A0_PWM_DutyCycle(0.0, 4);
         TIMER_A0_PWM_DutyCycle(0.3, 1);
-        delay_ms(2000);
-        TIMER_A0_PWM_DutyCycle(0.0, 1);
-        TIMER_A0_PWM_DutyCycle(0.3, 2);
-        delay_ms(2000);
-        TIMER_A0_PWM_DutyCycle(0.0, 2);
-        TIMER_A0_PWM_DutyCycle(0.3, 3);
-        delay_ms(2000);
-        TIMER_A0_PWM_DutyCycle(0.0, 3);
-        TIMER_A0_PWM_DutyCycle(0.3, 4);
-        delay_ms(2000);
-        TIMER_A0_PWM_DutyCycle(0.0, 4);
+//        delay_ms(2000);
+//        TIMER_A0_PWM_DutyCycle(0.0, 1);
+//        TIMER_A0_PWM_DutyCycle(0.3, 2);
+//        delay_ms(2000);
+//        TIMER_A0_PWM_DutyCycle(0.0, 2);
+//        TIMER_A0_PWM_DutyCycle(0.3, 3);
+//        delay_ms(2000);
+//        TIMER_A0_PWM_DutyCycle(0.0, 3);
+//        TIMER_A0_PWM_DutyCycle(0.3, 4);
+//        delay_ms(2000);
+//        TIMER_A0_PWM_DutyCycle(0.0, 4);
 			
-			uart0_put("Controlling Servo\r\n");
-//        delay(2000);
-//        TIMER_A2_PWM_DutyCycle(0.05, 1);
-//        delay(2000);
-//        TIMER_A2_PWM_DutyCycle(0.1, 1);
-//        delay(2000);
-//        TIMER_A2_PWM_DutyCycle(0.075, 1);
+		uart0_put("Controlling Servo\r\n");
+        delay_ms(2000);
+        TIMER_A2_PWM_DutyCycle(0.05, 1);
+        delay_ms(2000);
+        TIMER_A2_PWM_DutyCycle(0.1, 1);
+        delay_ms(2000);
+        TIMER_A2_PWM_DutyCycle(0.075, 1);
     }
 }
