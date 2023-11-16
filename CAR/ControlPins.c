@@ -16,7 +16,7 @@ extern uint32_t SystemCoreClock;
 
 // default CLK frequency of the camera 180KHz (assume 48MHz clock)
 // NOTE: we have to double 50000, because we need a clock for the rising edge and one for the falling edge.
-// #define HIGH_CLOCK_SPEED 3000000
+// #define HIGH_CLOCK_SPEED 48000000
 
 #define CLK_PERIOD ((double)SystemCoreClock / 180000.0)
 

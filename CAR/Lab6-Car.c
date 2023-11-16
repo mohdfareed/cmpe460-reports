@@ -28,10 +28,10 @@ static int i = 0;
  *
  * del - The delay in milliseconds
  */
-void delay(int del)
+void delay_ms(int del)
 {
     volatile int i;
-    for (i = 0; i < del * 278; i++)
+    for (i = 0; i < del * 4448; i++)
     {
         ; // Do nothing
     }
@@ -44,7 +44,7 @@ void delay(int del)
 
 // default CLK frequency of the camera 180KHz (assume 48MHz clock)
 // NOTE: we have to double 50000, because we need a clock for the rising edge and one for the falling edge.
-// #define HIGH_CLOCK_SPEED 3000000
+// #define HIGH_CLOCK_SPEED 48000000
 
 #define CLK_PERIOD ((double)SystemCoreClock / 180000.0)
 
@@ -53,7 +53,6 @@ void delay(int del)
 // SI Pin will be P5.5 A0
 // CLK Pin will be P5.4 A1
 
-unsigned long tempCounter = 0;
 static long pixelCounter = 0;
 
 extern uint16_t line[128];
@@ -71,7 +70,7 @@ int main(void)
 {
 	uart0_init();
 	uart0_put("Starting\r\n");
-    delay(5000);
+    delay_ms(5000);
 	
     // Motor1 Enable P3.6
     P3->SEL0 &= ~BIT6;
@@ -85,13 +84,13 @@ int main(void)
     P3->OUT &= ~BIT7;
     
     //Init_PWM_INTERRUPTS();
-	TIMER_A0_PWM_Init(300, 0.0, 1);
-    TIMER_A0_PWM_Init(300, 0.0, 2);
-    TIMER_A0_PWM_Init(300, 0.0, 3);
-    TIMER_A0_PWM_Init(300, 0.0, 4);
-	TIMER_A2_PWM_Init(60000, 0.0, 1);
+	TIMER_A0_PWM_Init(4800, 0.0, 1);
+    TIMER_A0_PWM_Init(4800, 0.0, 2);
+    TIMER_A0_PWM_Init(4800, 0.0, 3);
+    TIMER_A0_PWM_Init(4800, 0.0, 4);
+	//TIMER_A2_PWM_Init(60000, 0.0, 1);
 	
-	delay(2000);
+	delay_ms(2000);
 
     P3->OUT |= BIT6;
     P3->OUT |= BIT7;
@@ -101,27 +100,27 @@ int main(void)
 
     for (;;)
     {
-        delay(2000);
+        delay_ms(2000);
         TIMER_A0_PWM_DutyCycle(0.0, 4);
         TIMER_A0_PWM_DutyCycle(0.3, 1);
-        delay(2000);
+        delay_ms(2000);
         TIMER_A0_PWM_DutyCycle(0.0, 1);
         TIMER_A0_PWM_DutyCycle(0.3, 2);
-        delay(2000);
+        delay_ms(2000);
         TIMER_A0_PWM_DutyCycle(0.0, 2);
         TIMER_A0_PWM_DutyCycle(0.3, 3);
-        delay(2000);
+        delay_ms(2000);
         TIMER_A0_PWM_DutyCycle(0.0, 3);
         TIMER_A0_PWM_DutyCycle(0.3, 4);
-        delay(2000);
+        delay_ms(2000);
         TIMER_A0_PWM_DutyCycle(0.0, 4);
 			
 			uart0_put("Controlling Servo\r\n");
-        delay(2000);
-        TIMER_A2_PWM_DutyCycle(0.05, 1);
-        delay(2000);
-        TIMER_A2_PWM_DutyCycle(0.1, 1);
-        delay(2000);
-        TIMER_A2_PWM_DutyCycle(0.075, 1);
+//        delay(2000);
+//        TIMER_A2_PWM_DutyCycle(0.05, 1);
+//        delay(2000);
+//        TIMER_A2_PWM_DutyCycle(0.1, 1);
+//        delay(2000);
+//        TIMER_A2_PWM_DutyCycle(0.075, 1);
     }
 }
