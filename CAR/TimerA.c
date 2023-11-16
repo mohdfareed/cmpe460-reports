@@ -18,30 +18,6 @@ static uint32_t DEFAULT_PERIOD_A2[5] = {0, 0, 0, 0, 0};
 
 void (*TimerA2Task)(void); // pwm interrupt task
 
-//******DisableInterrupts************
-// sets the I bit in the PRIMASK to disable interrupts
-// Inputs: none
-// Outputs: none
-__asm void
-	__weak
-	DisableInterrupts(void)
-{
-	CPSID I
-		bx lr
-}
-
-//******EnableInterrupts************
-// clears the I bit in the PRIMASK to enable interrupts
-// Inputs: none
-// Outputs: none
-__asm void
-	__weak
-	EnableInterrupts(void)
-{
-	CPSIE I
-		bx lr
-}
-
 //***************************PWM_Init*******************************
 // PWM output on P2.4, P2.5, P2.6, P2.7
 // Inputs:  period of P2.4...P2.7 is number of counts before output changes state
