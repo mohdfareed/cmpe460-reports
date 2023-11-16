@@ -141,5 +141,12 @@ int main(void)
             uart0_put(str);
             g_sendData = FALSE;
         }
+
+        // milestone 1
+        // read line of data
+        // filter line to find edges
+        // compare distance from center to edges
+        // decide which way to turn and amount
+        // turn wheels and adjust speed
     }
 }
