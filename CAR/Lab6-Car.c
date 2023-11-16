@@ -10,6 +10,7 @@
 #include "ADC14.h"
 #include "ControlPins.h"
 #include "TimerA.h"
+#include "SysTickTimer.h"
 
 #define DC1_FORWARD (1)
 #define DC1_REVERSE (2)
@@ -37,17 +38,6 @@ void delay_ms(int del)
     }
 }
 
-// default SI integration time is 7.5ms = 133Hz
-//
-// #define INTEGRATION_TIME .0075f
-// #define INTEGRATION_TIME .02f // use 50Hz (20ms) for now
-
-// default CLK frequency of the camera 180KHz (assume 48MHz clock)
-// NOTE: we have to double 50000, because we need a clock for the rising edge and one for the falling edge.
-// #define HIGH_CLOCK_SPEED 48000000
-
-// #define CLK_PERIOD ((double)SystemCoreClock / 180000.0)
-
 // ADC_In() gets the latest value from the ADC
 // ADC will be P4.7 A6
 // SI Pin will be P5.5 A0
@@ -57,6 +47,8 @@ void delay_ms(int del)
 
 uint16_t line[128];
 BOOLEAN g_sendData;
+
+static char str[100];
 
 void INIT_Camera(void)
 {
@@ -71,7 +63,8 @@ int main(void)
     DisableInterrupts();
     uart0_init();
     uart0_put("Starting\r\n");
-    delay_ms(5000);
+    
+    //delay_ms(4000);
 
     // Motor1 Enable P3.6
     P3->SEL0 &= ~BIT6;
@@ -91,20 +84,21 @@ int main(void)
     TIMER_A0_PWM_Init(2400, 0.0, 4);
     TIMER_A2_PWM_Init(60000, 0.0, 1);
 
-    delay_ms(2000);
+    //delay_ms(2000);
 
     P3->OUT |= BIT6;
     P3->OUT |= BIT7;
 
     INIT_Camera();
     EnableInterrupts();
-    // uart0_put("Interrupt enabled\r\n");
+
+    uart0_put("yeehaw\r\n");
 
     for (;;)
     {
-        delay_ms(2000);
-        TIMER_A0_PWM_DutyCycle(0.0, 4);
-        TIMER_A0_PWM_DutyCycle(0.3, 1);
+//        delay_ms(2000);
+//        TIMER_A0_PWM_DutyCycle(0.0, 4);
+//        TIMER_A0_PWM_DutyCycle(0.3, 1);
         //        delay_ms(2000);
         //        TIMER_A0_PWM_DutyCycle(0.0, 1);
         //        TIMER_A0_PWM_DutyCycle(0.3, 2);
@@ -117,30 +111,35 @@ int main(void)
         //        delay_ms(2000);
         //        TIMER_A0_PWM_DutyCycle(0.0, 4);
 
-        uart0_put("Controlling Servo\r\n");
-        delay_ms(2000);
-        TIMER_A2_PWM_DutyCycle(0.05, 1);
-        delay_ms(2000);
-        TIMER_A2_PWM_DutyCycle(0.1, 1);
-        delay_ms(2000);
-        TIMER_A2_PWM_DutyCycle(0.075, 1);
+//        uart0_put("Controlling Servo\r\n");
+//        delay_ms(2000);
+//        TIMER_A2_PWM_DutyCycle(0.05, 1);
+//        delay_ms(2000);
+//        TIMER_A2_PWM_DutyCycle(0.1, 1);
+//        delay_ms(2000);
+//        TIMER_A2_PWM_DutyCycle(0.075, 1);
 
+        SI_Handler();
+        uart0_put("looping...\n\r");
+        delay_ms(1000);
         if (g_sendData == TRUE)
         {
             // send the array over uart
             sprintf(str, "%i\n\r", -1); // start value
             uart0_put(str);
 
-            for (i = 0; i < 128; i++)
-            {
-                sprintf(str, "%i\n\r", line[i]);
-                uart0_put(str);
-            }
+//            for (i = 0; i < 128; i++)
+//            {
+//                sprintf(str, "%i\n\r", line[i]);
+//                uart0_put(str);
+//            }
 
             sprintf(str, "%i\n\r", -2); // end value
             uart0_put(str);
             g_sendData = FALSE;
         }
+        
+        delay_ms(1000);
 
         // milestone 1
         // read line of data
