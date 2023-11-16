@@ -8,6 +8,7 @@
 #include "Common.h"
 #include "ADC14.h"
 #include "ControlPins.h"
+#include "TimerA.h"
 
 uint16_t line[128];
 BOOLEAN g_sendData;
@@ -111,7 +112,6 @@ int main(void)
 		TIMER_A0_PWM_DutyCycle(0.0, 4);
 
 		uart0_put("Controlling Servo\r\n");
-		delay_ms(1000);
 		TIMER_A2_PWM_DutyCycle(0.05, 1);
 		delay_ms(1000);
 		TIMER_A2_PWM_DutyCycle(0.1, 1);

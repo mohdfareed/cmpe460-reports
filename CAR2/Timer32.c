@@ -88,7 +88,6 @@ void Timer32_1_Init(void (*task)(void), unsigned long period, enum timer32divide
 
 void T32_INT1_IRQHandler(void)
 {
-    uart0_put("T32");
 	// acknowledge Timer32 Timer 1 interrupt
 	// TIMER32_INTCLR1
 	TIMER32_INTCLR1 = 1;

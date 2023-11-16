@@ -57,7 +57,6 @@ void SI_Handler(void)
 	// OK, Data should be ready to clock out, so start the clock
 	// Start the clock after we issues a SI pulse.
 	EnableSysTickTimer();
-    uart0_put("SI_HANDLER");
 }
 
 // ADC_In() gets the latest value from the ADC

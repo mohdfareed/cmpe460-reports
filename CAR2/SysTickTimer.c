@@ -13,7 +13,6 @@ void EnableSysTickTimer(void)
 {
 	// enable SysTick with core clock and interrupts
 	// SYSTICK_STCSR
-    uart0_put("SYSTICK");
 	SYSTICK_STCSR |= 0x00000007;
 }
 
