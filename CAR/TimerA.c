@@ -170,7 +170,7 @@ int TIMER_A2_PWM_Init(uint16_t period, double percentDutyCycle, uint16_t pin)
 
 	// Timer CONTROL register
 	// TIMER_A2->CTL
-	TIMER_A2->CTL = 0x0214; // SMCLK, MC up mode, TimerA clear 0x0214 = 0b0000001000010100?
+	TIMER_A2->CTL = 0x02D4; // SMCLK, MC up mode, TimerA clear 0x0214 = 0b0000001000010100?
 
 	return 0;
 }
@@ -221,7 +221,7 @@ void TIMER_A2_PWM_Interrupts(uint16_t period, double percentDutyCycle, void (*ha
 
 	// Timer CONTROL register (with interrupts)
 	// TIMER_A2->CTL
-	TIMER_A2->CTL = 0x0216; // SMCLK, MC up mode, TimerA clear, interrupt enabled 0x0216 = 0b0000001000010110?
+	TIMER_A2->CTL = 0x02D4; // SMCLK, MC up mode, TimerA clear, interrupt enabled 0x0216 = 0b0000001000010110?
 
 	// priorty 2
 	// NVIC->IP[3] = (NVIC->IP[3] & 0xFFFFFF00) | 0x00000040;
