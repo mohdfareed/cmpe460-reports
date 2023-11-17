@@ -13,6 +13,11 @@
 uint16_t line[128];
 BOOLEAN g_sendData;
 
+#define LEFT_MOTOR_FORWARD 2
+#define LEFT_MOTOR_BACKWARD 1
+#define RIGHT_MOTOR_FORWARD 4
+#define RIGHT_MOTOR_BACKWARD 3
+
 static char str[100];
 
 /**
@@ -70,53 +75,60 @@ int main(void)
 	DisableInterrupts();
 	uart0_init();
 
-	delay_ms(2500);
+	delay_ms(5000);
 	INIT_Motors();
 
 	INIT_Camera();
 	EnableInterrupts();
+    
+    TIMER_A0_PWM_DutyCycle(0.35, LEFT_MOTOR_FORWARD);
+    TIMER_A0_PWM_DutyCycle(0.35, RIGHT_MOTOR_FORWARD);
 
 	while (1)
 	{
+
+        
 		if (g_sendData == TRUE)
 		{
-			// send the array over uart
-			sprintf(str, "%i\n\r", -1); // start value
-			uart0_put(str);
+            int sum = 0;
+            int weighted_sum = 0;
 
 			for (i = 0; i < 128; i++)
 			{
-				sprintf(str, "%i\n\r", line[i]);
-				uart0_put(str);
+				sum += line[i];
+                weighted_sum += i*line[i];
 			}
-
-			sprintf(str, "%i\n\r", -2); // end value
-			uart0_put(str);
-
+            double midpoint = (double)weighted_sum / (double) sum;
+            if (sum < 1800000){
+                TIMER_A0_PWM_DutyCycle(0.0, LEFT_MOTOR_FORWARD);
+                TIMER_A0_PWM_DutyCycle(0.0, RIGHT_MOTOR_FORWARD);
+            }
+            else {
+//                double motorSpeed = sum*0.0000009 - 1.4;
+//                TIMER_A0_PWM_DutyCycle(motorSpeed, LEFT_MOTOR_FORWARD);
+//                TIMER_A0_PWM_DutyCycle(motorSpeed, RIGHT_MOTOR_FORWARD);
+                TIMER_A0_PWM_DutyCycle(0.23, LEFT_MOTOR_FORWARD);
+                TIMER_A0_PWM_DutyCycle(0.23, RIGHT_MOTOR_FORWARD);
+            }
+            sprintf(str, "%f", midpoint);
+            uart0_put(str);
+            uart0_put("\r\n");
+            
+            if (midpoint < 61){
+                sprintf(str, "%f", 0.1);
+                TIMER_A2_PWM_DutyCycle(0.1, 1);
+            }else if (midpoint > 66){
+                sprintf(str, "%f", 0.05);
+                TIMER_A2_PWM_DutyCycle(0.05, 1);
+            } else {
+                double servoVal = -0.01*midpoint+0.71;
+                sprintf(str, "%f", servoVal);
+                TIMER_A2_PWM_DutyCycle(servoVal, 1);
+            }
+            uart0_put(str);
+            uart0_put("\r\n");
 			g_sendData = FALSE;
 		}
-
-		uart0_put("Controlling DC Motors\r\n");
-		TIMER_A0_PWM_DutyCycle(0.0, 4);
-		TIMER_A0_PWM_DutyCycle(0.3, 1);
-		delay_ms(1000);
-		TIMER_A0_PWM_DutyCycle(0.0, 1);
-		TIMER_A0_PWM_DutyCycle(0.3, 2);
-		delay_ms(1000);
-		TIMER_A0_PWM_DutyCycle(0.0, 2);
-		TIMER_A0_PWM_DutyCycle(0.3, 3);
-		delay_ms(1000);
-		TIMER_A0_PWM_DutyCycle(0.0, 3);
-		TIMER_A0_PWM_DutyCycle(0.3, 4);
-		delay_ms(1000);
-		TIMER_A0_PWM_DutyCycle(0.0, 4);
-
-		uart0_put("Controlling Servo\r\n");
-		TIMER_A2_PWM_DutyCycle(0.05, 1);
-		delay_ms(1000);
-		TIMER_A2_PWM_DutyCycle(0.1, 1);
-		delay_ms(1000);
-		TIMER_A2_PWM_DutyCycle(0.075, 1);
-		delay_ms(1000);
+        delay_ms(1);
 	}
 }
