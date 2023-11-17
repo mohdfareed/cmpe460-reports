@@ -26,6 +26,8 @@ static int i;
 static int sum;
 static int weighted_sum;
 static double midpoint;
+static double motorSpeed;
+static double steeringAngle;
 
 // function prototypes
 void Navigate(void);
@@ -33,7 +35,8 @@ void Navigate(void);
 /**
  * Drives the car at a given speed and direction
  *
- * speed - The speed to drive at (-1.0 - +1.0)
+ * speed - The speed to drive at in range [-1.0, 1.0], where 1.0 is
+ *         full speed forward and -1.0 is full speed backward
  */
 void Drive(double speed)
 {
@@ -58,12 +61,25 @@ void Drive(double speed)
 /**
  * Steers the car at a given angle
  *
- * angle - The angle to steer at (-1.0 - +1.0)
+ * angle - The angle to steer at in range [0.05, 0.1], where 0.05 is full
+ * 	       left and 0.1 is full right
  */
 void Steer(double angle)
 {
-	// map angle to duty cycle (0.05 - 0.1)
-	TIMER_A2_PWM_DutyCycle(0.05 + (0.05 * angle), SERVO);
+	TIMER_A2_PWM_DutyCycle(angle, SERVO);
+}
+
+/**
+ * Checks if switch 1 is pressed
+ *
+ * Returns TRUE if pressed, FALSE otherwise
+ */
+BOOLEAN Switch1Pressed(void)
+{
+	// check if pressed
+	if (P1->IN & BIT4) // if not pressed
+		return FALSE;
+	return TRUE; // if pressed
 }
 
 /**
@@ -77,6 +93,15 @@ void Delay(int ms)
 	for (i = 0; i < ms * 2224; i++)
 	{
 	} // 2224 for 24 MHz
+}
+
+void InitSwitch(void)
+{
+	P1->SEL0 &= ~BIT4;
+	P1->SEL1 &= ~BIT4;
+	P1->DIR &= ~BIT4;
+	P1->REN |= BIT4;
+	P1->OUT |= BIT4;
 }
 
 void InitCamera(void)
@@ -112,17 +137,18 @@ void InitMotors(void)
 
 int main(void)
 {
+	// wait for start signal
+	InitSwitch();
+	while (!Switch1Pressed())
+		;
+
 	// initializations
-	Delay(5000); // startup delay
 	DisableInterrupts();
 	uart0_init(); // for debugging
 	InitMotors();
 	InitCamera();
 	EnableInterrupts();
-
-	// startup car
-	uart0_put("starting motors...\r\n");
-	Drive(0.35);
+	uart0_puts("Initialized\r\n");
 
 	while (1)
 	{
@@ -156,22 +182,22 @@ void Navigate(void)
 	}
 	else
 	{
-		Drive(0.23);
+		motorSpeed = sum * 0.000000572 - 0.83030303;
+		Drive(motorSpeed);
 	}
 
 	// steer the car
-	if (midpoint < 61)
+	if (midpoint < 60)
 	{
 		Steer(1.0);
 	}
-	else if (midpoint > 66)
+	else if (midpoint > 67)
 	{
 		Steer(-1.0);
 	}
 	else
 	{
-		// FIXME: use Steer()
-		double servoVal = -0.01 * midpoint + 0.71;
-		TIMER_A2_PWM_DutyCycle(servoVal, 1);
+		steeringAngle = -0.00714285 * midpoint + 0.528571;
+		Steer(steeringAngle);
 	}
 }
