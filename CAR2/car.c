@@ -9,32 +9,71 @@
 #include "ADC14.h"
 #include "ControlPins.h"
 #include "TimerA.h"
-
-uint16_t line[128];
-BOOLEAN g_sendData;
+#include "navigation.h"
 
 #define LEFT_MOTOR_FORWARD 2
 #define LEFT_MOTOR_BACKWARD 1
 #define RIGHT_MOTOR_FORWARD 4
 #define RIGHT_MOTOR_BACKWARD 3
 
+uint16_t line[128];
+BOOLEAN g_sendData;
+
 static char str[100];
+static int i;
+
+/**
+ * Drives the car at a given speed and direction
+ *
+ * speed - The speed to drive at (-1.0 - +1.0)
+ */
+void Drive(double speed)
+{
+	if (speed > 0.0)
+	{
+		TIMER_A0_PWM_DutyCycle(0.0, LEFT_MOTOR_BACKWARD);
+		TIMER_A0_PWM_DutyCycle(0.0, RIGHT_MOTOR_BACKWARD);
+
+		TIMER_A0_PWM_DutyCycle(speed, LEFT_MOTOR_FORWARD);
+		TIMER_A0_PWM_DutyCycle(speed, RIGHT_MOTOR_FORWARD);
+	}
+	else
+	{
+		TIMER_A0_PWM_DutyCycle(0.0, LEFT_MOTOR_FORWARD);
+		TIMER_A0_PWM_DutyCycle(0.0, RIGHT_MOTOR_FORWARD);
+
+		TIMER_A0_PWM_DutyCycle(speed, LEFT_MOTOR_BACKWARD);
+		TIMER_A0_PWM_DutyCycle(speed, RIGHT_MOTOR_BACKWARD);
+	}
+}
+
+/**
+ * Steers the car at a given angle
+ *
+ * angle - The angle to steer at (-1.0 - +1.0)
+ */
+void Steer(double angle)
+{
+	// map angle to duty cycle (0.05 - 0.1)
+	double dutyCycle = 0.05 + (0.05 * angle);
+	TIMER_A2_PWM_DutyCycle(dutyCycle, 1);
+}
 
 /**
  * Waits for a delay (in milliseconds)
  *
- * del - The delay in milliseconds
+ * ms - The delay in milliseconds
  */
-void delay_ms(int del)
+void Delay(int ms)
 {
 	volatile int i;
-	for (i = 0; i < del * 2224; i++)
+	for (i = 0; i < ms * 2224; i++)
 	{
 		; // Do nothing
 	}
 }
 
-void INIT_Camera(void)
+void InitCamera(void)
 {
 	g_sendData = FALSE;
 	ControlPin_SI_Init();
@@ -42,9 +81,8 @@ void INIT_Camera(void)
 	ADC0_InitSWTriggerCh6();
 }
 
-void INIT_Motors(void)
+void InitMotors(void)
 {
-	// Motor1 Enable P3.6
 	P3->SEL0 &= ~BIT6;
 	P3->SEL1 &= ~BIT6;
 	P3->DIR |= BIT6;
@@ -55,80 +93,79 @@ void INIT_Motors(void)
 	P3->DIR |= BIT7;
 	P3->OUT &= ~BIT7;
 
-	// Init_PWM_INTERRUPTS();
 	TIMER_A0_PWM_Init(2400, 0.0, 1);
 	TIMER_A0_PWM_Init(2400, 0.0, 2);
 	TIMER_A0_PWM_Init(2400, 0.0, 3);
 	TIMER_A0_PWM_Init(2400, 0.0, 4);
 	TIMER_A2_PWM_Init(60000, 0.0, 1);
 
-	delay_ms(250);
+	Delay(250);
 	P3->OUT |= BIT6;
 	P3->OUT |= BIT7;
 }
 
 int main(void)
 {
-	int i = 0;
+	// software initializations
+	int sum;
+	int weighted_sum;
+	double midpoint;
+	Delay(5000); // startup delay
 
-	// initializations
+	// hardware initializations
 	DisableInterrupts();
 	uart0_init();
-
-	delay_ms(5000);
-	INIT_Motors();
-
-	INIT_Camera();
+	InitMotors();
+	InitCamera();
 	EnableInterrupts();
-    
-    TIMER_A0_PWM_DutyCycle(0.35, LEFT_MOTOR_FORWARD);
-    TIMER_A0_PWM_DutyCycle(0.35, RIGHT_MOTOR_FORWARD);
+
+	// startup car
+	uart0_put("starting motors...\r\n");
+	Drive(0.35);
 
 	while (1)
 	{
-
-        
+		// wait line data
 		if (g_sendData == TRUE)
 		{
-            int sum = 0;
-            int weighted_sum = 0;
-
+			// calculate line characteristics
+			sum = 0;
+			weighted_sum = 0;
 			for (i = 0; i < 128; i++)
 			{
 				sum += line[i];
-                weighted_sum += i*line[i];
+				weighted_sum += i * line[i];
 			}
-            double midpoint = (double)weighted_sum / (double) sum;
-            if (sum < 1800000){
-                TIMER_A0_PWM_DutyCycle(0.0, LEFT_MOTOR_FORWARD);
-                TIMER_A0_PWM_DutyCycle(0.0, RIGHT_MOTOR_FORWARD);
-            }
-            else {
-//                double motorSpeed = sum*0.0000009 - 1.4;
-//                TIMER_A0_PWM_DutyCycle(motorSpeed, LEFT_MOTOR_FORWARD);
-//                TIMER_A0_PWM_DutyCycle(motorSpeed, RIGHT_MOTOR_FORWARD);
-                TIMER_A0_PWM_DutyCycle(0.23, LEFT_MOTOR_FORWARD);
-                TIMER_A0_PWM_DutyCycle(0.23, RIGHT_MOTOR_FORWARD);
-            }
-            sprintf(str, "%f", midpoint);
-            uart0_put(str);
-            uart0_put("\r\n");
-            
-            if (midpoint < 61){
-                sprintf(str, "%f", 0.1);
-                TIMER_A2_PWM_DutyCycle(0.1, 1);
-            }else if (midpoint > 66){
-                sprintf(str, "%f", 0.05);
-                TIMER_A2_PWM_DutyCycle(0.05, 1);
-            } else {
-                double servoVal = -0.01*midpoint+0.71;
-                sprintf(str, "%f", servoVal);
-                TIMER_A2_PWM_DutyCycle(servoVal, 1);
-            }
-            uart0_put(str);
-            uart0_put("\r\n");
+			midpoint = (double)weighted_sum / (double)sum;
+
+			// drive the car
+			if (sum < 1800000)
+			{
+				Drive(0.0);
+			}
+			else
+			{
+				Drive(0.23);
+			}
+
+			// steer the car
+			if (midpoint < 61)
+			{
+				Steer(1.0);
+			}
+			else if (midpoint > 66)
+			{
+				Steer(-1.0);
+			}
+			else
+			{
+				double servoVal = -0.01 * midpoint + 0.71;
+				TIMER_A2_PWM_DutyCycle(servoVal, 1);
+			}
+
+			// wait for next frame
 			g_sendData = FALSE;
 		}
-        delay_ms(1);
+		Delay(1);
 	}
 }
