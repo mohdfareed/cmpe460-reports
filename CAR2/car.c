@@ -3,24 +3,32 @@
 
 #include "msp.h"
 #include "uart.h"
-#include "Timer32.h"
 #include "CortexM.h"
 #include "Common.h"
 #include "ADC14.h"
 #include "ControlPins.h"
 #include "TimerA.h"
-#include "navigation.h"
 
-#define LEFT_MOTOR_FORWARD 2
-#define LEFT_MOTOR_BACKWARD 1
-#define RIGHT_MOTOR_FORWARD 4
-#define RIGHT_MOTOR_BACKWARD 3
+// constants
+#define LEFT_MOTOR_FORWARD (2)
+#define LEFT_MOTOR_BACKWARD (1)
+#define RIGHT_MOTOR_FORWARD (4)
+#define RIGHT_MOTOR_BACKWARD (3)
+#define SERVO (1)
 
+// global variables
 uint16_t line[128];
 BOOLEAN g_sendData;
 
+// static variables
 static char str[100];
 static int i;
+static int sum;
+static int weighted_sum;
+static double midpoint;
+
+// function prototypes
+void Navigate(void);
 
 /**
  * Drives the car at a given speed and direction
@@ -55,8 +63,7 @@ void Drive(double speed)
 void Steer(double angle)
 {
 	// map angle to duty cycle (0.05 - 0.1)
-	double dutyCycle = 0.05 + (0.05 * angle);
-	TIMER_A2_PWM_DutyCycle(dutyCycle, 1);
+	TIMER_A2_PWM_DutyCycle(0.05 + (0.05 * angle), SERVO);
 }
 
 /**
@@ -69,8 +76,7 @@ void Delay(int ms)
 	volatile int i;
 	for (i = 0; i < ms * 2224; i++)
 	{
-		; // Do nothing
-	}
+	} // 2224 for 24 MHz
 }
 
 void InitCamera(void)
@@ -106,15 +112,10 @@ void InitMotors(void)
 
 int main(void)
 {
-	// software initializations
-	int sum;
-	int weighted_sum;
-	double midpoint;
+	// initializations
 	Delay(5000); // startup delay
-
-	// hardware initializations
 	DisableInterrupts();
-	uart0_init();
+	uart0_init(); // for debugging
 	InitMotors();
 	InitCamera();
 	EnableInterrupts();
@@ -125,47 +126,52 @@ int main(void)
 
 	while (1)
 	{
-		// wait line data
+		// wait for line data
 		if (g_sendData == TRUE)
 		{
-			// calculate line characteristics
-			sum = 0;
-			weighted_sum = 0;
-			for (i = 0; i < 128; i++)
-			{
-				sum += line[i];
-				weighted_sum += i * line[i];
-			}
-			midpoint = (double)weighted_sum / (double)sum;
-
-			// drive the car
-			if (sum < 1800000)
-			{
-				Drive(0.0);
-			}
-			else
-			{
-				Drive(0.23);
-			}
-
-			// steer the car
-			if (midpoint < 61)
-			{
-				Steer(1.0);
-			}
-			else if (midpoint > 66)
-			{
-				Steer(-1.0);
-			}
-			else
-			{
-				double servoVal = -0.01 * midpoint + 0.71;
-				TIMER_A2_PWM_DutyCycle(servoVal, 1);
-			}
-
-			// wait for next frame
+			// navigate and wait for next frame
+			Navigate();
 			g_sendData = FALSE;
 		}
 		Delay(1);
+	}
+}
+
+void Navigate(void)
+{
+	// calculate line characteristics
+	sum = 0;
+	weighted_sum = 0;
+	for (i = 0; i < 128; i++)
+	{
+		sum += line[i];
+		weighted_sum += i * line[i];
+	}
+	midpoint = (double)weighted_sum / (double)sum;
+
+	// drive the car
+	if (sum < 1800000)
+	{
+		Drive(0.0);
+	}
+	else
+	{
+		Drive(0.23);
+	}
+
+	// steer the car
+	if (midpoint < 61)
+	{
+		Steer(1.0);
+	}
+	else if (midpoint > 66)
+	{
+		Steer(-1.0);
+	}
+	else
+	{
+		// FIXME: use Steer()
+		double servoVal = -0.01 * midpoint + 0.71;
+		TIMER_A2_PWM_DutyCycle(servoVal, 1);
 	}
 }
