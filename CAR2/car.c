@@ -67,22 +67,39 @@ void INIT_Motors(void)
 	P3->OUT |= BIT7;
 }
 
+void Switch_Init(void)
+{
+	// configure PortPin for Switch 1 and Switch2 as port I/O 
+	P1->SEL0 &= ~BIT4;
+	P1->SEL1 &= ~BIT4;
+	// configure as input
+	P1->DIR &= ~BIT4;
+	P1->REN |= BIT4;
+	P1->OUT |= BIT4;          
+}
+
+BOOLEAN Switch1_Pressed(void)
+{
+	// check if pressed
+	if ( P1->IN & BIT4 ) // if not pressed
+		return FALSE;
+	return TRUE;            // if pressed
+}
+
 int main(void)
 {
 	int i = 0;
+    Switch_Init();
+    while (!Switch1_Pressed());
 
 	// initializations
 	DisableInterrupts();
 	uart0_init();
 
-	delay_ms(5000);
 	INIT_Motors();
 
 	INIT_Camera();
 	EnableInterrupts();
-    
-    TIMER_A0_PWM_DutyCycle(0.35, LEFT_MOTOR_FORWARD);
-    TIMER_A0_PWM_DutyCycle(0.35, RIGHT_MOTOR_FORWARD);
 
 	while (1)
 	{
@@ -104,24 +121,22 @@ int main(void)
                 TIMER_A0_PWM_DutyCycle(0.0, RIGHT_MOTOR_FORWARD);
             }
             else {
-//                double motorSpeed = sum*0.0000009 - 1.4;
-//                TIMER_A0_PWM_DutyCycle(motorSpeed, LEFT_MOTOR_FORWARD);
-//                TIMER_A0_PWM_DutyCycle(motorSpeed, RIGHT_MOTOR_FORWARD);
-                TIMER_A0_PWM_DutyCycle(0.23, LEFT_MOTOR_FORWARD);
-                TIMER_A0_PWM_DutyCycle(0.23, RIGHT_MOTOR_FORWARD);
+                double motorSpeed = sum*0.000000572 -0.83030303;
+                TIMER_A0_PWM_DutyCycle(motorSpeed, LEFT_MOTOR_FORWARD);
+                TIMER_A0_PWM_DutyCycle(motorSpeed, RIGHT_MOTOR_FORWARD);
             }
             sprintf(str, "%f", midpoint);
             uart0_put(str);
             uart0_put("\r\n");
             
-            if (midpoint < 61){
+            if (midpoint < 60){
                 sprintf(str, "%f", 0.1);
                 TIMER_A2_PWM_DutyCycle(0.1, 1);
-            }else if (midpoint > 66){
+            }else if (midpoint > 67){
                 sprintf(str, "%f", 0.05);
                 TIMER_A2_PWM_DutyCycle(0.05, 1);
             } else {
-                double servoVal = -0.01*midpoint+0.71;
+                double servoVal = -0.00714285*midpoint+0.528571;
                 sprintf(str, "%f", servoVal);
                 TIMER_A2_PWM_DutyCycle(servoVal, 1);
             }
