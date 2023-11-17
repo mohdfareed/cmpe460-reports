@@ -189,11 +189,11 @@ void Navigate(void)
 	// steer the car
 	if (midpoint < 60)
 	{
-		Steer(1.0);
+		Steer(0.1);
 	}
 	else if (midpoint > 67)
 	{
-		Steer(-1.0);
+		Steer(0.05);
 	}
 	else
 	{
