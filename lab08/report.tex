@@ -47,7 +47,13 @@ With a cut off frequency of 0.7Hz and a capacitor value of 220nF, \ref{eq:HighPa
 R = \frac{1}{2*\pi*C*\text{f}_\text{c}} = \frac{1}{2*\pi*220nF*3.5Hz} = 200k\Omega \label{eq:LowPass}
 \end{equation}
 
-With a cut off frequency of 3.5Hz and a capacitor value of 220nF, \ref{eq:LowPass} shows that the appropriate resistor value is 200k$\Omega$.
+With a cut off frequency of 3.5Hz and a capacitor value of 220nF, \ref{eq:LowPass} shows that the appropriate resistor value is 200k$\Omega$. After passing through the low pass filter, the signal is amplified by an op amp. To make the signal scale up to about 3.3V, a gain of 101 was implemented. The calculation for resistor values is shown in Figure \ref{eq:amplify}.
+
+\begin{equation}
+\text{Gain} = 101 = 1 + \frac{\text{R}_\text{a}}{\text{R}_\text{b}} = 1 + \frac{100,000\Omega}{1,000\Omega} \label{eq:amplify}
+\end{equation}
+
+After amplification and filtering, the signal goes through one last stage consisting of surge protection. A 100$\Omega$ resistor was added and two Schottky diodes were placed around the output. The upper diode is attached to 2.9V from voltage division and the lower diode is attached to -0.4V. This ensures that voltages above 3.3V and below 0V will be pulled away from the output.
 
 \section*{Results and Analysis}
 
