@@ -22,7 +22,7 @@
 
 \section*{Abstract}
 
-yeehaw
+This laboratory exercise involved the design and construction of a heartbeat detection circuit. For the detection of a heartbeat, a OPB745 reflective optical sensor can be used. This device will emit light through a finger and ideally measure reflected light which varies with the pulse within the arteries of a finger. The signal output is then filtered with a low pass filter and a high pass filter to exclude frequencies outside an expected range of heart rates. The resulting signal is then amplified by an op amp to get a more useable signal. This circuit was designed, simulated using LTspice, constructed on a breadboard, and measured. C code was written with an MSP432 microcontroller which would measure pulse based on the output of the constructed circuit. This exercise also includes the design of a PCB with the same heartbeat detection circuit. This exercise was partially successful since the circuit constructed behaved as expected with an oscilloscope generated sinusoidal signal. The circuit output was accurately used by the MSP432 to detect frequency in beats per minute. The circuit constructed was unable to detect a heartbeat using the OPB745 and the PCB was not designed. 
 
 \section*{Design Methodology}
 
