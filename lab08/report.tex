@@ -26,7 +26,7 @@ This laboratory exercise involved the design and construction of a heartbeat det
 
 \section*{Design Methodology}
 
-A PPG is an instrument used to measure changes in blood volume under the skin. One use of this is to measure heart rate. A circuit was designed with the intent to measure pulse within a finger using a OPB745 reflective optical sensor. 
+A PPG is an instrument used to measure changes in blood volume under the skin. One use of this is to measure heart rate. A circuit was designed with the intent to measure pulse within a finger using a OPB745 reflective optical sensor.
 
 \begin{figure}[H]
     \centering
@@ -140,12 +140,42 @@ The figure shows that the calculated cutoff frequencies of 0.7 Hz and 3.5 Hz are
 
 The results show that the simulation and constructed circuit are similar, with the constructed circuit having a slightly lower lower cutoff frequency and a slightly higher upper cutoff frequency. The constructed circuit also has a lower maximum gain (-8 dB) than the simulated circuit (-2 dB), which is likely due to the use of a real op amp instead of an ideal op amp. The phase shift of the constructed circuit is also slightly lower than the simulated circuit at the lower cutoff frequency.
 
+\bigskip
+
+The complete circuit was then simulated using an AC sweep with a logarithmic scale from 100 mHz to 100 Hz. Figure \ref{fig:completeSim} shows the simulation of the complete circuit.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth]{SimFreqOutputValues.png}
+    \caption{Complete Circuit Bode Simulation}
+    \label{fig:completeSim}
+\end{figure}
+
+The figure shows that the gain of the complete circuit has a maximum of around 9.5 dB at 1.5 Hz. The calculated cutoff frequencies of 0.7 Hz and 3.5 Hz are at 7.6 dB and 7.9 dB, respectively, which is approximately correct. The figure also shows that the phase shift of the circuit is approximately 80 degrees at low frequencies (around 100 mHz) and -65 degrees at high frequencies (around 100 Hz), which is close to the expected values. The phase shift has the general behavior of decreasing from 80 to -65 degrees as the frequency increases. The phase shift is approximately 30 degrees at the lower cutoff frequency and -30 degrees at the upper cutoff frequency, which is also close to the expected values.
+
+The final output of the circuit was then simulated using a time domain simulation with an input of a 1 V sinusoidal wave with a frequency of 1 Hz. Figure \ref{fig:timeSim} shows the simulation of the complete circuit.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth]{SimTimeOutput.png}
+    \caption{Complete Circuit Time Domain Simulation}
+    \label{fig:timeSim}
+\end{figure}
+
+The figure shows that the output of the circuit is a conditioned sinusoidal wave with a frequency of 1 Hz, which is the expected behavior. The amplitude of the wave is approximately 3.3 V, which correctly reflects an amplified signal from the OPB745 (in pass band).
+
+The complete circuit was constructed on a breadboard and tested using an oscilloscope. A function generator was used to generate input waves at 200 mHz, 1 Hz, and 10 Hz to simulate a heartbeat at different BPM. Figure \ref{fig:200mHzCapture} shows the oscilloscope capture of the output of the circuit at 200 mHz (12 BPM).
+
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.75\textwidth]{200mHz.png}
     \caption{Oscilloscope SCHTUFF}
     \label{fig:200mHzCapture}
 \end{figure}
+
+Figure \ref{fig:200mHzCapture} shows that the output of the circuit is a sinusoidal wave with a frequency of 200 mHz, which is the expected behavior. The amplitude of the wave is approximately 0.6 V, which correctly reflects a filtered signal from the OPB745 (in stop band).
+
+Figure \ref{fig:1HzCapture} shows the oscilloscope capture of the output of the circuit at 1 Hz (60 BPM).
 
 \begin{figure}[H]
     \centering
@@ -154,12 +184,18 @@ The results show that the simulation and constructed circuit are similar, with t
     \label{fig:1HzCapture}
 \end{figure}
 
+Figure \ref{fig:1HzCapture} shows that the output of the circuit is a sinusoidal wave with a frequency of 1 Hz, which is the expected behavior. The amplitude of the wave is approximately 1.53 V, which correctly reflects an amplified signal from the OPB745 (in pass band).
+
+Figure \ref{fig:10HzCapture} shows the oscilloscope capture of the output of the circuit at 10 Hz (600 BPM).
+
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.75\textwidth]{10Hz.png}
     \caption{Oscilloscope SCHTUFF}
     \label{fig:10HzCapture}
 \end{figure}
+
+Figure \ref{fig:10HzCapture} shows that the output of the circuit is a sinusoidal wave with a frequency of 10 Hz, which is the expected behavior. The amplitude of the wave is approximately 0.76 V, which correctly reflects a filtered signal from the OPB745 (in stop band).
 
 \section*{Questions}
 
