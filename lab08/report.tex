@@ -50,7 +50,7 @@ With a cut off frequency of 0.7Hz and a capacitor value of 220nF, Equation \ref{
 From this equation, it is evident that as frequency increases, the magnitude increases. This is characteristic of a high pass filter. The phase response is shown in Equation \ref{eq:HighPassPhase}.
 
 \begin{equation}
-\angle\frac{\text{V}_\text{out}}{\text{V}_\text{in}} = -tan^{-1}(\frac{\omega\text{R}\text{C}}{1}) \label{eq:HighPassPhase}
+\angle\frac{\text{V}_\text{out}}{\text{V}_\text{in}} = -tan^{-1}(\frac{1}{\omega\text{R}\text{C}}) \label{eq:HighPassPhase}
 \end{equation}
 
 This equation describes the delay that a signal will experience from the high pass filter. The signal from the high pass filter then goes through another voltage follower for isolation between stages. Next, the signal is filtered by a passive low pass RC filter. This filter has a cut off frequency of 3.5Hz which is 210bpm.  The equation for the low pass filter design is shown below.
@@ -68,7 +68,7 @@ With a cut off frequency of 3.5Hz and a capacitor value of 220nF, Equation \ref{
 This equation describes the magnitude response in relation to frequency for a low pass filter. According to this transfer function, as frequency increases, the magnitude decreases. The phase of the transfer function is shown in Equation \ref{eq:LowPassPhase}.
 
 \begin{equation}
-\angle\frac{\text{V}_\text{out}}{\text{V}_\text{in}} = -tan^{-1}(\frac{1}{\omega\text{R}\text{C}}) \label{eq:LowPassPhase}
+\angle\frac{\text{V}_\text{out}}{\text{V}_\text{in}} = -tan^{-1}(\frac{\omega\text{R}\text{C}}{1}) \label{eq:LowPassPhase}
 \end{equation}
 
 This equation describes the delay that a signal will experience from the low pass filter. After passing through the low pass filter, the signal is amplified by an op amp. To make the signal scale up to about 3.3V, a gain of 101 was implemented. The calculation for resistor values is shown in Figure \ref{eq:amplify}.
