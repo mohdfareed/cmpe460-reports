@@ -116,38 +116,34 @@ int main(void)
                 weighted_sum += i*line[i];
 			}
             double midpoint = (double)weighted_sum / (double) sum;
+
+            double servoVal;
+            if (midpoint < 62){
+                servoVal = 0.1;
+            }else if (midpoint > 65){
+                servoVal = 0.05;
+            } else {
+                if (midpoint <= 63.5){
+                    servoVal = (1.0/90.0)*(midpoint-63.5)*(midpoint-63.5)+0.075;
+                }
+                else {
+                    servoVal = (-1.0/190.0)*(midpoint-63.5)*(midpoint-63.5)+0.075;
+                }
+            }
+            TIMER_A2_PWM_DutyCycle(servoVal, 1);
+            
             if (sum < 1750000){
                 TIMER_A0_PWM_DutyCycle(0.0, LEFT_MOTOR_FORWARD);
                 TIMER_A0_PWM_DutyCycle(0.0, RIGHT_MOTOR_FORWARD);
             }
             else {
-                double motorSpeed = sum*0.0000004899135 - 0.6573487031700287;
+                if (servoVal >= 0.075) servoVal -= 0.075;
+                else servoVal = 0.075 - servoVal;
+                double motorSpeed = -400.0*servoVal*servoVal + 0.5;
                 TIMER_A0_PWM_DutyCycle(motorSpeed, LEFT_MOTOR_FORWARD);
                 TIMER_A0_PWM_DutyCycle(motorSpeed, RIGHT_MOTOR_FORWARD);
             }
-            sprintf(str, "%f", midpoint);
-            uart0_put(str);
-            uart0_put("\r\n");
-            
-            if (midpoint < 61){
-                sprintf(str, "%f", 0.1);
-                TIMER_A2_PWM_DutyCycle(0.1, 1);
-            }else if (midpoint > 66){
-                sprintf(str, "%f", 0.05);
-                TIMER_A2_PWM_DutyCycle(0.05, 1);
-            } else {
-                double servoVal;
-                if (midpoint <= 63.5){
-                    servoVal = (1.0/250.0)*(midpoint-63.5)*(midpoint-63.5)+0.075;
-                }
-                else {
-                    servoVal = (-1.0/250.0)*(midpoint-63.5)*(midpoint-63.5)+0.075;
-                }
-                sprintf(str, "%f", servoVal);
-                TIMER_A2_PWM_DutyCycle(servoVal, 1);
-            }
-            uart0_put(str);
-            uart0_put("\r\n");
+
 			g_sendData = FALSE;
 		}
         delay_ms(1);
