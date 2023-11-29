@@ -177,7 +177,7 @@ The band-pass filter of the circuit was constructed on a breadboard and tested u
 
 The figure shows that the calculated cutoff frequencies of 0.7 Hz and 3.5 Hz are approximately correct. Using -11 dB as the cutoff point (3 dB less than the maximum gain), the lower cutoff frequency is slightly lower than the calculated value and the upper cutoff frequency is slightly higher than the calculated value. The phase shift of the circuit is approximately 30 degrees at the lower cutoff frequency, decreasing to -25 degrees at the upper cutoff frequency, which is the expected behavior. The phase shift has the general behavior of decreasing from 60 to -65 degrees as the frequency increases.\\
 
-The results show that the simulation and constructed circuit are similar, with the constructed circuit having a slightly lower lower cutoff frequency and a slightly higher upper cutoff frequency. The constructed circuit also has a lower maximum gain (-8 dB) than the simulated circuit (-2 dB), which is attributed to the decreased gain of the high-pass filter of the circuit. The phase shift of the constructed circuit is also slightly lower than the simulated circuit at the lower cutoff frequency.
+The results show that the simulation and constructed circuit are similar, with the constructed circuit having a slightly lower cutoff frequency and a slightly higher upper cutoff frequency. The constructed circuit also has a lower maximum gain (-8 dB) than the simulated circuit (-2 dB), which is attributed to the decreased gain of the high-pass filter of the circuit. The phase shift of the constructed circuit is also slightly lower than the simulated circuit at the lower cutoff frequency.
 
 \bigskip
 
@@ -190,7 +190,7 @@ The PPG circuit was then constructed and simulated in LTspice. Figure \ref{fig:l
     \label{fig:ltspiceSchematic}
 \end{figure}
 
-The figure shows that the OPB745 is simulated using a function generator with a 1 V amplitude and a frequency of 1 Hz, and the circuit is constructed using the appropriate components. The complete circuit was then simulated using an AC sweep with a logarithmic scale from 100 mHz to 100 Hz. Figure \ref{fig:completeSim} shows the simulation of the complete circuit.
+The figure shows that the OPB745 is simulated using a function generator with a 35 mV amplitude and a frequency of 1 Hz, and the circuit is constructed using the appropriate components. The complete circuit was then simulated using an AC sweep with a logarithmic scale from 100 mHz to 10 Hz. Figure \ref{fig:completeSim} shows the simulation of the complete circuit.
 
 \begin{figure}[H]
     \centering
@@ -199,9 +199,9 @@ The figure shows that the OPB745 is simulated using a function generator with a 
     \label{fig:completeSim}
 \end{figure}
 
-The figure shows that the gain of the complete circuit has a maximum of around 9.5 dB at 1.5 Hz. The calculated cutoff frequencies of 0.7 Hz and 3.5 Hz are at 7.6 dB and 7.9 dB, respectively, which is approximately correct. The figure also shows that the phase shift of the circuit is approximately 80 degrees at low frequencies (around 100 mHz) and -65 degrees at high frequencies (around 100 Hz), which is close to the expected values. The phase shift has the general behavior of decreasing from 80 to -65 degrees as the frequency increases. The phase shift is approximately 30 degrees at the lower cutoff frequency and -30 degrees at the upper cutoff frequency, which is also close to the expected values.\\
+The figure shows that the gain of the complete circuit has a maximum of around 9.5 dB at 1.5 Hz. The calculated cutoff frequencies of 0.7 Hz and 3.5 Hz are at 7.6 dB and 7.9 dB, respectively, which is approximately correct. The figure also shows that the phase shift of the circuit is approximately 80 degrees at low frequencies (around 100 mHz) and -65 degrees at high frequencies (around 10 Hz), which is close to the expected values. The phase shift has the general behavior of decreasing from 80 to -65 degrees as the frequency increases. The phase shift is approximately 30 degrees at the lower cutoff frequency and -30 degrees at the upper cutoff frequency, which is also close to the expected values.\\
 
-The final output of the circuit was then simulated using a time domain simulation with an input of a 1 V sinusoidal wave with a frequency of 1 Hz. Figure \ref{fig:timeSim} shows the simulation of the complete circuit.
+The final output of the circuit was then simulated using a time domain simulation with an input of a 35 mV sinusoidal wave with a frequency of 1 Hz and offset of 0.5 V. Figure \ref{fig:timeSim} shows the simulation of the complete circuit.
 
 \begin{figure}[H]
     \centering
@@ -247,7 +247,7 @@ Figure \ref{fig:10HzCapture} shows that the output of the circuit is a sinusoida
 
 \bigskip
 
-The final output of the circuit was then fed into an MSP432 microcontroller to measure the frequency of the signal. The microcontroller was programmed to measure the frequency of the signal and output the frequency in beats per minute (BPM) to a serial monitor. The microcontroller was programmed to fire interrupts to capture the ADC value of the signal. The ADC value was then converted to a voltage and used to calculate a BPM. The following is the code used:
+The final output of the circuit was then fed into an MSP432 microcontroller to measure the frequency of the signal. The microcontroller was programmed to measure the frequency of the signal and output the frequency in beats per minute (BPM) to a serial monitor. The microcontroller was programmed to execute interrupts to capture the ADC value of the signal. The ADC value was then used to calculate BPM by measuring time between passing a constant threshold value. The following is the code used:
 
 \begin{verbatim}
 #define CAPTURE_FREQ (122)    // frequency of ADC data capture
@@ -296,7 +296,7 @@ The code shows that the BPM was calculated by counting the number of ADC values 
 \text{BPM} = \frac{\text{CAPTURE\_FREQ} \times 60}{\text{count}} \label{eq:bpm}
 \end{equation}
 
-The code shows that the BPM was only calculated if the BPM was between 40 and 220 and the difference between the current BPM and the previous BPM was less than 11. This was done to prevent the BPM from fluctuating too much, providing a more stable reading.//
+The code shows that the BPM was only calculated if the BPM was between 40 and 220 and the difference between the current BPM and the previous BPM was less than 11. This was done to prevent the BPM from fluctuating too much, providing a more stable reading.\\
 
 The microcontroller was then connected to the circuit and the circuit was tested using a function generator to generate input wave to simulate a heartbeat at different BPM. Figure \ref{fig:serialMonitor} shows the output of the serial monitor.
 
@@ -307,7 +307,7 @@ The microcontroller was then connected to the circuit and the circuit was tested
     \label{fig:serialMonitor}
 \end{figure}
 
-The figure shows that the output of the serial monitor is the BPM of the input wave, which was manually set to 2 Hz, 1 Hz, 2 Hz, and then 1 Hz. The BPM is calculated to to be 120, 60, 120, and 60, respectively, which matches the output shown in the figure. The output also shows slight fluctuations in the BPM of $\pm 1$, which is attributed to noise.
+The figure shows that the output of the serial monitor is the BPM of the input wave, which was manually set to 2 Hz, 1 Hz, 1.5 Hz, 2 Hz, and then 1 Hz. The BPM is calculated to to be 120, 60, 90, 120, and 60, respectively, which matches the output shown in the figure. The output also shows slight fluctuations in the BPM of $\pm 1$, which is attributed to noise.
 
 \section*{Questions}
 
@@ -329,7 +329,7 @@ The gain of the circuit was slightly lower than the calculated values, but was c
 
 \section*{Conclusion}
 
-This report details the design, simulation, construction, and testing of a heart rate monitoring circuit. The exercise achieved partial success, demonstrated by the effective performance of the constructed circuit with an oscilloscope-generated sinusoidal signal and its compatibility with the MSP432 microcontroller for heartbeat frequency detection. However, problems and limitations were encountered, such as the inability of the OPB745 sensor in the constructed circuit to detect an actual heartbeat and the gain drop in the high-pass filter stage of the circuit. The experimental results were generally consistent with the simulations, showing slight deviations in cutoff frequencies and gain values, which can be attributed to the practical limitations of real-world components versus idealized simulation models.
+This report details the design, simulation, construction, and testing of a heart rate monitoring circuit. The exercise achieved partial success, demonstrated by the effective performance of the constructed circuit with an oscilloscope-generated sinusoidal signal and its compatibility with the MSP432 microcontroller for heartbeat frequency detection. However, problems and limitations were encountered, such as the inability of the OPB745 sensor in the constructed circuit to detect an actual heartbeat and the gain drop in the high-pass filter stage of the circuit. The experimental results were generally consistent with the simulations, showing slight deviations in cutoff frequencies and gain values, which can be attributed to the practical limitations of real-world components versus idealized simulation models and calculations.
 
 \newpage
 \begin{figure}[H]
