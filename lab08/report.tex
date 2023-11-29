@@ -12,7 +12,7 @@
 \newcommand{\classCode}{CMPE 460}
 \newcommand{\LabSectionNum}{1}
 \newcommand{\LabInstructor}{Prof.\ Hussin Ketout}
-\newcommand{\TAs}{Andrew Tevebaugh \\  Colin Vo}
+\newcommand{\TAs}{Andrew Tevebaugh \\ Colin Vo}
 \newcommand{\LectureSectionNum}{1}
 \newcommand{\LectureInstructor}{Prof.\ Hussin Ketout}
 
@@ -26,8 +26,35 @@ yeehaw
 
 \section*{Design Methodology}
 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth]{LTspiceSchematic.png}
+    \caption{LTspice Schematic}
+    \label{fig:ltspiceSchematic}
+\end{figure}
 
 \section*{Results and Analysis}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth]{high_pass_plot.pdf}
+    \caption{High-Pass Filter Bode Plot}
+    \label{fig:highPassBode}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth]{low_pass_plot.pdf}
+    \caption{Low-Pass Filter Bode Plot}
+    \label{fig:lowPassBode}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth]{band_pass_plot.pdf}
+    \caption{Band-Pass Filter Bode Plot}
+    \label{fig:bandPassBode}
+\end{figure}
 
 \begin{figure}[H]
     \centering
@@ -50,11 +77,19 @@ yeehaw
     \label{fig:10HzCapture}
 \end{figure}
 
-
-
 \section*{Questions}
 
+\textbf{1.} \emph{What is the ERC and DRC for?}
 
+ERC stands for Electrical Rule Check and DRC stands for Design Rule Check. The ERC checks for electrical errors in the schematic, such as unconnected pins. The DRC checks for design errors in the schematic, such as incorrect pin types.
+
+\bigskip
+
+\textbf{2.} \emph{Did your circuit cutoff frequencies match your expected/calculated values? Explain}
+
+\bigskip
+
+\textbf{3.} \emph{Did the gain of the circuit match the expected/calculated values? Explain}
 
 \section*{Conclusion}
 
