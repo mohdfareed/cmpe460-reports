@@ -60,7 +60,7 @@ void INIT_Motors(void)
 	TIMER_A0_PWM_Init(2400, 0.0, 2);
 	TIMER_A0_PWM_Init(2400, 0.0, 3);
 	TIMER_A0_PWM_Init(2400, 0.0, 4);
-	TIMER_A2_PWM_Init(60000, 0.0, 1);
+	TIMER_A2_PWM_Init(60000, 0.075, 1);
 
 	delay_ms(250);
 	P3->OUT |= BIT6;
@@ -116,12 +116,12 @@ int main(void)
                 weighted_sum += i*line[i];
 			}
             double midpoint = (double)weighted_sum / (double) sum;
-            if (sum < 1800000){
+            if (sum < 1750000){
                 TIMER_A0_PWM_DutyCycle(0.0, LEFT_MOTOR_FORWARD);
                 TIMER_A0_PWM_DutyCycle(0.0, RIGHT_MOTOR_FORWARD);
             }
             else {
-                double motorSpeed = sum*0.000000572 -0.83030303;
+                double motorSpeed = sum*0.0000004899135 - 0.6573487031700287;
                 TIMER_A0_PWM_DutyCycle(motorSpeed, LEFT_MOTOR_FORWARD);
                 TIMER_A0_PWM_DutyCycle(motorSpeed, RIGHT_MOTOR_FORWARD);
             }
@@ -129,14 +129,20 @@ int main(void)
             uart0_put(str);
             uart0_put("\r\n");
             
-            if (midpoint < 60){
+            if (midpoint < 61){
                 sprintf(str, "%f", 0.1);
                 TIMER_A2_PWM_DutyCycle(0.1, 1);
-            }else if (midpoint > 67){
+            }else if (midpoint > 66){
                 sprintf(str, "%f", 0.05);
                 TIMER_A2_PWM_DutyCycle(0.05, 1);
             } else {
-                double servoVal = -0.00714285*midpoint+0.528571;
+                double servoVal;
+                if (midpoint <= 63.5){
+                    servoVal = (1.0/250.0)*(midpoint-63.5)*(midpoint-63.5)+0.075;
+                }
+                else {
+                    servoVal = (-1.0/250.0)*(midpoint-63.5)*(midpoint-63.5)+0.075;
+                }
                 sprintf(str, "%f", servoVal);
                 TIMER_A2_PWM_DutyCycle(servoVal, 1);
             }
