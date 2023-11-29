@@ -221,6 +221,70 @@ Figure \ref{fig:10HzCapture} shows the oscilloscope capture of the output of the
 
 Figure \ref{fig:10HzCapture} shows that the output of the circuit is a sinusoidal wave with a frequency of 10 Hz, which is the expected behavior. The amplitude of the wave is approximately 0.76 V, which correctly reflects a filtered signal from the OPB745 (in stop band).
 
+\bigskip
+
+The final output of the circuit was then fed into an MSP432 microcontroller to measure the frequency of the signal. The microcontroller was programmed to measure the frequency of the signal and output the frequency in beats per minute (BPM) to a serial monitor. The microcontroller was programmed to fire interrupts to capture the ADC value of the signal. The ADC value was then converted to a voltage and used to calculate a BPM. The following is the code used:
+
+\begin{verbatim}
+#define CAPTURE_FREQ (122)    // frequency of ADC data capture
+#define VOLTAGE_CUTOFF (5000) // voltage cutoff for a heartbeat
+unsigned int count = 10001;
+unsigned int previous = 0;
+double prev_bpm = -1;
+static char str[100];
+
+// Interrupt Service Routine for Timer32-1
+void Timer32_1_ISR(void) {
+    char str[30];
+    unsigned int num = ADC_In();
+
+    if (num >= VOLTAGE_CUTOFF && previous < VOLTAGE_CUTOFF){
+        double bpm = 7320 / count;
+        int abs = bpm - prev_bpm;
+        if (abs < 0) abs = abs * -1;
+        count = 0;
+        if (bpm > 40 && bpm < 220 && abs < 11) {
+            // print bpm
+            sprintf(str, "Heart %d BPM\r\n", (int)bpm);
+            uart0_put(str);
+        }
+        prev_bpm = bpm;
+    }
+    else { count++; }
+    previous = num;
+}
+
+int main(void)
+{
+    DisableInterrupts();
+    uart0_init();
+    Timer32_1_Init(&Timer32_1_ISR, SystemCoreClock / CAPTURE_FREQ, T32DIV1);
+    ADC0_InitSWTriggerCh6();
+    EnableInterrupts();
+    uart0_put("Initialized\r\n");
+    while (1) {}
+}
+\end{verbatim}
+
+The code shows that the BPM was calculated by counting the number of ADC values that were below a certain voltage cutoff relative to all ADC values. The ADC values were captured at a frequency of 122 Hz. The BPM was then calculated using Equation \ref{eq:bpm}.
+
+\begin{equation}
+\text{BPM} = \frac{\text{CAPTURE\_FREQ} \times 60}{\text{count}} \label{eq:bpm}
+\end{equation}
+
+The code shows that the BPM was only calculated if the BPM was between 40 and 220 and the difference between the current BPM and the previous BPM was less than 11. This was done to prevent the BPM from fluctuating too much, providing a more stable reading.
+
+The microcontroller was then connected to the circuit and the circuit was tested using a function generator to generate input wave to simulate a heartbeat at different BPM. Figure \ref{fig:serialMonitor} shows the output of the serial monitor.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.2\textwidth]{putty.png}
+    \caption{Serial Monitor Output}
+    \label{fig:serialMonitor}
+\end{figure}
+
+The figure shows that the output of the serial monitor is the BPM of the input wave, which was manually set to 2 Hz, 1 Hz, 2 Hz, and then 1 Hz. The BPM is calculated to to be 120, 60, 120, and 60, respectively, which matches the output shown in the figure. The output also shows slight fluctuations in the BPM of $\pm 1$, which is attributed to noise.
+
 \section*{Questions}
 
 \textbf{1.} \emph{What is the ERC and DRC for?}
@@ -245,7 +309,15 @@ The gain of the circuit was slightly lower than the calculated values, but was c
 \begin{figure}[H]
     \centering
     \begin{adjustbox}{center}
-        \includegraphics[width=1.26\textwidth]{signoff.pdf}
+        \includegraphics[width=1.26\textwidth]{signoff_1.pdf}
+    \end{adjustbox}
+\end{figure}
+
+\newpage
+\begin{figure}[H]
+    \centering
+    \begin{adjustbox}{center}
+        \includegraphics[width=1.26\textwidth]{signoff_2.pdf}
     \end{adjustbox}
 \end{figure}
 
