@@ -55,13 +55,6 @@ With a cut off frequency of 3.5Hz and a capacitor value of 220nF, \ref{eq:LowPas
 
 After amplification and filtering, the signal goes through one last stage consisting of surge protection. A 100$\Omega$ resistor was added and two Schottky diodes were placed around the output. The upper diode is attached to 2.9V from voltage division and the lower diode is attached to -0.4V. This ensures that voltages above 3.3V and below 0V will be pulled away from the output. 
 
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=1\textwidth]{LTspiceSchematic.png}
-    \caption{LTspice Schematic}
-    \label{fig:ltspiceSchematic}
-\end{figure}
-
 \section*{Results and Analysis}
 
 The circuit was both simulated and constructed on a breadboard, with each stage of the circuit tested and compared. Figure \ref{fig:highPassSim} shows the simulation of the high-pass filter of the circuit, performed using an AC sweep with a logarithmic scale from 100 mHz to 100 Hz.
