@@ -49,16 +49,20 @@ R = \frac{1}{2*\pi*C*\text{f}_\text{c}} = \frac{1}{2*\pi*220nF*3.5Hz} = 200k\Ome
 
 With a cut off frequency of 3.5Hz and a capacitor value of 220nF, \ref{eq:LowPass} shows that the appropriate resistor value is 200k$\Omega$.
 
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=1\textwidth]{LTspiceSchematic.png}
-    \caption{LTspice Schematic}
-    \label{fig:ltspiceSchematic}
-\end{figure}
-
 \section*{Results and Analysis}
 
-The circuit was both simulated and constructed on a breadboard, with each stage of the circuit tested and compared. Figure \ref{fig:highPassSim} shows the simulation of the high-pass filter of the circuit, performed using an AC sweep with a logarithmic scale from 100 mHz to 100 Hz.
+The circuit was simulated using LTspice, constructed on a breadboard, and then tested and compared to the simulation results. First, the high pass filter of the circuit was simulated using the schematic shown in Figure \ref{fig:ltspiceHighPassSchematic}.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.35\textwidth]{HighPass.png}
+    \caption{High-Pass Filter Schematic}
+    \label{fig:ltspiceHighPassSchematic}
+\end{figure}
+
+The figure shows that the filter was simulated using a function generator with a 1 V, with a 220 nF capacitor and a 1 M$\Omega$ resistor. The complete circuit was then simulated using an AC sweep with a logarithmic scale from 100 mHz to 100 Hz.
+
+Figure \ref{fig:highPassSim} shows the simulation of the high-pass filter of the circuit, performed using an AC sweep with a logarithmic scale from 100 mHz to 100 Hz.
 
 \begin{figure}[H]
     \centering
@@ -80,11 +84,22 @@ The high-pass filter of the circuit was constructed on a breadboard and tested u
 
 The figure shows that the calculated cutoff frequency of 0.7 Hz is approximately correct. The cutoff frequency on the plot is slightly higher than the calculated value, using -9 dB as the cutoff point (3 dB less than the maximum gain). The plot shows that the phase shift of the circuit is approximately 45 degrees at the cutoff frequency, decreasing to 0 degrees at higher frequencies. The phase shift has the general behavior of increasing from 75 to 0 degrees as the frequency increases.
 
-The results show that the simulation and constructed circuit are similar, with the constructed circuit having a slightly higher cutoff frequency and a slightly lower phase shift at the cutoff frequency. The constructed circuit also has a lower maximum gain (-6 dB) than the simulated circuit (0 dB), which is likely due to the use of a real op amp instead of an ideal op amp.
+The results show that the simulation and constructed circuit are similar, with the constructed circuit having a slightly higher cutoff frequency and a slightly lower phase shift at the cutoff frequency. The constructed circuit also has a lower maximum gain (-6 dB) than the simulated circuit (0 dB), which is approximately half of the simulated value. This decrease in gain propagates through the rest of the circuit.
 
 \bigskip
 
-The low-pass filter of the circuit was simulated using an AC sweep with a logarithmic scale from 100 mHz to 100 Hz. Figure \ref{fig:lowPassSim} shows the simulation of the low-pass filter of the circuit.
+The low pass filter of the circuit was simulated using the schematic shown in Figure \ref{fig:ltspiceLowPassSchematic}.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.35\textwidth]{LowPass.png}
+    \caption{Low-Pass Filter Schematic}
+    \label{fig:ltspiceLowPassSchematic}
+\end{figure}
+
+The figure shows that the filter was simulated using a function generator with a 1 V, with a 220 nF capacitor and a 200 k$\Omega$ resistor. The complete circuit was then simulated using an AC sweep with a logarithmic scale from 100 mHz to 100 Hz.
+
+Figure \ref{fig:lowPassSim} shows the simulation of the low-pass filter of the circuit, performed using an AC sweep with a logarithmic scale from 100 mHz to 100 Hz.
 
 \begin{figure}[H]
     \centering
@@ -110,7 +125,7 @@ The results show that the simulation and constructed circuit are very similar, w
 
 \bigskip
 
-The band-pass filter of the circuit was simulated using an AC sweep with a logarithmic scale from 100 mHz to 100 Hz. Figure \ref{fig:bandPassSim} shows the simulation of the band-pass filter of the circuit.
+The band pass filter of the circuit was simulated by combining the high-pass and low-pass filters. Figure \ref{fig:bandPassSim} shows the simulation of the band-pass filter of the circuit, performed using an AC sweep with a logarithmic scale from 100 mHz to 100 Hz.
 
 \begin{figure}[H]
     \centering
@@ -132,11 +147,20 @@ The band-pass filter of the circuit was constructed on a breadboard and tested u
 
 The figure shows that the calculated cutoff frequencies of 0.7 Hz and 3.5 Hz are approximately correct. Using -11 dB as the cutoff point (3 dB less than the maximum gain), the lower cutoff frequency is slightly lower than the calculated value and the upper cutoff frequency is slightly higher than the calculated value. The phase shift of the circuit is approximately 30 degrees at the lower cutoff frequency, decreasing to -25 degrees at the upper cutoff frequency, which is the expected behavior. The phase shift has the general behavior of decreasing from 60 to -65 degrees as the frequency increases.
 
-The results show that the simulation and constructed circuit are similar, with the constructed circuit having a slightly lower lower cutoff frequency and a slightly higher upper cutoff frequency. The constructed circuit also has a lower maximum gain (-8 dB) than the simulated circuit (-2 dB), which is likely due to the use of a real op amp instead of an ideal op amp. The phase shift of the constructed circuit is also slightly lower than the simulated circuit at the lower cutoff frequency.
+The results show that the simulation and constructed circuit are similar, with the constructed circuit having a slightly lower lower cutoff frequency and a slightly higher upper cutoff frequency. The constructed circuit also has a lower maximum gain (-8 dB) than the simulated circuit (-2 dB), which is attributed to the decreased gain of the high-pass filter of the circuit. The phase shift of the constructed circuit is also slightly lower than the simulated circuit at the lower cutoff frequency.
 
 \bigskip
 
-The complete circuit was then simulated using an AC sweep with a logarithmic scale from 100 mHz to 100 Hz. Figure \ref{fig:completeSim} shows the simulation of the complete circuit.
+The PPG circuit was then constructed and simulated in LTspice. Figure \ref{fig:ltspiceSchematic} shows the schematic of the complete circuit constructed in LTspice.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth]{LTspiceSchematic.png}
+    \caption{LTspice Schematic}
+    \label{fig:ltspiceSchematic}
+\end{figure}
+
+The figure shows that the OPB745 is simulated using a function generator with a 1 V amplitude and a frequency of 1 Hz, and the circuit is constructed using the appropriate components. The complete circuit was then simulated using an AC sweep with a logarithmic scale from 100 mHz to 100 Hz. Figure \ref{fig:completeSim} shows the simulation of the complete circuit.
 
 \begin{figure}[H]
     \centering
@@ -163,7 +187,7 @@ The complete circuit was constructed on a breadboard and tested using an oscillo
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.75\textwidth]{200mHz.png}
-    \caption{Oscilloscope SCHTUFF}
+    \caption{Oscilloscope capture at 200 mHz (stop band)}
     \label{fig:200mHzCapture}
 \end{figure}
 
@@ -174,18 +198,18 @@ Figure \ref{fig:1HzCapture} shows the oscilloscope capture of the output of the 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.75\textwidth]{1Hz.png}
-    \caption{Oscilloscope SCHTUFF}
+    \caption{Oscilloscope capture at 1 Hz (pass band)}
     \label{fig:1HzCapture}
 \end{figure}
 
-Figure \ref{fig:1HzCapture} shows that the output of the circuit is a sinusoidal wave with a frequency of 1 Hz, which is the expected behavior. The amplitude of the wave is approximately 1.53 V, which correctly reflects an amplified signal from the OPB745 (in pass band).
+Figure \ref{fig:1HzCapture} shows that the output of the circuit is a sinusoidal wave with a frequency of 1 Hz, which is the expected behavior. The amplitude of the wave is approximately 1.53 V, which correctly reflects an amplified signal from the OPB745 (in pass band). The amplitude of the wave is also approximately half of the simulated value, which is attributed to the decreased gain of the high-pass filter of the circuit.
 
 Figure \ref{fig:10HzCapture} shows the oscilloscope capture of the output of the circuit at 10 Hz (600 BPM).
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.75\textwidth]{10Hz.png}
-    \caption{Oscilloscope SCHTUFF}
+    \caption{Oscilloscope capture at 10 Hz (stop band)}
     \label{fig:10HzCapture}
 \end{figure}
 
@@ -201,9 +225,13 @@ ERC stands for Electrical Rule Check and DRC stands for Design Rule Check. The E
 
 \textbf{2.} \emph{Did your circuit cutoff frequencies match your expected/calculated values? Explain}
 
+The cutoff frequency of the low-pass filter of the circuit matched the calculated values. The cutoff frequencies of the high-pass and band-pass filters were slightly different than the calculated values, but were close enough to be considered correct.
+
 \bigskip
 
 \textbf{3.} \emph{Did the gain of the circuit match the expected/calculated values? Explain}
+
+The gain of the circuit was slightly lower than the calculated values, but was close enough to be considered correct, which is attributed to the use of a real op amp instead of an ideal op amp. The gain of the high-pass filter was approximately half of the calculated value, which propagated through the rest of the circuit, causing a decreased gain in the band-pass filter, and thus, the complete circuit.
 
 \section*{Conclusion}
 
