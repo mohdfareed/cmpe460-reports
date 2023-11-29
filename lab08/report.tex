@@ -35,12 +35,18 @@ yeehaw
 
 \section*{Results and Analysis}
 
+The high-pass filter of the circuit was tested at different input frequencies and the resulting voltage gain and phase shift were plotted. Figure \ref{fig:highPassBode} shows the resulting Bode plot.
+
 \begin{figure}[H]
     \centering
     \includegraphics[width=1\textwidth]{high_pass_plot.pdf}
     \caption{High-Pass Filter Bode Plot}
     \label{fig:highPassBode}
 \end{figure}
+
+The figure shows that the calculated cutoff frequency of 0.7 Hz is approximately correct. The cutoff frequency on the plot is slightly higher than the calculated value, using -9 dB as the cutoff point (3 dB less than the maximum gain). The plot shows that the phase shift of the circuit is approximately 45 degrees at the cutoff frequency, decreasing to 0 degrees at higher frequencies. The phase shift has the general behavior of increasing from 75 to 0 degrees as the frequency increases.
+
+The low-pass filter of the circuit was tested at different input frequencies and the resulting voltage gain and phase shift were plotted. Figure \ref{fig:lowPassBode} shows the resulting Bode plot.
 
 \begin{figure}[H]
     \centering
@@ -49,12 +55,16 @@ yeehaw
     \label{fig:lowPassBode}
 \end{figure}
 
+The figure shows that the calculated cutoff frequency of 3.5 Hz is approximately correct. The cutoff frequency on the plot falls at the calculated value, using -3 dB as the cutoff point (3 dB less than the maximum gain). The phase shift of the circuit is approximately -38 degrees at the cutoff frequency, decreasing to -65 degrees at higher frequencies, which is the expected behavior. The phase shift has the general behavior of decreasing from 0 to -65 degrees as the frequency increases.
+
 \begin{figure}[H]
     \centering
     \includegraphics[width=1\textwidth]{band_pass_plot.pdf}
     \caption{Band-Pass Filter Bode Plot}
     \label{fig:bandPassBode}
 \end{figure}
+
+The figure shows that the calculated cutoff frequencies of 0.7 Hz and 3.5 Hz are approximately correct. Using -11 dB as the cutoff point (3 dB less than the maximum gain), the lower cutoff frequency is slightly lower than the calculated value and the upper cutoff frequency is slightly higher than the calculated value. The phase shift of the circuit is approximately 30 degrees at the lower cutoff frequency, decreasing to -25 degrees at the upper cutoff frequency, which is the expected behavior. The phase shift has the general behavior of decreasing from 60 to -65 degrees as the frequency increases.
 
 \begin{figure}[H]
     \centering
