@@ -22,11 +22,11 @@
 
 \section*{Abstract}
 
-This laboratory exercise involved the design and construction of a heartbeat detection circuit. For the detection of a heartbeat, a OPB745 reflective optical sensor can be used. This device will emit light through a finger and ideally measure reflected light which varies with the pulse within the arteries of a finger. The signal output is then filtered with a low pass filter and a high pass filter to exclude frequencies outside an expected range of heart rates. The resulting signal is then amplified by an op amp to get a more useable signal. This circuit was designed, simulated using LTspice, constructed on a breadboard, and measured. C code was written with an MSP432 microcontroller which would measure pulse based on the output of the constructed circuit. This exercise also includes the design of a PCB with the same heartbeat detection circuit. This exercise was partially successful since the circuit constructed behaved as expected with an oscilloscope generated sinusoidal signal. The circuit output was accurately used by the MSP432 to detect frequency in beats per minute. The circuit constructed was unable to detect a heartbeat using the OPB745 and the PCB was not designed.
+This laboratory exercise involved the design and construction of a heartbeat detection circuit. For the detection of a heartbeat, an OPB745 reflective optical sensor can be used. This device will emit light through a finger and ideally measure reflected light which varies with the pulse within the arteries of a finger. The signal output is then filtered with a low pass filter and a high pass filter to exclude frequencies outside an expected range of heart rates. The resulting signal is then amplified by an op amp to get a more usable signal. This circuit was designed, simulated using LTspice, constructed on a breadboard, and measured. C code was written with an MSP432 microcontroller which would measure pulse based on the output of the constructed circuit. This exercise also includes the design of a PCB with the same heartbeat detection circuit. This exercise was partially successful since the circuit constructed behaved as expected with an oscilloscope-generated sinusoidal signal. The circuit output was accurately used by the MSP432 to detect frequency in beats per minute. The circuit constructed was unable to detect a heartbeat using the OPB745 and the PCB was not designed.
 
 \section*{Design Methodology}
 
-A PPG is an instrument used to measure changes in blood volume under the skin. One use of this is to measure heart rate. A circuit was designed with the intent to measure pulse within a finger using a OPB745 reflective optical sensor.
+A PPG is an instrument used to measure changes in blood volume under the skin. One use of this is to measure heart rate. A circuit was designed with the intent to measure the pulse within a finger using an OPB745 reflective optical sensor.
 
 \begin{figure}[H]
     \centering
@@ -35,7 +35,7 @@ A PPG is an instrument used to measure changes in blood volume under the skin. O
     \label{fig:ltspiceCompleteSchematic}
 \end{figure}
 
-Figure \ref{fig:ltspiceCompleteSchematic} shows the complete schematic designed. The 4N25 represents the OPB745. A 5V source is used to provide power to the OPB745, op amps, and a Schottky diode. Voltage division occurs between the 10k$\Omega$ rseistor and the photodetector. This signal then goes to voltage follower op amp which isolates the signal from the next stage. The signal is then filtered by a passive high pass RC filter. This filter has a cut off frequency of 0.7Hz which is 40bpm. The equation for the high pass filter design is shown below.
+Figure \ref{fig:ltspiceCompleteSchematic} shows the complete schematic design. The 4N25 represents the OPB745. A 5V source is used to provide power to the OPB745, op amps, and a Schottky diode. Voltage division occurs between the 10k$\Omega$ resistor and the photodetector. This signal then goes to a voltage follower op amp which isolates the signal from the next stage. The signal is then filtered by a passive high pass RC filter. This filter has a cut off frequency of 0.7Hz which is 42bpm. This ensures that a low heart rate will be detected without anything significantly lower. The equation for the high pass filter design is shown below.
 
 \begin{equation}
 R = \frac{1}{2*\pi*C*\text{f}_\text{c}} = \frac{1}{2*\pi*220nF*0.7Hz} = 1M\Omega \label{eq:HighPass}
@@ -53,7 +53,7 @@ From this equation, it is evident that as frequency increases, the magnitude inc
 \angle\frac{\text{V}_\text{out}}{\text{V}_\text{in}} = -tan^{-1}(\frac{\omega\text{R}\text{C}}{1}) \label{eq:HighPassPhase}
 \end{equation}
 
-The signal from the high pass filter then goes through another voltage follower for isolation between stages. Next, the signal is filtered by a passive low pass RC filter. This filter has a cut off frequency of 3.5Hz which is 210bpm.  The equation for the low pass filter design is shown below.
+This equation describes the delay that a signal will experience from the high pass filter. The signal from the high pass filter then goes through another voltage follower for isolation between stages. Next, the signal is filtered by a passive low pass RC filter. This filter has a cut off frequency of 3.5Hz which is 210bpm.  The equation for the low pass filter design is shown below.
 
 \begin{equation}
 R = \frac{1}{2*\pi*C*\text{f}_\text{c}} = \frac{1}{2*\pi*220nF*3.5Hz} = 200k\Omega \label{eq:LowPass}
@@ -71,7 +71,7 @@ This equation describes the magnitude response in relation to frequency for a lo
 \angle\frac{\text{V}_\text{out}}{\text{V}_\text{in}} = -tan^{-1}(\frac{1}{\omega\text{R}\text{C}}) \label{eq:LowPassPhase}
 \end{equation}
 
-After passing through the low pass filter, the signal is amplified by an op amp. To make the signal scale up to about 3.3V, a gain of 101 was implemented. The calculation for resistor values is shown in Figure \ref{eq:amplify}. 
+This equation describes the delay that a signal will experience from the low pass filter. After passing through the low pass filter, the signal is amplified by an op amp. To make the signal scale up to about 3.3V, a gain of 101 was implemented. The calculation for resistor values is shown in Figure \ref{eq:amplify}. 
 
 \begin{equation}
 \text{Gain} = 101 = 1 + \frac{\text{R}_\text{a}}{\text{R}_\text{b}} = 1 + \frac{100,000\Omega}{1,000\Omega} \label{eq:amplify}
@@ -90,9 +90,9 @@ The circuit was simulated using LTspice, constructed on a breadboard, and then t
     \label{fig:ltspiceHighPassSchematic}
 \end{figure}
 
-The figure shows that the filter was simulated using a function generator with a 1 V, with a 220 nF capacitor and a 1 M$\Omega$ resistor. The complete circuit was then simulated using an AC sweep with a logarithmic scale from 100 mHz to 100 Hz.
+The figure shows that the filter was simulated using a function generator with a 220 nF capacitor and a 1 M$\Omega$ resistor. The complete circuit was then simulated using an AC sweep with a logarithmic scale from 100 mHz to 100 Hz.\\
 
-Figure \ref{fig:highPassSim} shows the simulation of the high-pass filter of the circuit, performed using an AC sweep with a logarithmic scale from 100 mHz to 100 Hz.
+Figure \ref{fig:highPassSim} shows the simulation of the high-pass filter, performed using an AC sweep with a logarithmic scale from 100 mHz to 100 Hz.
 
 \begin{figure}[H]
     \centering
@@ -101,7 +101,7 @@ Figure \ref{fig:highPassSim} shows the simulation of the high-pass filter of the
     \label{fig:highPassSim}
 \end{figure}
 
-The figure shows that the gain of the circuit is approximately 0 in the pass band, decreasing as the frequency decreases. The figure also shows that the phase shift of the circuit is approximately 90 degrees in the pass band, decreasing to 0 as the frequency decreases. The cutoff frequency of the circuit is approximately 0.7 Hz, which is equal to the calculated value.
+The figure shows that the gain of the circuit is approximately 0 dB in the pass band, decreasing as the frequency decreases. The figure also shows that the phase shift of the circuit decreases as the frequency increases. The cutoff frequency of the circuit is approximately 0.7 Hz, which is equal to the calculated value.\\
 
 The high-pass filter of the circuit was constructed on a breadboard and tested using an oscilloscope and a function generator at different input frequencies and the resulting voltage gain and phase shift were plotted. Figure \ref{fig:highPassBode} shows the resulting Bode plot.
 
@@ -112,7 +112,7 @@ The high-pass filter of the circuit was constructed on a breadboard and tested u
     \label{fig:highPassBode}
 \end{figure}
 
-The figure shows that the calculated cutoff frequency of 0.7 Hz is approximately correct. The cutoff frequency on the plot is slightly higher than the calculated value, using -9 dB as the cutoff point (3 dB less than the maximum gain). The plot shows that the phase shift of the circuit is approximately 45 degrees at the cutoff frequency, decreasing to 0 degrees at higher frequencies. The phase shift has the general behavior of increasing from 75 to 0 degrees as the frequency increases.
+The figure shows that the calculated cutoff frequency of 0.7 Hz is approximately correct. The cutoff frequency on the plot is slightly higher than the calculated value, using -9 dB as the cutoff point (3 dB less than the maximum gain). The plot shows that the phase shift of the circuit is approximately 45 degrees at the cutoff frequency, decreasing to 0 degrees at higher frequencies. The phase shift has the general behavior of decreasing from 75 to 0 degrees as the frequency increases.\\
 
 The results show that the simulation and constructed circuit are similar, with the constructed circuit having a slightly higher cutoff frequency and a slightly lower phase shift at the cutoff frequency. The constructed circuit also has a lower maximum gain (-6 dB) than the simulated circuit (0 dB), which is approximately half of the simulated value. This decrease in gain propagates through the rest of the circuit.
 
@@ -127,7 +127,7 @@ The low pass filter of the circuit was simulated using the schematic shown in Fi
     \label{fig:ltspiceLowPassSchematic}
 \end{figure}
 
-The figure shows that the filter was simulated using a function generator with a 1 V, with a 220 nF capacitor and a 200 k$\Omega$ resistor. The complete circuit was then simulated using an AC sweep with a logarithmic scale from 100 mHz to 100 Hz.
+The figure shows that the filter was simulated using a function generator with a 220 nF capacitor and a 200 k$\Omega$ resistor. The complete circuit was then simulated using an AC sweep with a logarithmic scale from 100 mHz to 100 Hz.\\
 
 Figure \ref{fig:lowPassSim} shows the simulation of the low-pass filter of the circuit, performed using an AC sweep with a logarithmic scale from 100 mHz to 100 Hz.
 
@@ -138,7 +138,7 @@ Figure \ref{fig:lowPassSim} shows the simulation of the low-pass filter of the c
     \label{fig:lowPassSim}
 \end{figure}
 
-The figure shows that the gain of the circuit is approximately 0 in the pass band, increasing as the frequency increases. The figure also shows that the phase shift of the circuit is approximately 0 degrees in the pass band, decreasing to -90 degrees as the frequency increases. The cutoff frequency of the circuit is approximately 3.5 Hz, which is equal to the calculated value.
+The figure shows that the gain of the circuit is approximately 0 in the pass band, decreasing as the frequency increases. The figure also shows that the phase shift of the circuit is approximately 0 degrees in the pass band, decreasing to -90 degrees as the frequency increases. The cutoff frequency of the circuit is approximately 3.5 Hz, which is equal to the calculated value.\\
 
 The low-pass filter of the circuit was constructed on a breadboard and tested using an oscilloscope and a function generator at different input frequencies and the resulting voltage gain and phase shift were plotted. Figure \ref{fig:lowPassBode} shows the resulting Bode plot.
 
@@ -149,13 +149,13 @@ The low-pass filter of the circuit was constructed on a breadboard and tested us
     \label{fig:lowPassBode}
 \end{figure}
 
-The figure shows that the calculated cutoff frequency of 3.5 Hz is approximately correct. The cutoff frequency on the plot falls at the calculated value, using -3 dB as the cutoff point (3 dB less than the maximum gain). The phase shift of the circuit is approximately -38 degrees at the cutoff frequency, decreasing to -65 degrees at higher frequencies, which is the expected behavior. The phase shift has the general behavior of decreasing from 0 to -65 degrees as the frequency increases.
+The figure shows that the calculated cutoff frequency of 3.5 Hz is approximately correct. The cutoff frequency on the plot falls at the calculated value, using -3 dB as the cutoff point (3 dB less than the maximum gain). The phase shift of the circuit is approximately -38 degrees at the cutoff frequency, decreasing to -65 degrees at higher frequencies. The phase shift has the general behavior of decreasing from 0 to -65 degrees as the frequency increases.\\
 
 The results show that the simulation and constructed circuit are very similar, with no significant differences between the two.
 
 \bigskip
 
-The band pass filter of the circuit was simulated by combining the high-pass and low-pass filters. Figure \ref{fig:bandPassSim} shows the simulation of the band-pass filter of the circuit, performed using an AC sweep with a logarithmic scale from 100 mHz to 100 Hz.
+The band pass filter of the circuit was simulated by combining the high-pass and low-pass filters. Figure \ref{fig:bandPassSim} shows the simulation of the band-pass filter of the circuit, performed using an AC sweep with a logarithmic scale from 100 mHz to 20 Hz.
 
 \begin{figure}[H]
     \centering
@@ -164,7 +164,7 @@ The band pass filter of the circuit was simulated by combining the high-pass and
     \label{fig:bandPassSim}
 \end{figure}
 
-The figure shows that the gain of the circuit is approximately -3 and -1 in the pass band, with cutoff frequencies of 0.7 Hz and 3.5 Hz, which matches the calculated values. The figure also shows that the phase shift of the circuit is approximately 80 degrees at low frequencies (around 100 mHz) and -80 degrees at high frequencies (around 100 Hz), which is the expected behavior. The phase shift has the general behavior of decreasing from 80 to -80 degrees as the frequency increases. The phase shift is approximately 50 degrees at the lower cutoff frequency and -25 degrees at the upper cutoff frequency, which is the expected behavior.
+The figure shows that the gain of the circuit is approximately -3 and -1 in the pass band, with cutoff frequencies of 0.7 Hz and 3.5 Hz, which matches the calculated values. The figure also shows that the phase shift of the circuit is approximately 80 degrees at low frequencies (around 100 mHz) and -80 degrees at high frequencies (around 20 Hz), which is the expected behavior. The phase shift has the general behavior of decreasing from 80 to -80 degrees as the frequency increases.\\
 
 The band-pass filter of the circuit was constructed on a breadboard and tested using an oscilloscope and a function generator at different input frequencies and the resulting voltage gain and phase shift were plotted. Figure \ref{fig:bandPassBode} shows the resulting Bode plot.
 
@@ -175,7 +175,7 @@ The band-pass filter of the circuit was constructed on a breadboard and tested u
     \label{fig:bandPassBode}
 \end{figure}
 
-The figure shows that the calculated cutoff frequencies of 0.7 Hz and 3.5 Hz are approximately correct. Using -11 dB as the cutoff point (3 dB less than the maximum gain), the lower cutoff frequency is slightly lower than the calculated value and the upper cutoff frequency is slightly higher than the calculated value. The phase shift of the circuit is approximately 30 degrees at the lower cutoff frequency, decreasing to -25 degrees at the upper cutoff frequency, which is the expected behavior. The phase shift has the general behavior of decreasing from 60 to -65 degrees as the frequency increases.
+The figure shows that the calculated cutoff frequencies of 0.7 Hz and 3.5 Hz are approximately correct. Using -11 dB as the cutoff point (3 dB less than the maximum gain), the lower cutoff frequency is slightly lower than the calculated value and the upper cutoff frequency is slightly higher than the calculated value. The phase shift of the circuit is approximately 30 degrees at the lower cutoff frequency, decreasing to -25 degrees at the upper cutoff frequency, which is the expected behavior. The phase shift has the general behavior of decreasing from 60 to -65 degrees as the frequency increases.\\
 
 The results show that the simulation and constructed circuit are similar, with the constructed circuit having a slightly lower lower cutoff frequency and a slightly higher upper cutoff frequency. The constructed circuit also has a lower maximum gain (-8 dB) than the simulated circuit (-2 dB), which is attributed to the decreased gain of the high-pass filter of the circuit. The phase shift of the constructed circuit is also slightly lower than the simulated circuit at the lower cutoff frequency.
 
@@ -199,7 +199,7 @@ The figure shows that the OPB745 is simulated using a function generator with a 
     \label{fig:completeSim}
 \end{figure}
 
-The figure shows that the gain of the complete circuit has a maximum of around 9.5 dB at 1.5 Hz. The calculated cutoff frequencies of 0.7 Hz and 3.5 Hz are at 7.6 dB and 7.9 dB, respectively, which is approximately correct. The figure also shows that the phase shift of the circuit is approximately 80 degrees at low frequencies (around 100 mHz) and -65 degrees at high frequencies (around 100 Hz), which is close to the expected values. The phase shift has the general behavior of decreasing from 80 to -65 degrees as the frequency increases. The phase shift is approximately 30 degrees at the lower cutoff frequency and -30 degrees at the upper cutoff frequency, which is also close to the expected values.
+The figure shows that the gain of the complete circuit has a maximum of around 9.5 dB at 1.5 Hz. The calculated cutoff frequencies of 0.7 Hz and 3.5 Hz are at 7.6 dB and 7.9 dB, respectively, which is approximately correct. The figure also shows that the phase shift of the circuit is approximately 80 degrees at low frequencies (around 100 mHz) and -65 degrees at high frequencies (around 100 Hz), which is close to the expected values. The phase shift has the general behavior of decreasing from 80 to -65 degrees as the frequency increases. The phase shift is approximately 30 degrees at the lower cutoff frequency and -30 degrees at the upper cutoff frequency, which is also close to the expected values.\\
 
 The final output of the circuit was then simulated using a time domain simulation with an input of a 1 V sinusoidal wave with a frequency of 1 Hz. Figure \ref{fig:timeSim} shows the simulation of the complete circuit.
 
@@ -210,7 +210,7 @@ The final output of the circuit was then simulated using a time domain simulatio
     \label{fig:timeSim}
 \end{figure}
 
-The figure shows that the output of the circuit is a conditioned sinusoidal wave with a frequency of 1 Hz, which is the expected behavior. The amplitude of the wave is approximately 3.3 V, which correctly reflects an amplified signal from the OPB745 (in pass band).
+The figure shows that the output of the circuit is a conditioned sinusoidal wave with a frequency of 1 Hz, which is the expected behavior. The amplitude of the wave is approximately 3.3 V, which correctly reflects an amplified signal from the OPB745 (in pass band).\\
 
 The complete circuit was constructed on a breadboard and tested using an oscilloscope. A function generator was used to generate input waves at 200 mHz, 1 Hz, and 10 Hz to simulate a heartbeat at different BPM. Figure \ref{fig:200mHzCapture} shows the oscilloscope capture of the output of the circuit at 200 mHz (12 BPM).
 
@@ -221,7 +221,7 @@ The complete circuit was constructed on a breadboard and tested using an oscillo
     \label{fig:200mHzCapture}
 \end{figure}
 
-Figure \ref{fig:200mHzCapture} shows that the output of the circuit is a sinusoidal wave with a frequency of 200 mHz, which is the expected behavior. The amplitude of the wave is approximately 0.6 V, which correctly reflects a filtered signal from the OPB745 (in stop band).
+Figure \ref{fig:200mHzCapture} shows that the output of the circuit is a sinusoidal wave with a frequency of 200 mHz, which is the expected behavior. The amplitude of the wave is approximately 0.6 V, which correctly reflects a filtered signal from the OPB745 (in stop band).\\
 
 Figure \ref{fig:1HzCapture} shows the oscilloscope capture of the output of the circuit at 1 Hz (60 BPM).
 
@@ -232,7 +232,7 @@ Figure \ref{fig:1HzCapture} shows the oscilloscope capture of the output of the 
     \label{fig:1HzCapture}
 \end{figure}
 
-Figure \ref{fig:1HzCapture} shows that the output of the circuit is a sinusoidal wave with a frequency of 1 Hz, which is the expected behavior. The amplitude of the wave is approximately 1.53 V, which correctly reflects an amplified signal from the OPB745 (in pass band). The amplitude of the wave is also approximately half of the simulated value, which is attributed to the decreased gain of the high-pass filter of the circuit.
+Figure \ref{fig:1HzCapture} shows that the output of the circuit is a sinusoidal wave with a frequency of 1 Hz, which is the expected behavior. The amplitude of the wave is approximately 1.53 V, which correctly reflects an amplified signal from the OPB745 (in pass band). The amplitude of the wave is also approximately half of the simulated value, which is attributed to the decreased gain of the high-pass filter of the circuit.\\
 
 Figure \ref{fig:10HzCapture} shows the oscilloscope capture of the output of the circuit at 10 Hz (600 BPM).
 
@@ -296,7 +296,7 @@ The code shows that the BPM was calculated by counting the number of ADC values 
 \text{BPM} = \frac{\text{CAPTURE\_FREQ} \times 60}{\text{count}} \label{eq:bpm}
 \end{equation}
 
-The code shows that the BPM was only calculated if the BPM was between 40 and 220 and the difference between the current BPM and the previous BPM was less than 11. This was done to prevent the BPM from fluctuating too much, providing a more stable reading.
+The code shows that the BPM was only calculated if the BPM was between 40 and 220 and the difference between the current BPM and the previous BPM was less than 11. This was done to prevent the BPM from fluctuating too much, providing a more stable reading.//
 
 The microcontroller was then connected to the circuit and the circuit was tested using a function generator to generate input wave to simulate a heartbeat at different BPM. Figure \ref{fig:serialMonitor} shows the output of the serial monitor.
 
