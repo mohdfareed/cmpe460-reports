@@ -22,9 +22,32 @@
 
 \section*{Abstract}
 
-This laboratory exercise involved the design and construction of a heartbeat detection circuit. For the detection of a heartbeat, a OPB745 reflective optical sensor can be used. This device will emit light through a finger and ideally measure reflected light which varies with the pulse within the arteries of a finger. The signal output is then filtered with a low pass filter and a high pass filter to exclude frequencies outside an expected range of heart rates. The resulting signal is then amplified by an op amp to get a more useable signal. This circuit was designed, simulated using LTspice, constructed on a breadboard, and measured. C code was written with an MSP432 microcontroller which would measure pulse based on the output of the constructed circuit. This exercise also includes the design of a PCB with the same heartbeat detection circuit. This exercise was partially successful since the circuit constructed behaved as expected with an oscilloscope generated sinusoidal signal. The circuit output was accurately used by the MSP432 to detect frequency in beats per minute. The circuit constructed was unable to detect a heartbeat using the OPB745 and the PCB was not designed. 
+This laboratory exercise involved the design and construction of a heartbeat detection circuit. For the detection of a heartbeat, a OPB745 reflective optical sensor can be used. This device will emit light through a finger and ideally measure reflected light which varies with the pulse within the arteries of a finger. The signal output is then filtered with a low pass filter and a high pass filter to exclude frequencies outside an expected range of heart rates. The resulting signal is then amplified by an op amp to get a more useable signal. This circuit was designed, simulated using LTspice, constructed on a breadboard, and measured. C code was written with an MSP432 microcontroller which would measure pulse based on the output of the constructed circuit. This exercise also includes the design of a PCB with the same heartbeat detection circuit. This exercise was partially successful since the circuit constructed behaved as expected with an oscilloscope generated sinusoidal signal. The circuit output was accurately used by the MSP432 to detect frequency in beats per minute. The circuit constructed was unable to detect a heartbeat using the OPB745 and the PCB was not designed.
 
 \section*{Design Methodology}
+
+A PPG is an instrument used to measure changes in blood volume under the skin. One use of this is to measure heart rate. A circuit was designed with the intent to measure pulse within a finger using a OPB745 reflective optical sensor. 
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth]{LTspiceCompleteSchematic.png}
+    \caption{LTspice Schematic}
+    \label{fig:ltspiceCompleteSchematic}
+\end{figure}
+
+Figure \ref{fig:ltspiceCompleteSchematic} shows the complete schematic designed. The 4N25 represents the OPB745. A 5V source is used to provide power to the OPB745, op amps, and a Schottky diode. Voltage division occurs between the 10k$\Omega$ rseistor and the photodetector. This signal then goes to voltage follower op amp which isolates the signal from the next stage. The signal is then filtered by a passive high pass RC filter. This filter has a cut off frequency of 0.7Hz which is 40bpm. The equation to for the high pass filter design is shown below.
+
+\begin{equation}
+R = \frac{1}{2*\pi*C*\text{f}_\text{c}} = \frac{1}{2*\pi*220nF*0.7Hz} = 1M\Omega \label{eq:HighPass}
+\end{equation}
+
+With a cut off frequency of 0.7Hz and a capacitor value of 220nF, \ref{eq:HighPass} shows that the appropriate resistor value is 1M$\Omega$. The signal from the high pass filter then goes through another voltage follower for isolation between stages. Next, the signal is filtered by a passive low pass RC filter. This filter has a cut off frequency of 3.5Hz which is 210bpm.  The equation to for the low pass filter design is shown below.
+
+\begin{equation}
+R = \frac{1}{2*\pi*C*\text{f}_\text{c}} = \frac{1}{2*\pi*220nF*3.5Hz} = 200k\Omega \label{eq:LowPass}
+\end{equation}
+
+With a cut off frequency of 3.5Hz and a capacitor value of 220nF, \ref{eq:LowPass} shows that the appropriate resistor value is 200k$\Omega$.
 
 \begin{figure}[H]
     \centering
