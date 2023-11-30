@@ -18,7 +18,7 @@ BOOLEAN g_sendData;
 #define RIGHT_MOTOR_FORWARD 4
 #define RIGHT_MOTOR_BACKWARD 3
 
-#define IntegralErrorHistoryLength (4)
+#define IntegralErrorHistoryLength (5)
 int integralErrorHistoryIndex = 0;
 int integralErrorHistory[IntegralErrorHistoryLength];
 double previousError = 0;
@@ -98,6 +98,11 @@ int main(void)
     }
 	int i = 0;
     Switch_Init();
+    
+    double kp = 1.0/220.0;
+    double ki = 0.0018;
+    double kd = 0.00011;
+    
     while (!Switch1_Pressed());
 
 	// initializations
@@ -112,21 +117,21 @@ int main(void)
 	while (1){
 		if (g_sendData == TRUE)
 		{
-            int sum = 0;
-            int weighted_sum = 0;
-            double integral = 0;
-            
+            double sum = 0.0;
+            double weighted_sum = 0.0;
+            double integral = 0;            
 
 			for (i = 0; i < 128; i++){
 				sum += line[i];
                 weighted_sum += i*line[i];
 			}
-            double midpoint = (double)weighted_sum / (double) sum;
+            double midpoint = weighted_sum / sum;
             double error = midpoint - 64.5;
             integralErrorHistory[integralErrorHistoryIndex] = error;
             integralErrorHistoryIndex = (integralErrorHistoryIndex + 1)%IntegralErrorHistoryLength;
             
             double derivative = (error - previousError);
+            previousError = error;
             
             for (i = 0; i <= IntegralErrorHistoryLength; i++){
                 integral += integralErrorHistory[i];
@@ -135,12 +140,12 @@ int main(void)
 
             double servoVal;
             if (error <= 0){
-                servoVal = (1.0/180)*(error)*(error)+0.075;
+                servoVal = kp*(error)*(error)+0.075;
             }
             else {
-                servoVal = (-1.0/180)*(error)*(error)+0.075;
+                servoVal = -kp*(error)*(error)+0.075;
             }
-            servoVal += 0.0035*integral + 0.0012*derivative;
+            servoVal += ki*integral + kd*derivative;
             if (servoVal < 0.05) servoVal = 0.05;
             else if (servoVal > 0.1) servoVal = 0.1;
             TIMER_A2_PWM_DutyCycle(servoVal, 1);
@@ -152,7 +157,7 @@ int main(void)
             else {
                 if (servoVal >= 0.075) servoVal -= 0.075;
                 else servoVal = 0.075 - servoVal;
-                double motorSpeed = -4.8*servoVal + 0.37;
+                double motorSpeed = -4.8*servoVal + 0.42;
                 TIMER_A0_PWM_DutyCycle(motorSpeed, LEFT_MOTOR_FORWARD);
                 TIMER_A0_PWM_DutyCycle(motorSpeed, RIGHT_MOTOR_FORWARD);
             }
