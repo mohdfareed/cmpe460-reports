@@ -99,9 +99,9 @@ int main(void)
 	int i = 0;
     Switch_Init();
     
-    double kp = 1.0/220.0;
-    double ki = 0.0018;
-    double kd = 0.00011;
+    double kp = 1.0/215.0;
+    double ki = 0.0022;
+    double kd = 0.00013;
     
     while (!Switch1_Pressed());
 
@@ -157,7 +157,8 @@ int main(void)
             else {
                 if (servoVal >= 0.075) servoVal -= 0.075;
                 else servoVal = 0.075 - servoVal;
-                double motorSpeed = -4.8*servoVal + 0.42;
+                double motorSpeed = -15.0*servoVal + 0.5;
+                if (motorSpeed < 0.3) motorSpeed = 0.30;
                 TIMER_A0_PWM_DutyCycle(motorSpeed, LEFT_MOTOR_FORWARD);
                 TIMER_A0_PWM_DutyCycle(motorSpeed, RIGHT_MOTOR_FORWARD);
             }
