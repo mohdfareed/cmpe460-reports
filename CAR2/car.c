@@ -118,18 +118,14 @@ int main(void)
             double midpoint = (double)weighted_sum / (double) sum;
 
             double servoVal;
-            if (midpoint < 62){
-                servoVal = 0.1;
-            }else if (midpoint > 65){
-                servoVal = 0.05;
-            } else {
-                if (midpoint <= 63.5){
-                    servoVal = (1.0/90.0)*(midpoint-63.5)*(midpoint-63.5)+0.075;
-                }
-                else {
-                    servoVal = (-1.0/190.0)*(midpoint-63.5)*(midpoint-63.5)+0.075;
-                }
+            if (midpoint <= 64.5){
+                servoVal = (1.0/212)*(midpoint-64.5)*(midpoint-64.5)+0.075;
             }
+            else {
+                servoVal = (-1.0/212)*(midpoint-64.5)*(midpoint-64.5)+0.075;
+            }
+            if (servoVal < 0.05) servoVal = 0.05;
+            else if (servoVal > 0.1) servoVal = 0.1;
             TIMER_A2_PWM_DutyCycle(servoVal, 1);
             
             if (sum < 1750000){
@@ -139,7 +135,7 @@ int main(void)
             else {
                 if (servoVal >= 0.075) servoVal -= 0.075;
                 else servoVal = 0.075 - servoVal;
-                double motorSpeed = -400.0*servoVal*servoVal + 0.5;
+                double motorSpeed = -6*servoVal + 0.44;
                 TIMER_A0_PWM_DutyCycle(motorSpeed, LEFT_MOTOR_FORWARD);
                 TIMER_A0_PWM_DutyCycle(motorSpeed, RIGHT_MOTOR_FORWARD);
             }
