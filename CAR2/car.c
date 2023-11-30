@@ -18,6 +18,10 @@ BOOLEAN g_sendData;
 #define RIGHT_MOTOR_FORWARD 4
 #define RIGHT_MOTOR_BACKWARD 3
 
+#define ErrorHistoryLength (50)
+int errorHistoryIndex = 0;
+int errorHistory[ErrorHistoryLength];
+
 static char str[100];
 
 /**
@@ -88,6 +92,9 @@ BOOLEAN Switch1_Pressed(void)
 
 int main(void)
 {
+    for (int i = 0; i <= ErrorHistoryLength; i++){
+        errorHistory[i] = 0;
+    }
 	int i = 0;
     Switch_Init();
     while (!Switch1_Pressed());
@@ -101,28 +108,32 @@ int main(void)
 	INIT_Camera();
 	EnableInterrupts();
 
-	while (1)
-	{
-
-        
+	while (1){
 		if (g_sendData == TRUE)
 		{
             int sum = 0;
             int weighted_sum = 0;
+            double integral = 0;
 
-			for (i = 0; i < 128; i++)
-			{
+			for (i = 0; i < 128; i++){
 				sum += line[i];
                 weighted_sum += i*line[i];
 			}
             double midpoint = (double)weighted_sum / (double) sum;
+            double error = midpoint - 64.5;
+            errorHistory[errorHistoryIndex] = error;
+            
+            for (i = 0; i <= ErrorHistoryLength; i++){
+                integral += errorHistory[i];
+            }
+            integral = integral / ErrorHistoryLength;
 
             double servoVal;
-            if (midpoint <= 64.5){
-                servoVal = (1.0/212)*(midpoint-64.5)*(midpoint-64.5)+0.075;
+            if (error <= 0){
+                servoVal = (1.0/215)*(error)*(error)+0.075;
             }
             else {
-                servoVal = (-1.0/212)*(midpoint-64.5)*(midpoint-64.5)+0.075;
+                servoVal = (-1.0/215)*(error)*(error)+0.075;
             }
             if (servoVal < 0.05) servoVal = 0.05;
             else if (servoVal > 0.1) servoVal = 0.1;
