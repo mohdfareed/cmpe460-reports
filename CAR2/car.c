@@ -18,7 +18,7 @@ BOOLEAN g_sendData;
 #define RIGHT_MOTOR_FORWARD 4
 #define RIGHT_MOTOR_BACKWARD 3
 
-#define IntegralErrorHistoryLength (5)
+#define IntegralErrorHistoryLength (4)
 int integralErrorHistoryIndex = 0;
 int integralErrorHistory[IntegralErrorHistoryLength];
 double previousError = 0;
@@ -99,9 +99,10 @@ int main(void)
 	int i = 0;
     Switch_Init();
     
-    double kp = 1.0/215.0;
-    double ki = 0.0022;
-    double kd = 0.00013;
+    double kp = 1.0/200.0;
+    double ki = 0.0025;
+    double kd = 0.0015;
+    float sauce = 0.4;
     
     while (!Switch1_Pressed());
 
@@ -157,10 +158,16 @@ int main(void)
             else {
                 if (servoVal >= 0.075) servoVal -= 0.075;
                 else servoVal = 0.075 - servoVal;
-                double motorSpeed = -15.0*servoVal + 0.5;
+                double motorSpeed = -22.0*servoVal + 0.48;
                 if (motorSpeed < 0.3) motorSpeed = 0.30;
                 TIMER_A0_PWM_DutyCycle(motorSpeed, LEFT_MOTOR_FORWARD);
                 TIMER_A0_PWM_DutyCycle(motorSpeed, RIGHT_MOTOR_FORWARD);
+                if (servoVal == 0.05){
+                    TIMER_A0_PWM_DutyCycle(motorSpeed+sauce, LEFT_MOTOR_FORWARD);
+                }
+                else if (servoVal == 0.1) {
+                    TIMER_A0_PWM_DutyCycle(motorSpeed+sauce, RIGHT_MOTOR_FORWARD);
+                }
             }
 
 			g_sendData = FALSE;
