@@ -1,5 +1,8 @@
 {
     "files.associations": {
         "systicktimer.h": "c"
-    }
+    },
+    "cSpell.words": [
+        "microcontroller"
+    ]
 }

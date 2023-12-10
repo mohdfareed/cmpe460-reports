@@ -35,7 +35,7 @@ Autonomous driving is progressing and becoming more prevalent in society as time
 \section{Introduction}
 Every semester, Rochester Institute of Technology (RIT) hosts a Texas Instruments (TI) autonomous car race. This challenges computer engineering students to use their skills and knowledge regarding microcontrollers, motor control, control systems, and problem solving. Given that there is an average of 6 million car accidents in the US every year, education and experience with autonomous driving can help shape a world where driving is much safer \cite{accidentStats}.
 
-The cars utilized had various components with different functions. The cars included two motors (one for each back wheel), a servo for steering, and MSP432 microcontroller board for control, a linescan camera, and OLED display, and a 7.2V battery pack. A picture of the car used is shown in Figure \ref{fig:car}.
+The cars utilized had various components with different functions. The cars included two motors (one for each back wheel), a servo for steering, and MSP432 microcontroller board for control, a line-scan camera, and OLED display, and a 7.2V battery pack. A picture of the car used is shown in Figure \ref{fig:car}.
 
 \begin{figure}[htbp]
 	\centerline{\includegraphics[width=0.45\textwidth]{images/car.jpg}}
@@ -127,13 +127,69 @@ The autonomous vehicle in the TI Cup was equipped with two key types of motors: 
 
 \textbf{Servo Motor for Steering:} The car's steering mechanism was controlled by a servo motor. The servo's role was to precisely adjust the angle of the front wheels, enabling the car to follow the intended path on the racetrack. Implementing effective steering control was one of the project's significant challenges, requiring meticulous tuning to achieve optimal responsiveness and accuracy.
 
-The combined operation of the DC motors and the servo motor was central to the car's performance. While the DC motors controlled the speed, the servo motor's steering adjustments were critical for following the track accurately. Optimizing these two aspects of the algorithm, steering and speed control, was a significant focus of our project, involving extensive testing and iterative improvements to ensure seamless and coordinated control.
+Figure \ref{fig:motorWiring} shows a wiring diagram for how the motors were connected to the MSP432.
+
+\begin{figure}[htbp]
+	\centerline{\includegraphics[width=0.45\textwidth]{images/motorsWiring.png}}
+	\caption{Motor Wiring Diagram.}
+	\label{fig:motorWiring}
+\end{figure}
+
+The diagram shows that the board had the motors interfaced using the RB-WAV-77 motor driver and the servo directly connected to the MSP432. motors were powered by 7.2V and ground, and their PWM pins were connected to P2.4-2.7, where each motor was assigned to a pair of pins. The direction of the DC motor was controlled by alternating the PWM signal between the two pins of the motor. The servo's PWM pin was connected to P5.6 and was powered by the on-board 5V and ground. Its angle was controlled by varying the PWM signal between 0.05 and 0.1 duty cycle.
 
 \subsection{PID theory}
 
+Proportional-Integral-Derivative (PID) control is a widely used feedback loop mechanism in control systems, including autonomous vehicles. This control strategy is crucial in maintaining a desired system behavior, such as steering and speed control in the context of autonomous racing. PID control is implemented by calculating an error value, which is the difference between the desired and actual system states. This error value is then used to adjust the system's behavior to minimize the error and achieve the desired state. The three components of PID control are as follows:
+
+\begin{itemize}
+	\item A PID controller continuously calculates an error value as the difference between a desired set point and a measured process variable. It then applies a correction based on proportional, integral, and derivative terms, denoted as P, I, and D, respectively.
+	\item The \textbf{Proportional} term produces an output value proportional to the current error. In the autonomous vehicle, this helps to steer the car more aggressively when it deviates further from the track centerline.
+	\item The \textbf{Integral} term focuses on the accumulation of past errors. It seeks to eliminate residual steady-state errors by integrating the error over time.
+	\item The \textbf{Derivative} term predicts system behavior and thus can prevent the system from overshooting the setpoint. By reacting to the rate of change of the error, it provides a damping effect.
+\end{itemize}
+
+Figure \ref{fig:PID} shows a block diagram of a PID controller, illustrating how the feedback loop is implemented in the context of the car's steering and speed control systems.
+
+\begin{figure}[htbp]
+	\centerline{\includegraphics[width=0.45\textwidth]{images/pid.png}}
+	\caption{PID Controller Block Diagram.}
+	\label{fig:PID}
+\end{figure}
+
+The figure depicts the structured framework of the PID controller as implemented in our autonomous vehicle. The block diagram showcases three distinct paths representing the Proportional, Integral, and Derivative terms, each path applying a mathematical operation on the error signal $e(t)$. The Proportional path amplifies the error by a constant $K_p$, providing immediate correction proportional to the error. The Integral path integrates the error over time, scaled by $K_p$, to eliminate residual steady-state errors. The Derivative path, scaled by $k_d$, takes the derivative of the error, offering a predictive correction and dampening the system response to prevent overshoot.
+
+These three signals converge at a summing junction, producing a combined output that dictates the control action to the process, which is the car's steering and throttle mechanism. This integration of responses ensures that the vehicle responds accurately to deviations from the desired trajectory, maintaining precise control throughout the race.
+
+Tuning of the PID parameters ($K_p$, $K_i$, $K_d$) was a critical process in the solution design, involving iterative testing to achieve a balance between responsiveness and stability. The PID parameters were tuned to ensure that the car could follow the track's centerline while maintaining a reasonable speed. The PID controller was implemented in the car's code to control the steering servo, enabling the car to follow the track's centerline.
+
 \subsection{Timers and Interrupts}
 
+Effective timing and event management are critical in the control systems of autonomous vehicles. In our project, we utilized a suite of timers and interrupts on the MSP432 microcontroller to coordinate the activities of the motors, servo, and camera.
+
+\textbf{Timer A0 for Motor PWM:} Timer A0 was dedicated to controlling the Pulse Width Modulation (PWM) for the Brushed DC Motors. By adjusting the timer period, the duty cycle of the PWM signal can be fine tuned, thus controlling the speed of the motors. This allowed for dynamic speed adjustments based on the car's immediate requirements for speed and precision on the track.
+
+\textbf{Timer A2 for Servo PWM:} Similarly, Timer A2 was configured to manage the PWM for the servo motor responsible for steering. The precise timing of this timer was crucial for achieving smooth and responsive steering behavior, enabling the car to navigate the twists and turns of the racetrack with agility.
+
+\textbf{Timer 32 and SysTick Timer for Camera Control:} The operation of the line-scan camera was managed by two timers. Timer 32 controlled the Start Integration (SI) signal, initiating the camera's capture sequence. In parallel, the SysTick Timer generated the clock (CLK) signal, ensuring that the camera's photo-diodes were sampled at consistent intervals for accurate light intensity readings.
+
+\textbf{Interrupts:} Interrupts were used to manage the camera's output signal. The camera's analog output was connected to the MSP432's ADC pin, which was configured to trigger an interrupt when a new value was available. This interrupt sets a global boolean variable that is monitored by the main loop. The main loop would then read the camera's output and process the data to determine the car's position relative to the track boundaries.
+
 \subsection{Analog to Digital Converter}
+
+The Analog to Digital Converter (ADC) is a crucial component of the microcontroller that bridges the analog world with the digital system. In the autonomous vehicle, the ADC's primary role was to convert the analog signals from the Parallax TSL-1401 line-scan camera into digital values for processing and decision-making.
+
+\textbf{Functionality of the ADC:}
+\begin{itemize}
+\item The TSL-1401 camera captures the track's image as an array of analog light intensities. The ADC on the MSP432 microcontroller translates these intensities into a series of digital values, which can range from 0 to $2^14 - 1$ (16383), representing a 14-bit resolution.
+\item This high-resolution conversion is needed for distinguishing between the varying shades of gray that correspond to the track and its boundaries, allowing for finer control over the vehicle's steering and throttle based on the perceived path. Even slight variations in light intensity readings can lead to significant changes in the vehicle's trajectory. Thus, the accuracy of the ADC's conversions is vital.
+\end{itemize}
+
+\textbf{Integration with Control System:}
+\begin{itemize}
+\item Upon the ADC receiving analog values, the microcontroller's firmware is configured to initiate the ADC conversion process, which involves sampling the signal and converting it into a digital format.
+\item The converted digital data is then fed into the PID control algorithms, informing the subsequent adjustments to the vehicle's motors and steering servo.
+\item To ensure data accuracy and consistency, the ADC conversion process is synchronized with the camera's SI and CLK signals.
+\end{itemize}
 
 \section{Proposed Method}
 
