@@ -143,9 +143,36 @@ In Equation \ref{eq:midpoint}, $i$ represents the index in the array and $x_i$ r
 
 \subsection{Carpet Detection}
 
+Carpet detection is important for preventing damage from hitting a wall when the car would drive off the track. The program logic created to detect whether the car has left the track is very simple. Every element of the raw output array from the linescan camera was added up. This sum was compared to a brightness threshold calibrated through trial and error. If the sum was less that the threshold, the car would stop the DC motors and therefore stop the car from moving.
+
 \subsection{PID Implementation}
 
+PID was utilized for steering with a servo to be able to handle turns and reduce oscillations on straight paths. Error is an essential variable for PID to function. For this project, error was the calculated as shown in Equation \ref{eq:error}.
+
+\begin{equation}
+	\text{error} = \text{midpoint} - 64.5 \label{eq:error}
+\end{equation}
+
+On a scale from 0 to 127 (indices of linescan camera output), the midpoint would normally be 63.5. In this case, it was 64.5 to adjust for the offset of the camera. This calculated error was then used for PID control. The overall equation for to control the servo with PID is shown in Equation \ref{eq:PID}.
+
+\begin{equation}
+	ServoPWM = K_p*\text{error1} + K_i*\frac{\text{error} + \text{error2} + \text{error3}}{3} 
+	+ K_d*(\text{error1} - 2*\text{error2} + \text{error3}) \label{eq:PID}
+\end{equation}
+
+In this Equation \ref{eq:PID}, error1 refers to the most recent error, error2 refers to the error before error1, and error3 refers to the error before error2. This error history allows the PID algorithm to respond in a more optimal way than if it only had access to the the most recent error. 
+
+This calculation alone is not sufficient since a servo PWM outside of the range 0.05 to 0.1 could break the car. For this reason, code was added which would set the servo's PWM to 0.05 if the calculated value was less than 0.05. Additionally, the code would set the servo's PWM to 0.1 if the calculated value was greater than 0.1.
+
 \subsection{Variable Speed}
+
+Variable speed was implemented so that the car would slow down when turning and speed up when going straight. Specifically, this was implemented with an equation relating the absolute value of servo's PWM input (0.05 to 0.1 duty cycle) minus its middle position (0.075 duty cycle). The more the servo position varied from the center, the slower the car was programmed to go. This is shown in Equation \ref{eq:speed}.
+
+\begin{equation}
+	\text{MotorPWM} = -18*|\text{ServoPWM} - 0.075| + 0.434 \label{eq:speed}
+\end{equation}
+
+If the motor PWM calculated is less than 0.36, it was set to 0.36 by the code to ensure it was maintaining a decently fast speed.
 
 \section{Results}
 
