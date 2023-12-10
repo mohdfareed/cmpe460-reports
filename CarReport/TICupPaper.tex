@@ -117,7 +117,7 @@ The bill of materials gives information about parts, quantity, and cost in USD. 
 
 \subsection{Camera Vision and Filtering}
 
-The linescan camera's output is an array of 128 integers representing the brightness it sees. The linescan camera used had a maximum value of $2^{14}$-1 (16383), and would tend to saturate at that value pretty easily. This phenomenon was utilized to filter out the carpet from what was the track. If an array element was less than 16381, it wouldn't be considered as part of the track and would be treated as 0. Otherwise, the element would be treated as a 1. This creates a binary representation of track versus carpet. 
+The linescan camera's output is an array of 128 integers representing the brightness it sees. The linescan camera used had a maximum value of $2^{14}$-1 (16383), and would tend to saturate at that value pretty easily. This phenomenon was utilized to filter out the carpet from what was the track. If an array element was less than 16381, it wouldn't be considered as part of the track and would be treated as 0. Otherwise, the element would be treated as a 1. This creates a binary representation of track versus carpet. Figure \ref{fig:linescan} shows a plot characterizing the typical behavior of the linescan camera.
 
 \begin{figure}[htbp]
 	\centerline{\includegraphics[width=0.45\textwidth]{images/linescan.png}}
@@ -125,11 +125,21 @@ The linescan camera's output is an array of 128 integers representing the bright
 	\label{fig:linescan}
 \end{figure}
 
+In Figure \ref{fig:linescan}, the saturated component is where the linescan camera sees the bright white track along the 128 elements of the array. The rest is the where the camera sees the darker carpet beside the track. As stated, this output was filtered into a binary representation of where there is and isn't track. This output is modeled by Figure \ref{fig:linescanFiltered}.
+
 \begin{figure}[htbp]
 	\centerline{\includegraphics[width=0.45\textwidth]{images/linescanFiltered.png}}
 	\caption{Filtered Linescan Output.}
 	\label{fig:linescanFiltered}
 \end{figure}
+
+This filtered output is simpler and unbiased by the values unassociated with the track. Using the binary output, a weighted average was calculated to find where the center of the track is. The calculation is shown in Equation \ref{eq:midpoint}.
+
+\begin{equation}
+	\text{midpoint} = \frac{\sum_{i=0}^{127} i*x_i}{\sum_{i=0}^{127} x_i}\label{eq:midpoint}
+\end{equation}
+
+In Equation \ref{eq:midpoint}, $i$ represents the index in the array and $x_i$ represents the binary value at the index in the array. The resulting midpoint can the be used to determine the position of the middle of the track and steer towards it.
 
 \subsection{Carpet Detection}
 
