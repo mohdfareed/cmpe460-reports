@@ -29,7 +29,7 @@ taw8452@rit.edu}
 \maketitle
 
 \begin{abstract}
-Autonomous driving is progressing and becoming more prevelant in society as time goes by. A robust autonomous driving system offers the potential for a future where driving safety and efficiciency are dramatically increased. The Rochester Institute of Technology Texas Instruments Car Cup required the application of various autonomous driving techniques and algorithms to race. The objective of this project was to program a miniature battery powered car to autonomously race around a track. The car was controlled by an MSP432 microcontroller board used the input from a linescan camera to control its servo and motors for steering and speed control. This paper documents the theory, code development, and the challenges to race in the fall 2023 Texas Instruments Cup.
+Autonomous driving is progressing and becoming more prevalent in society as time goes by. A robust autonomous driving system offers the potential for a future where driving safety and efficiency are dramatically increased. The Rochester Institute of Technology Texas Instruments Car Cup required the application of various autonomous driving techniques and algorithms to race. The objective of this project was to program a miniature battery powered car to autonomously race around a track. The car was controlled by an MSP432 microcontroller board used the input from a linescan camera to control its servo and motors for steering and speed control. This paper documents the theory, code development, and the challenges to race in the fall 2023 Texas Instruments Cup.
 \end{abstract}
 
 \section{Introduction}
@@ -43,7 +43,7 @@ The cars utilized had various components with different functions. The cars incl
 	\label{fig:car}
 \end{figure}
 
-The racetrack developed for the TI Cup tested various aspects of autonomous racing. It combined performance on straight aways, turns, intersections, hills, and wobbles. To perform well on the track, a car would need to be able to handle all of these conditions. A picture of the track is shwon in Figure \ref{fig:track}.
+The racetrack developed for the TI Cup tested various aspects of autonomous racing. It combined performance on straight segments, turns, intersections, hills, and wobbles. To perform well on the track, a car would need to be able to handle all of these conditions. A picture of the track is shown in Figure \ref{fig:track}.
 
 \begin{figure}[htbp]
 	\centerline{\includegraphics[width=0.45\textwidth]{images/track.jpg}}
@@ -61,7 +61,7 @@ The RIT TI Car Cup is hosted every fall and spring semester. Each team has three
 
 \subsection{Materials}
 
-The car has many components and generates a price from them. A bill of materials is shown in Table \ref{table:billOfMaterials}. 
+The car has many components and generates a price from them. A bill of materials \cite{b2} is shown in Table \ref{table:billOfMaterials}.
 
 \begin{table}[htbp]
 \caption{Bill of Materials}
@@ -105,7 +105,29 @@ The bill of materials gives information about parts, quantity, and cost in USD. 
 
 \subsection{Camera}
 
+The autonomous vehicle utilized in the TI Cup features the Parallax TSL-1401 line-scan camera, a major component of the car's navigation system. This camera is designed to capture a one-dimensional array of light intensity across its field of view, using 128 photo-diodes arranged linearly. Each photo-diode corresponds to a pixel in the captured image, enabling the camera to detect variations in light intensity along a line.
+
+The TSL-1401's capability to differentiate between light and dark areas is central to the car's ability to follow the track. In the context of the racetrack, which features distinct contrasts between the track (light) and the surroundings (dark), the camera provides real-time data for the microcontroller to process and determine the car's position relative to the track boundaries. This camera operates by scanning the track surface and generating an output signal that varies depending on the reflected light intensity. Brighter surfaces, like the white parts of the track, result in higher signal values, whereas darker areas, such as off-track surfaces or track borders, produce lower signal values. This difference in signal strength is what enables the autonomous vehicle to detect and stay within the track boundaries. Figure \ref{fig:camera} shows a wiring diagram for how the camera was connected to the MSP432.
+
+\begin{figure}[htbp]
+	\centerline{\includegraphics[width=0.45\textwidth]{images/cameraWiring.png}}
+	\caption{Camera Wiring Diagram.}
+	\label{fig:camera}
+\end{figure}
+
+The diagram shows that camera being powered by 3.3V and ground. The camera's SI, CLK, and AO pins are connected to P5.5, P4.7, and P5.4, respectively. The camera's AO pin is connected to the MSP432's ADC pin. The analog output from the camera is converted to a digital signal using the car's Analog to Digital Converter (ADC), allowing for precise digital processing and decision-making.
+
+For optimal performance, the camera's placement angle and focus were carefully calibrated. The angle ensures that the camera has a clear and unobstructed view of the track ahead, while the focus is adjusted to maximize clarity and contrast in the captured image. This calibration was crucial in ensuring that the camera could reliably detect the contrast between the track and its surroundings under various lighting conditions encountered during the race.
+
 \subsection{Motors}
+
+The autonomous vehicle in the TI Cup was equipped with two key types of motors: Brushed DC Motor Kits (KIT0167) for propulsion and a servo motor for steering.
+
+\textbf{Brushed DC Motors for Propulsion:} The rear wheels of the car were powered by two independently controlled Brushed DC Motors. Speed control was implemented through Pulse Width Modulation (PWM) signals, allowing for precise adjustments in motor speed in response to the track's demands.
+
+\textbf{Servo Motor for Steering:} The car's steering mechanism was controlled by a servo motor. The servo's role was to precisely adjust the angle of the front wheels, enabling the car to follow the intended path on the racetrack. Implementing effective steering control was one of the project's significant challenges, requiring meticulous tuning to achieve optimal responsiveness and accuracy.
+
+The combined operation of the DC motors and the servo motor was central to the car's performance. While the DC motors controlled the speed, the servo motor's steering adjustments were critical for following the track accurately. Optimizing these two aspects of the algorithm, steering and speed control, was a significant focus of our project, involving extensive testing and iterative improvements to ensure seamless and coordinated control.
 
 \subsection{PID theory}
 
@@ -156,11 +178,11 @@ PID was utilized for steering with a servo to be able to handle turns and reduce
 On a scale from 0 to 127 (indices of linescan camera output), the midpoint would normally be 63.5. In this case, it was 64.5 to adjust for the offset of the camera. This calculated error was then used for PID control. The overall equation for to control the servo with PID is shown in Equation \ref{eq:PID}.
 
 \begin{equation}
-	ServoPWM = K_p*\text{error1} + K_i*\frac{\text{error} + \text{error2} + \text{error3}}{3} 
+	ServoPWM = K_p*\text{error1} + K_i*\frac{\text{error} + \text{error2} + \text{error3}}{3}
 	+ K_d*(\text{error1} - 2*\text{error2} + \text{error3}) \label{eq:PID}
 \end{equation}
 
-In this Equation \ref{eq:PID}, error1 refers to the most recent error, error2 refers to the error before error1, and error3 refers to the error before error2. This error history allows the PID algorithm to respond in a more optimal way than if it only had access to the the most recent error. 
+In this Equation \ref{eq:PID}, error1 refers to the most recent error, error2 refers to the error before error1, and error3 refers to the error before error2. This error history allows the PID algorithm to respond in a more optimal way than if it only had access to the the most recent error.
 
 This calculation alone is not sufficient since a servo PWM outside of the range 0.05 to 0.1 could break the car. For this reason, code was added which would set the servo's PWM to 0.05 if the calculated value was less than 0.05. Additionally, the code would set the servo's PWM to 0.1 if the calculated value was greater than 0.1.
 
@@ -183,6 +205,6 @@ If the motor PWM calculated is less than 0.36, it was set to 0.36 by the code to
 
 \begin{thebibliography}{00}
 \bibitem{b1} “Car Accident Statistics in the U.S. | Driver Knowledge,” DriverKnowledge, 2019. https://www.driverknowledge.com/car-accident-statistics/
+\bibitem{b2} “Model Autonomous Vehicle Texas Instruments Cup Spring 2023,” RIT, 2021.
 \end{thebibliography}
-
 \end{document}
