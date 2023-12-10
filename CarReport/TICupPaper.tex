@@ -29,21 +29,39 @@ taw8452@rit.edu}
 \maketitle
 
 \begin{abstract}
-Autonomous driving is progressing and becoming more prevelant in society as time goes by. A robust autonomous driving system offers the potential for a future where driving safety and efficiciency are dramatically increased. The RIT Texas Instruments Car Cup required the application of various autonomous driving techniques and algorithms to race. The objective of this project was to program a miniature battery powered car to autonomously race around a track. The car was controlled by an MSP432 microcontroller board used the input from a linescan camera to control its servo and motors for steering and speed control. This paper documents the theory, code development, and the challenges to race in the fall 2023 RIT Texas Instrument Cup.
+Autonomous driving is progressing and becoming more prevelant in society as time goes by. A robust autonomous driving system offers the potential for a future where driving safety and efficiciency are dramatically increased. The Rochester Institute of Technology Texas Instruments Car Cup required the application of various autonomous driving techniques and algorithms to race. The objective of this project was to program a miniature battery powered car to autonomously race around a track. The car was controlled by an MSP432 microcontroller board used the input from a linescan camera to control its servo and motors for steering and speed control. This paper documents the theory, code development, and the challenges to race in the fall 2023 Texas Instruments Cup.
 \end{abstract}
 
 \section{Introduction}
-Introduction stuff.
+Every semester, Rochester Institute of Technology (RIT) hosts a Texas Instruments (TI) autonomous car race. This challenges computer engineering students to use their skills and knowledge regarding microcontrollers, motor control, control systems, and problem solving. Given that there is an average of 6 million car accidents in the US every year, education and experience with autonomous driving can help shape a world where driving is much safer \cite{b1}.
+
+The cars utilized had various components with different functions. The cars included two motors (one for each back wheel), a servo for steering, and MSP432 microcontroller board for control, a linescan camera, and OLED display, and a 7.2V battery pack. A picture of the car used is shown in Figure \ref{fig:car}.
+
+\begin{figure}[htbp]
+	\centerline{\includegraphics[width=0.45\textwidth]{images/car.jpg}}
+	\caption{Car.}
+	\label{fig:car}
+\end{figure}
+
+The racetrack developed for the TI Cup tested various aspects of autonomous racing. It combined performance on straight aways, turns, intersections, hills, and wobbles. To perform well on the track, a car would need to be able to handle all of these conditions. A picture of the track is shwon in Figure \ref{fig:track}.
 
 \begin{figure}[htbp]
 	\centerline{\includegraphics[width=0.45\textwidth]{images/track.jpg}}
 	\caption{Racetrack for TI Cup.}
-	\label{fig}
+	\label{fig:track}
 \end{figure}
+
+The rest of this paper is organized as follows. Section 2 discusses background information regarding the TI Cup, some general theory applied, some of the MSP432 modules used, and some of the hardware used. Section 3 covers the proposed method and specific implementations for the project. Section 4 presents the results of the race and performance of the car. Section 5 gives a conclusion of the project. Section 6 gives the authors' acknowledgements. Section 7 lists the references used for this paper.
 
 \section{Background}
 
+\subsection{RIT TI Car Cup}
+
+The RIT TI Car Cup is hosted every fall and spring semester. Each team has three attempts to complete one lap on the track as fast as possible. The first time a lap is completed is the final time. If a team doesn't finish in three attempts, they are disqualified. For an lap to be considered successful, the car must finish in under 60 seconds and have at least two wheels on the track at all times. Race results were recorded by a laser timer for accuracy.
+
 \subsection{Materials}
+
+The car has many components and generates a price from them. A bill of materials is shown in Table \ref{table:billOfMaterials}. 
 
 \begin{table}[htbp]
 \caption{Bill of Materials}
@@ -79,19 +97,45 @@ Zip Ties & 1 & \$18.99 \\
 \textbf{Total} & & \textbf{\$363.05} \\
 \hline
 \end{tabular}
-\label{billOfMaterials}
+\label{table:billOfMaterials}
 \end{center}
 \end{table}
 
-\begin{figure}[htbp]
-	\centerline{\includegraphics[width=0.45\textwidth]{images/car.jpg}}
-	\caption{Car.}
-	\label{fig}
-\end{figure}
+The bill of materials gives information about parts, quantity, and cost in USD. As shown in Table \ref{table:billOfMaterials}, a total of approximately \$363.05 would need to be spent to construct a similar car.
+
+\subsection{Camera}
+
+\subsection{Motors}
 
 \subsection{PID theory}
 
+\subsection{Timers and Interrupts}
+
+\subsection{Analog to Digital Converter}
+
 \section{Proposed Method}
+
+\subsection{Camera Vision and Filtering}
+
+The linescan camera's output is an array of 128 integers representing the brightness it sees. The linescan camera used had a maximum value of $2^{14}$-1 (16383), and would tend to saturate at that value pretty easily. This phenomenon was utilized to filter out the carpet from what was the track. If an array element was less than 16381, it wouldn't be considered as part of the track and would be treated as 0. Otherwise, the element would be treated as a 1. This creates a binary representation of track versus carpet. 
+
+\begin{figure}[htbp]
+	\centerline{\includegraphics[width=0.45\textwidth]{images/linescan.png}}
+	\caption{Unfiltered Linescan Output.}
+	\label{fig:linescan}
+\end{figure}
+
+\begin{figure}[htbp]
+	\centerline{\includegraphics[width=0.45\textwidth]{images/linescanFiltered.png}}
+	\caption{Filtered Linescan Output.}
+	\label{fig:linescanFiltered}
+\end{figure}
+
+\subsection{Carpet Detection}
+
+\subsection{PID Implementation}
+
+\subsection{Variable Speed}
 
 \section{Results}
 
@@ -101,13 +145,7 @@ Zip Ties & 1 & \$18.99 \\
 \section*{Acknowledgments}
 
 \begin{thebibliography}{00}
-\bibitem{b1} G. Eason, B. Noble, and I. N. Sneddon, ``On certain integrals of Lipschitz-Hankel type involving products of Bessel functions,'' Phil. Trans. Roy. Soc. London, vol. A247, pp. 529--551, April 1955.
-\bibitem{b2} J. Clerk Maxwell, A Treatise on Electricity and Magnetism, 3rd ed., vol. 2. Oxford: Clarendon, 1892, pp.68--73.
-\bibitem{b3} I. S. Jacobs and C. P. Bean, ``Fine particles, thin films and exchange anisotropy,'' in Magnetism, vol. III, G. T. Rado and H. Suhl, Eds. New York: Academic, 1963, pp. 271--350.
-\bibitem{b4} K. Elissa, ``Title of paper if known,'' unpublished.
-\bibitem{b5} R. Nicole, ``Title of paper with only first word capitalized,'' J. Name Stand. Abbrev., in press.
-\bibitem{b6} Y. Yorozu, M. Hirano, K. Oka, and Y. Tagawa, ``Electron spectroscopy studies on magneto-optical media and plastic substrate interface,'' IEEE Transl. J. Magn. Japan, vol. 2, pp. 740--741, August 1987 [Digests 9th Annual Conf. Magnetics Japan, p. 301, 1982].
-\bibitem{b7} M. Young, The Technical Writer's Handbook. Mill Valley, CA: University Science, 1989.
+\bibitem{b1} “Car Accident Statistics in the U.S. | Driver Knowledge,” DriverKnowledge, 2019. https://www.driverknowledge.com/car-accident-statistics/
 \end{thebibliography}
 
 \end{document}
