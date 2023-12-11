@@ -3,6 +3,8 @@
         "systicktimer.h": "c"
     },
     "cSpell.words": [
-        "microcontroller"
+        "microcontroller",
+        "microcontrollers",
+        "OLED"
     ]
 }

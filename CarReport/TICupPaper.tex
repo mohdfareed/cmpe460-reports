@@ -139,13 +139,13 @@ Proportional-Integral-Derivative (PID) control is a widely used feedback loop me
 	\item A PID controller continuously calculates an error value as the difference between a desired set point and a measured process variable. It then applies a correction based on proportional, integral, and derivative terms, denoted as P, I, and D, respectively.
 	\item The \textbf{Proportional} term produces an output value proportional to the current error. In the autonomous vehicle, this helps to steer the car more aggressively when it deviates further from the track centerline.
 	\item The \textbf{Integral} term focuses on the accumulation of past errors. It seeks to eliminate residual steady-state errors by integrating the error over time.
-	\item The \textbf{Derivative} term predicts system behavior and thus can prevent the system from overshooting the setpoint. By reacting to the rate of change of the error, it provides a damping effect.
+	\item The \textbf{Derivative} term predicts system behavior and thus can prevent the system from overshooting the set point. By reacting to the rate of change of the error, it provides a damping effect.
 \end{itemize}
 
 Figure \ref{fig:PID} shows a block diagram of a PID controller, illustrating how the feedback loop is implemented in the context of the car's steering and speed control systems.
 
 \begin{figure}[htbp]
-	\centerline{\includegraphics[width=0.45\textwidth]{images/pid.png}}
+	\centerline{\includegraphics[width=0.5\textwidth]{images/pid.png}}
 	\caption{PID Controller Block Diagram.}
 	\label{fig:PID}
 \end{figure}
@@ -189,26 +189,26 @@ The Analog to Digital Converter (ADC) is a crucial component of the microcontrol
 
 \subsection{Camera Vision and Filtering}
 
-The linescan camera's output is an array of 128 integers representing the brightness it sees. The linescan camera used had a maximum value of $2^{14}$-1 (16383), and would tend to saturate at that value pretty easily. This phenomenon was utilized to filter out the carpet from what was the track. If an array element was less than 16381, it wouldn't be considered as part of the track and would be treated as 0. Otherwise, the element would be treated as a 1. This creates a binary representation of track versus carpet. Figure \ref{fig:linescan} shows a plot characterizing the typical behavior of the linescan camera.
+The line-scan camera's output is an array of 128 integers representing the brightness it sees. The line-scan camera used had a maximum value of $2^{14}$-1 (16383), and would tend to saturate at that value pretty easily. This phenomenon was utilized to filter out the carpet from what was the track. If an array element was less than 16381, it wouldn't be considered as part of the track and would be treated as 0. Otherwise, the element would be treated as a 1. This creates a binary representation of track versus carpet. Figure \ref{fig:linescan} shows a plot characterizing the typical behavior of the line-scan camera.
 
 \begin{figure}[htbp]
 	\centerline{\includegraphics[width=0.45\textwidth]{images/linescan.png}}
-	\caption{Unfiltered Linescan Output.}
+	\caption{Unfiltered Line-scan Output.}
 	\label{fig:linescan}
 \end{figure}
 
-In Figure \ref{fig:linescan}, the saturated component is where the linescan camera sees the bright white track along the 128 elements of the array. The rest is the where the camera sees the darker carpet beside the track. As stated, this output was filtered into a binary representation of where there is and isn't track. This output is modeled by Figure \ref{fig:linescanFiltered}.
+In Figure \ref{fig:linescan}, the saturated component is where the line-scan camera sees the bright white track along the 128 elements of the array. The rest is the where the camera sees the darker carpet beside the track. As stated, this output was filtered into a binary representation of where there is and isn't track. This output is modeled by Figure \ref{fig:linescanFiltered}.
 
 \begin{figure}[htbp]
 	\centerline{\includegraphics[width=0.45\textwidth]{images/linescanFiltered.png}}
-	\caption{Filtered Linescan Output.}
+	\caption{Filtered Line-scan Output.}
 	\label{fig:linescanFiltered}
 \end{figure}
 
 This filtered output is simpler and unbiased by the values unassociated with the track. Using the binary output, a weighted average was calculated to find where the center of the track is. The calculation is shown in Equation \ref{eq:midpoint}.
 
 \begin{equation}
-	\text{midpoint} = \frac{\sum_{i=0}^{127} i*x_i}{\sum_{i=0}^{127} x_i}\label{eq:midpoint}
+	\text{midpoint} = \frac{\sum_{i=0}^{127} i \times x_i}{\sum_{i=0}^{127} x_i}\label{eq:midpoint}
 \end{equation}
 
 In Equation \ref{eq:midpoint}, $i$ represents the index in the array and $x_i$ represents the binary value at the index in the array. The resulting midpoint can the be used to determine the position of the middle of the track and steer towards it.
@@ -217,7 +217,7 @@ This binary representation simplifies the process of distinguishing track bounda
 
 \subsection{Carpet Detection}
 
-Carpet detection is important for preventing damage from hitting a wall when the car would drive off the track. The program logic created to detect whether the car has left the track is very simple. Every element of the raw output array from the linescan camera was added up. This sum was compared to a brightness threshold calibrated through trial and error. If the sum was less that the threshold, the car would stop the DC motors and therefore stop the car from moving.
+Carpet detection is important for preventing damage from hitting a wall when the car would drive off the track. The program logic created to detect whether the car has left the track is very simple. Every element of the raw output array from the line-scan camera was added up. This sum was compared to a brightness threshold calibrated through trial and error. If the sum was less that the threshold, the car would stop the DC motors and therefore stop the car from moving.
 
 This feature plays a major role in preventing potential damage to the vehicle, especially in scenarios where the car veers off-track or bumps into other cars, ensuring the safety and longevity of the equipment during testing.
 
@@ -230,7 +230,7 @@ The Proportional-Integral-Derivative (PID) control system was utilized for steer
 	\text{error} = \text{midpoint} - 64.5 \label{eq:error}
 \end{equation}
 
-On a scale from 0 to 127 (indices of linescan camera output), the midpoint would normally be 63.5. In this case, it was 64.5 to adjust for the offset of the camera. This calculated error was then utilized for the PID control of the servo. The formula for the PID control system is shown in Equation \ref{eq:PID}.
+On a scale from 0 to 127 (indices of line-scan camera output), the midpoint would normally be 63.5. In this case, it was 64.5 to adjust for the offset of the camera. This calculated error was then utilized for the PID control of the servo. The formula for the PID control system is shown in Equation \ref{eq:PID}.
 
 \begin{equation}
 	\begin{aligned}
@@ -256,7 +256,7 @@ This calculation alone is not sufficient since a servo PWM outside of the range 
 Variable speed was implemented so that the car would slow down when turning and speed up when going straight. Specifically, this was implemented with an equation relating the absolute value of servo's PWM input (0.05 to 0.1 duty cycle) minus its middle position (0.075 duty cycle). The more the servo position varied from the center, the slower the car was programmed to go. This is shown in Equation \ref{eq:speed}.
 
 \begin{equation}
-	\text{MotorPWM} = -18*|\text{ServoPWM} - 0.075| + 0.434 \label{eq:speed}
+	\text{MotorPWM} = -18 \times |\text{ServoPWM} - 0.075| + 0.434 \label{eq:speed}
 \end{equation}
 
 If the motor PWM calculated is less than 0.36, it was set to 0.36 by the code to ensure it was maintaining a decently fast speed.
@@ -288,7 +288,7 @@ The car's performance in the actual race, unfortunately, did not reflect the suc
 		\hline
 		\textbf{Team} & \textbf{Attempt 1} & \textbf{Attempt 2} & \textbf{Attempt 3} & \textbf{Final Time (s)} \\
 		\hline
-		1 & Q & 29.03 & - & 29.03 \\
+		1 & DQ & 29.03 & - & 29.03 \\
 		2 & 30.84 & - & - & 30.84 \\
 		3 & 30.18 & - & - & 30.18 \\
 		\textbf{4} & \textbf{DQ} & \textbf{DQ} & \textbf{DQ} & \textbf{DQ} \\
