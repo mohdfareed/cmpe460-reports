@@ -3,6 +3,7 @@
         "systicktimer.h": "c"
     },
     "cSpell.words": [
+        "GPIO",
         "microcontroller",
         "microcontrollers",
         "OLED"
