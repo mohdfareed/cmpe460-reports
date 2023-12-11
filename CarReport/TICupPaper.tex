@@ -48,7 +48,7 @@ The racetrack developed for the TI Cup tested various aspects of autonomous raci
 \begin{figure}[htbp]
 	\centerline{\includegraphics[width=0.45\textwidth]{images/track.jpg}}
 	\caption{Racetrack for TI Cup.}
-	\label{fig:track}
+	\label{fig:track-dep}
 \end{figure}
 
 The rest of this paper is organized as follows. Section 2 discusses background information regarding the TI Cup, some general theory applied, some of the MSP432 modules used, and some of the hardware used. Section 3 covers the proposed method and specific implementations for the project. Section 4 presents the results of the race and performance of the car. Section 5 gives a conclusion of the project. Section 6 gives the authors' acknowledgements. Section 7 lists the references used for this paper.
@@ -256,8 +256,66 @@ If the motor PWM calculated is less than 0.36, it was set to 0.36 by the code to
 
 \subsection{Race Results}
 
+The Texas Instruments Cup race was held on December 2nd, 2023. The track layout for the race is depicted in Figure \ref{fig:track}.
+
+\begin{figure}[htbp]
+	\centerline{\includegraphics[width=0.45\textwidth]{images/track.jpg}}
+	\caption{Racetrack for TI Cup.}
+	\label{fig:track}
+\end{figure}
+
+The final track design, featuring a crossed-U shaped section with squiggly paths following a ramp, presented a unique challenge that tested the limits of the car's capabilities. In the practice run, the car showcased promising performance, with minor issues. Notably, the car struggled with speed control after the ramp and exhibited oscillatory behavior on straight sections, veering left and right.
+
+On race day, each team had three attempts to complete the track with the fastest possible time. the authors' team, team number four, approached the race with a single driving mode that they believed to be the best after PID tuning. Although experiments with differential driving were performed as a potential second mode, it was not deployed due to insufficient testing to ensure its reliability during the race.
+
+The car's performance in the actual race, unfortunately, did not reflect the success of the practice rounds. During our attempts, the line-scan camera experienced a failure, which compromised the vehicle's ability to detect the track correctly. This technical issue led to our car being unable to complete the track, marking a disqualification (DQ) in the final results as shown in Table \ref{tab:raceResults}.
+
+\begin{table}[htbp]
+	\caption{Race Day Results}
+	\begin{center}
+	\begin{tabular}{|c|c|c|c|c|}
+		\hline
+		\textbf{Team} & \textbf{Attempt 1} & \textbf{Attempt 2} & \textbf{Attempt 3} & \textbf{Final Time (s)} \\
+		\hline
+		1 & Q & 29.03 & - & 29.03 \\
+		2 & 30.84 & - & - & 30.84 \\
+		3 & 30.18 & - & - & 30.18 \\
+		\textbf{4} & \textbf{DQ} & \textbf{DQ} & \textbf{DQ} & \textbf{DQ} \\
+		5 & 32.44 & - & - & 32.44 \\
+		6 & DQ & DQ & DQ & DQ \\
+		7 & 35.28 & - & - & 35.28 \\
+		8 & DQ & DQ & DQ & DQ \\
+		9 & 36.39 & - & - & 36.39 \\
+		10 & 29.46 & - & - & 29.46 \\
+		11 & DQ & DQ & 29.39 & 29.39 \\
+		12 & DQ & DQ & DQ & DQ \\
+		13 & 37.24 & - & - & 37.24 \\
+		14 & 28.58 & - & - & 28.58 \\
+		15 & 28.82 & - & - & 28.82 \\
+		16 & DQ & DQ & DQ & DQ \\
+		17 & DQ & DQ & DQ & DQ \\
+		18 & DQ & DQ & DQ & DQ \\
+		19 & DQ & 28.82 & - & 28.82 \\
+		20 & 31.49 & - & - & 31.49 \\
+		21 & 31.61 & - & - & 31.61 \\
+
+		\hline
+	\end{tabular}
+	\label{tab:raceResults}
+	\end{center}
+\end{table}
+
+The race results show that the top three teams were able to complete the track in under 29 seconds, with the fastest time being 28.39 seconds. Most teams that did not get disqualified for not completing the race locked-in their time on the first attempt, with only 2 teams in the second and a single in the third. In total, 7 teams out of 21 were disqualified for not completing the track, including the authors' team.
+
+Despite the setback, the data obtained from the practice run and partial race attempts have provided valuable insights. The race results of the car, while not resulting in a completed lap, reflects the challenges of real-world autonomous vehicle applications.
+
+\section*{Conclusion}
+
+The TI Car Cup competition is an example of how to turn a real-world engineering problem into an engaging course activity. With autonomous cars becoming more prevalent, this provides a good opportunity for students to get hands-on experience with what goes into making these types of vehicles function. This project serves as a capstone project for the Interfaces and Digital Electronics class, requiring students to incorporate everything they have learned throughout the semester to be successful. This includes not only technical skills like programming and understanding electronics but also soft skills like project management, time management, and teamwork. Using all these skills, a solution was implemented that was able to successfully navigate the track in practice runs. Although the car was unable to complete the track during the race, the performance of competing cars provided valuable lessons. The results showed the competitive nature of the challenge and the narrow margins that separate the top contenders. Future iterations of the project could benefit from further tuning of the PID algorithm and control loop for even more efficient steering and acceleration. Further testing of the differential driving mode could also be performed to determine its viability as a second driving mode.
 
 \section*{Acknowledgments}
+
+The authors would like to thank Dr. Hussin Ketout for his guidance throughout the Texas Instruments Cup project. His expertise in autonomous systems was invaluable. Appreciation is also extended to teaching assistants Andrew Tevebaugh, Colin Vo, and Ben Hyman for their technical support and assistance during the project's development phase. Their contributions to the troubleshooting process significantly enhanced the project's outcome.
 
 \begin{thebibliography}{00}
 \bibitem{accidentStats} “Car Accident Statistics in the U.S. | Driver Knowledge,” DriverKnowledge, 2019. https://www.driverknowledge.com/car-accident-statistics/
