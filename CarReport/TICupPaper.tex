@@ -29,39 +29,33 @@ taw8452@rit.edu}
 \maketitle
 
 \begin{abstract}
-Autonomous driving is progressing and becoming more prevalent in society as time goes by. A robust autonomous driving system offers the potential for a future where driving safety and efficiency are dramatically increased. The Rochester Institute of Technology Texas Instruments Car Cup required the application of various autonomous driving techniques and algorithms to race. The objective of this project was to program a miniature battery powered car to autonomously race around a track. The car was controlled by an MSP432 microcontroller board used the input from a linescan camera to control its servo and motors for steering and speed control. This paper documents the theory, code development, and the challenges to race in the fall 2023 Texas Instruments Cup.
+	The field of autonomous driving promises enhanced road safety and efficiency. This paper details the implementation of an autonomous miniature car, designed to compete in the Rochester Institute of Technology's Texas Instruments Car Cup in Fall 2023. At the center of the car's control system is an MSP432 microcontroller, which processes data from a line-scan camera to dynamically adjust motor speed and steering servo for navigation. This project's core was the development and refinement of autonomous driving algorithms, addressing the intricate challenge of real-time sensor data processing and control. The results of this work is a demonstration of the car's capability to autonomously and independently navigate a racetrack, The experience provides insights into the practical application of theoretical concepts in autonomous systems.
 \end{abstract}
 
 \section{Introduction}
-Every semester, Rochester Institute of Technology (RIT) hosts a Texas Instruments (TI) autonomous car race. This challenges computer engineering students to use their skills and knowledge regarding microcontrollers, motor control, control systems, and problem solving. Given that there is an average of 6 million car accidents in the US every year, education and experience with autonomous driving can help shape a world where driving is much safer \cite{accidentStats}.
+Each semester, the Rochester Institute of Technology (RIT) hosts the Texas Instruments (TI) autonomous car race, a practical challenge that encourages computer engineering students to apply their expertise in microcontrollers, motor control, control systems, and problem-solving to real-world scenarios. With the United States averaging 6 million car accidents annually, education and experience in autonomous driving can help shape a world where driving is much safer \cite{accidentStats}.
 
-The cars utilized had various components with different functions. The cars included two motors (one for each back wheel), a servo for steering, and MSP432 microcontroller board for control, a line-scan camera, and OLED display, and a 7.2V battery pack. A picture of the car used is shown in Figure \ref{fig:car}.
+Participants in the TI Cup utilize custom-built cars comprising dual motors for rear-wheel drive, a servo for directional control, an MSP432 microcontroller board for central processing, a line-scan camera for path detection, an OLED display for diagnostics, and a 7.2V battery pack for power supply. Figure \ref{fig:car} illustrates the design of the competition vehicle.
 
 \begin{figure}[htbp]
 	\centerline{\includegraphics[width=0.45\textwidth]{images/car.jpg}}
-	\caption{Car.}
+	\caption{The autonomous car used in the TI Cup.}
 	\label{fig:car}
 \end{figure}
 
-The racetrack developed for the TI Cup tested various aspects of autonomous racing. It combined performance on straight segments, turns, intersections, hills, and wobbles. To perform well on the track, a car would need to be able to handle all of these conditions. A picture of the track is shown in Figure \ref{fig:track}.
+The competition track is designed to challenge the autonomous capabilities of the vehicles, featuring straightaways, turns, intersections, inclines, and undulating sections that test the precision and adaptability of the autonomous control systems.
 
-\begin{figure}[htbp]
-	\centerline{\includegraphics[width=0.45\textwidth]{images/track.jpg}}
-	\caption{Racetrack for TI Cup.}
-	\label{fig:track-dep}
-\end{figure}
-
-The rest of this paper is organized as follows. Section 2 discusses background information regarding the TI Cup, some general theory applied, some of the MSP432 modules used, and some of the hardware used. Section 3 covers the proposed method and specific implementations for the project. Section 4 presents the results of the race and performance of the car. Section 5 gives a conclusion of the project. Section 6 gives the authors' acknowledgements. Section 7 lists the references used for this paper.
+The rest of this paper is organized as follows. Section 2 presents the background, including the TI Cup context, applied theories, MSP432 modules, and hardware components. Section 3 delineates the proposed methodologies and specific implementations. Section 4 discusses the race outcomes and the car's performance. Section 5 concludes the paper with reflections on the project's implications. Section 6 acknowledges contributions to the project, and Section 7 cites the references.
 
 \section{Background}
 
 \subsection{RIT TI Car Cup}
 
-The RIT TI Car Cup is hosted every fall and spring semester. Each team has three attempts to complete one lap on the track as fast as possible. The first time a lap is completed is the final time. If a team doesn't finish in three attempts, they are disqualified. For an lap to be considered successful, the car must finish in under 60 seconds and have at least two wheels on the track at all times. Race results were recorded by a laser timer for accuracy.
+The RIT TI Car Cup is hosted every fall and spring semesters. In this event, teams are given three chances to set their fastest time for a single lap on a closed circuit. The clock stops the moment a team completes its first successful lap, which then becomes their official time record. If a team doesn't finish in three attempts, they are disqualified. For an lap to be considered successful, the car must finish in under 60 seconds and have at least two wheels on the track at all times. Race results were recorded by a laser timer for accuracy.
 
 \subsection{Materials}
 
-The car has many components and generates a price from them. Reference \cite{carCup2022} was observed to create the bill of materials shown in Table \ref{table:billOfMaterials}.
+Constructing the autonomous car for the TI Cup required a diverse range of components. Referencing the specifications outlined in \cite{carCup2022}, a bill of materials was compiled, as detailed in Table \ref{table:billOfMaterials}.
 
 \begin{table}[htbp]
 \caption{Bill of Materials}
@@ -101,7 +95,7 @@ Zip Ties & 1 & \$18.99 \\
 \end{center}
 \end{table}
 
-The bill of materials gives information about parts, quantity, and cost in USD. As shown in Table \ref{table:billOfMaterials}, a total of approximately \$363.05 would need to be spent to construct a similar car.
+The table shows each component's type, quantity, and cost in USD. The total cost to replicate the car with similar specifications is approximately \$363.05.
 
 \subsection{Camera}
 
@@ -219,26 +213,41 @@ This filtered output is simpler and unbiased by the values unassociated with the
 
 In Equation \ref{eq:midpoint}, $i$ represents the index in the array and $x_i$ represents the binary value at the index in the array. The resulting midpoint can the be used to determine the position of the middle of the track and steer towards it.
 
+This binary representation simplifies the process of distinguishing track boundaries, enabling more accurate steering control as the car navigates the varying contrasts of the racetrack.
+
 \subsection{Carpet Detection}
 
 Carpet detection is important for preventing damage from hitting a wall when the car would drive off the track. The program logic created to detect whether the car has left the track is very simple. Every element of the raw output array from the linescan camera was added up. This sum was compared to a brightness threshold calibrated through trial and error. If the sum was less that the threshold, the car would stop the DC motors and therefore stop the car from moving.
 
+This feature plays a major role in preventing potential damage to the vehicle, especially in scenarios where the car veers off-track or bumps into other cars, ensuring the safety and longevity of the equipment during testing.
+
 \subsection{PID Implementation}
 
-PID was utilized for steering with a servo to be able to handle turns and reduce oscillations on straight paths. Error is an essential variable for PID to function. For this project, error was the calculated as shown in Equation \ref{eq:error}.
+
+The Proportional-Integral-Derivative (PID) control system was utilized for steering with a servo to be able to handle turns and reduce oscillations on straight paths. Error is an essential variable for PID to function. For this project, error was the calculated as shown in Equation \ref{eq:error}.
 
 \begin{equation}
 	\text{error} = \text{midpoint} - 64.5 \label{eq:error}
 \end{equation}
 
-On a scale from 0 to 127 (indices of linescan camera output), the midpoint would normally be 63.5. In this case, it was 64.5 to adjust for the offset of the camera. This calculated error was then used for PID control. The overall equation for to control the servo with PID is shown in Equation \ref{eq:PID}.
+On a scale from 0 to 127 (indices of linescan camera output), the midpoint would normally be 63.5. In this case, it was 64.5 to adjust for the offset of the camera. This calculated error was then utilized for the PID control of the servo. The formula for the PID control system is shown in Equation \ref{eq:PID}.
 
 \begin{equation}
-	ServoPWM = K_p*\text{error1} + K_i*\frac{\text{error} + \text{error2} + \text{error3}}{3}
-	+ K_d*(\text{error1} - 2*\text{error2} + \text{error3}) \label{eq:PID}
+	\begin{aligned}
+		\text{ServoPWM} &= K_p \times \text{error1} \\
+					&+ K_i \times \left( \frac{\text{error1} + \text{error2} + \text{error3}}{3} \right) \\
+					&+ K_d \times (\text{error1} - 2 \times \text{error2} + \text{error3})
+	\end{aligned}
+	\label{eq:PID}
 \end{equation}
 
-In this Equation \ref{eq:PID}, error1 refers to the most recent error, error2 refers to the error before error1, and error3 refers to the error before error2. This error history allows the PID algorithm to respond in a more optimal way than if it only had access to the the most recent error.
+In Equation 3:
+\begin{itemize}
+\item \text{error1} represents the most recent error measurement.
+\item \text{error2} is the error measurement preceding \text{error1}.
+\item \text{error3} denotes the error measurement before \text{error2}.
+\end{itemize}
+This approach of incorporating a history of error measurements enables the PID algorithm to optimize the vehicle's response, not just based on the most recent error but by considering its previous states as well.
 
 This calculation alone is not sufficient since a servo PWM outside of the range 0.05 to 0.1 could break the car. For this reason, code was added which would set the servo's PWM to 0.05 if the calculated value was less than 0.05. Additionally, the code would set the servo's PWM to 0.1 if the calculated value was greater than 0.1.
 
@@ -251,6 +260,8 @@ Variable speed was implemented so that the car would slow down when turning and 
 \end{equation}
 
 If the motor PWM calculated is less than 0.36, it was set to 0.36 by the code to ensure it was maintaining a decently fast speed.
+
+Implementing variable speed control allowed the car to change its speed dynamically, slowing down for sharp turns and accelerating on straight segments. This was essential for optimizing the car's speed across the track, minimizing the time required to complete a lap.
 
 \section{Results}
 
@@ -309,11 +320,11 @@ The race results show that the top three teams were able to complete the track i
 
 Despite the setback, the data obtained from the practice run and partial race attempts have provided valuable insights. The race results of the car, while not resulting in a completed lap, reflects the challenges of real-world autonomous vehicle applications.
 
-\section*{Conclusion}
+\section{Conclusion}
 
 The TI Car Cup competition is an example of how to turn a real-world engineering problem into an engaging course activity. With autonomous cars becoming more prevalent, this provides a good opportunity for students to get hands-on experience with what goes into making these types of vehicles function. This project serves as a capstone project for the Interfaces and Digital Electronics class, requiring students to incorporate everything they have learned throughout the semester to be successful. This includes not only technical skills like programming and understanding electronics but also soft skills like project management, time management, and teamwork. Using all these skills, a solution was implemented that was able to successfully navigate the track in practice runs. Although the car was unable to complete the track during the race, the performance of competing cars provided valuable lessons. The results showed the competitive nature of the challenge and the narrow margins that separate the top contenders. Future iterations of the project could benefit from further tuning of the PID algorithm and control loop for even more efficient steering and acceleration. Further testing of the differential driving mode could also be performed to determine its viability as a second driving mode.
 
-\section*{Acknowledgments}
+\section{Acknowledgments}
 
 The authors would like to thank Dr. Hussin Ketout for his guidance throughout the Texas Instruments Cup project. His expertise in autonomous systems was invaluable. Appreciation is also extended to teaching assistants Andrew Tevebaugh, Colin Vo, and Ben Hyman for their technical support and assistance during the project's development phase. Their contributions to the troubleshooting process significantly enhanced the project's outcome.
 
