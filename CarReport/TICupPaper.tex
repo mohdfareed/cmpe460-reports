@@ -117,7 +117,7 @@ For optimal performance, the camera's placement angle and focus were carefully c
 
 The autonomous vehicle in the TI Cup was equipped with two key types of motors: Brushed DC Motor Kits (KIT0167) for propulsion and a servo motor for steering.
 
-The rear wheels of the car were powered by two independently controlled Brushed DC Motors. Speed control was implemented through Pulse Width Modulation (PWM) signals, allowing for precise adjustments in motor speed in response to the track's demands.
+The rear wheels of the car were powered by two independently controlled Brushed DC Motors. Speed control was implemented through Pulse Width Modulation (PWM) signals \cite{motors}, allowing for precise adjustments in motor speed in response to the track's demands.
 
 The car's steering mechanism was controlled by a servo motor. The servo's role was to precisely adjust the angle of the front wheels, enabling the car to follow the intended path on the racetrack. Implementing effective steering control was one of the project's significant challenges, requiring meticulous tuning to achieve optimal responsiveness and accuracy.
 
@@ -159,11 +159,11 @@ Tuning of the PID parameters ($K_p$, $K_i$, $K_d$) was a critical process in the
 
 Effective timing and event management are critical in the control systems of autonomous vehicles. In this project, a suite of timers and interrupts on the MSP432 microcontroller was utilized to coordinate the activities of the motors, servo, and camera.
 
-Timer A0 was dedicated to controlling the Pulse Width Modulation (PWM) for the Brushed DC Motors. By adjusting the timer period, the duty cycle of the PWM signal can be fine tuned, thus controlling the speed of the motors. This allowed for dynamic speed adjustments based on the car's immediate requirements for speed and precision on the track.
+Timer A0 was dedicated to controlling the Pulse Width Modulation (PWM) for the Brushed DC Motors \cite{timers}. By adjusting the timer period, the duty cycle of the PWM signal can be fine tuned, thus controlling the speed of the motors. This allowed for dynamic speed adjustments based on the car's immediate requirements for speed and precision on the track.
 
-Similarly, Timer A2 was configured to manage the PWM for the servo motor responsible for steering. The precise timing of this timer was crucial for achieving smooth and responsive steering behavior, enabling the car to navigate the twists and turns of the racetrack.
+Similarly, Timer A2 was configured to manage the PWM for the servo motor responsible for steering  \cite{timers}. The precise timing of this timer was crucial for achieving smooth and responsive steering behavior, enabling the car to navigate the twists and turns of the racetrack.
 
-The operation of the line-scan camera was managed by two timers. Timer 32 controlled the Start Integration (SI) signal, initiating the camera's capture sequence. In parallel, the SysTick Timer generated the clock (CLK) signal, ensuring that the camera's photo-diodes were sampled at consistent intervals for accurate light intensity readings.
+The operation of the line-scan camera was managed by two timers \cite{labManual}. Timer 32 controlled the Start Integration (SI) signal, initiating the camera's capture sequence. In parallel, the SysTick Timer generated the clock (CLK) signal, ensuring that the camera's photo-diodes were sampled at consistent intervals for accurate light intensity readings.
 
 Interrupts were used to manage the camera's output signal. The camera's analog output was connected to the MSP432's ADC pin, which was configured to trigger an interrupt when a new value was available. This interrupt sets a global boolean variable that is monitored by the main loop. The main loop would then read the camera's output and process the data to determine the car's position relative to the track boundaries.
 
@@ -171,7 +171,7 @@ Interrupts were used to manage the camera's output signal. The camera's analog o
 
 The Analog to Digital Converter (ADC) is a crucial component of the microcontroller that bridges the analog world with the digital system. In the autonomous vehicle, the ADC's primary role was to convert the analog signals from the Parallax TSL-1401 line-scan camera into digital values for processing and decision-making.
 
-The TSL-1401 camera captures the track's image as an array of analog light intensities. The ADC on the MSP432 microcontroller translates these intensities into a series of digital values, which can range from 0 to $2^{14} - 1$ (16383), representing a 14-bit resolution.
+The TSL-1401 camera captures the track's image as an array of analog light intensities. The ADC on the MSP432 microcontroller translates these intensities into a series of digital values, which can range from 0 to $2^{14} - 1$ (16383), representing a 14-bit resolution \cite{adc}.
 
 This high-resolution conversion is helpful for distinguishing between the varying light intensities that correspond to the track and its boundaries, allowing for finer control over the vehicle's steering and throttle based on the perceived path. Even slight variations in light intensity readings can lead to significant changes in the vehicle's trajectory. Thus, the accuracy of the ADC's conversions is vital.
 
@@ -319,8 +319,20 @@ The TI Car Cup competition is an example of how to turn a real-world engineering
 The authors would like to thank Dr. Hussin Ketout for his guidance through lectures on essential engineering topics, which proved to be invaluable for the completion of this project. Appreciation is also extended to teaching assistants Andrew Tevebaugh, Colin Vo, Marshall Teichman, and Ben Hyman for their technical support and assistance during the project's development phase.
 
 \begin{thebibliography}{00}
-\bibitem{accidentStats} “Car Accident Statistics in the U.S. | Driver Knowledge,” DriverKnowledge, 2019. https://www.driverknowledge.com/car-accident-statistics/
+
+\bibitem{accidentStats} “Car Accident Statistics in the U.S. | Driver Knowledge,” Driver Knowledge, 2019. [Online]. Available: https://www.driverknowledge.com/car-accident-statistics/ [Accessed: December 11, 2023].
+
 \bibitem{carCup2022} K. Jacowleff and M. Teichman, “Texas Instruments Autonomous Car Cup Project Fall 2022,” 2022.
+
 \bibitem{controlSystems} H. Ketout, L. J. Beato, R. Ptucha, Class Lecture, Topic: “Control Systems” CMPE460, Kate Gleason College of Engineering, Rochester Institute of Technology, Rochester, New York, Dec. 2023.
+
+\bibitem{motors} H. Ketout, L. J. Beato, R. Ptucha, Class Lecture, Topic: “Motors” CMPE460, Kate Gleason College of Engineering, Rochester Institute of Technology, Rochester, New York, Dec. 2023.
+
+\bibitem{adc} H. Ketout, Class Lecture, Topic: “Analog To Digital Converter ADC” CMPE460, Kate Gleason College of Engineering, Rochester Institute of Technology, Rochester, New York, Dec. 2023.
+
+\bibitem{timers} H. Ketout, Class Lecture, Topic: “Timers \& Interrupt MSP432” CMPE460, Kate Gleason College of Engineering, Rochester Institute of Technology, Rochester, New York, Dec. 2023.
+
+\bibitem{labManual} “CMPE-460 Interface \& Digital Electronics Laboratory Manual,” Department of Computer Engineering, Rochester Institute of Technology, 2021.
+
 \end{thebibliography}
 \end{document}
